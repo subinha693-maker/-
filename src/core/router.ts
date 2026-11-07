@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export type ScreenId =
   | 'title' | 'saveLoad' | 'main' | 'facilities' | 'population' | 'research' | 'squad' | 'recruit'
-  | 'expeditionPrep' | 'expeditionMap' | 'battle' | 'result' | 'tutorialPreview' | 'screenIndex';
+  | 'expeditionPrep' | 'expeditionMap' | 'battle' | 'result' | 'screenIndex';
 
 interface RouterStore {
   screen: ScreenId;

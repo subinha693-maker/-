@@ -38,7 +38,7 @@ export function MainScreen() {
       <div className="main-body">
         <nav className="side-nav" data-tut="menu">
           {MENU.map((m) => (
-            <button key={m.id} className="nav-item" onClick={() => go(m.id)} data-testid={`nav-${m.id}`}>
+            <button key={m.id} className="nav-item" onClick={() => go(m.id)} data-testid={`nav-${m.id}`} data-tut={`nav-${m.id}`}>
               <Icon name={m.icon} size={40} />
               <span className="grow">{m.label}</span>
               <span className="nav-code">{m.code}</span>

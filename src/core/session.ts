@@ -10,6 +10,7 @@ import { useProfile } from '../save/profile';
 import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
 import { endExpedition, startExpedition } from '../systems/expedition';
+import { offerTutorial, resumeTutorial } from '../tutorial/controller';
 
 let storage: StorageAdapter;
 export let saves: SaveManager;
@@ -27,18 +28,29 @@ export function initSession(adapter: StorageAdapter = new LocalStorageAdapter())
     () => !useGame.getState().inBattle,
     CONFIG.save.autosave,
     (r) => {
-      if (r.ok) { useGame.getState().markSaved(new Date().toISOString()); useToast.getState().push('자동 저장 완료'); }
+      if (r.ok) {
+        useGame.getState().markSaved(new Date().toISOString());
+        // tutorial step saves are frequent; keep them silent so toasts never cover the highlighted UI
+        if (!r.reasons.every((x) => x === 'tutorial:step')) useToast.getState().push('자동 저장 완료');
+      }
       else useToast.getState().push(r.message ?? '자동 저장 실패', 'danger');
     },
   ).attach();
   return { repaired };
 }
 
+/** First run = never started a game on this device (profile) and no save data exists. */
+export function isFirstRun() {
+  return useProfile.getState().profile.firstRun && !saves.hasAnySave();
+}
+
 export function newGameSession() {
+  const first = isFirstRun();
   useGame.getState().newGame();
   useProfile.getState().update((p) => ({ ...p, firstRun: false }));
   autosave.resetInterval(0);
   useRouter.getState().reset('main');
+  if (first) offerTutorial();
 }
 
 /** Screen to resume on after loading: an active expedition resumes on its map (never mid-battle). */
@@ -54,6 +66,7 @@ export function loadSlot(slot: SlotId, useBackup = false) {
   autosave.resetInterval(r.state.clock.gameMinutes);
   useProfile.getState().update((p) => ({ ...p, lastSlot: slot, firstRun: false }));
   useRouter.getState().reset(resumeScreen());
+  if (r.state.tutorial.active) resumeTutorial();
   return r;
 }
 

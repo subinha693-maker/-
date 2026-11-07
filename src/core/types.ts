@@ -28,7 +28,7 @@ export interface CharacterDef {
   stats: Record<string, number> | null; traits: string[];
   basicAttack: unknown | null; skill: unknown | null; story: string | null;
 }
-export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string } }
+export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }
 export interface DifficultyDef { level: number; name: string }
 

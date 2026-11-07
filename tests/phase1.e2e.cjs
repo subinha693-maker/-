@@ -21,7 +21,7 @@ async function run(name, ctxOpts) {
   await step('title shown', () => expect('screen-title')); await shot('01-title');
   await step('settings open/close', async () => { await tap('btn-settings'); await expect('settings-close'); await shot('01b-settings'); await tap('settings-close'); });
   await step('load from title -> saveLoad -> back', async () => { await tap('btn-load'); await expect('screen-saveLoad'); await tap('back'); await expect('screen-title'); });
-  await step('new game -> main', async () => { await tap('btn-new-game'); await expect('screen-main'); }); await shot('02-main');
+  await step('new game -> main (decline tutorial)', async () => { await tap('btn-new-game'); await expect('screen-main'); await tap('tut-decline'); await tap('confirm'); }); await shot('02-main');
   await step('select building popup', async () => { await tap('bld-f1'); await expect('facility-popup'); }); await shot('02b-main-select');
   const menus = ['facilities', 'population', 'research', 'squad', 'recruit', 'expeditionPrep'];
   for (const m of menus) {
@@ -36,10 +36,7 @@ async function run(name, ctxOpts) {
   await step('result -> main', async () => { await tap('btn-to-base'); await expect('screen-main'); });
   await step('main -> save screen', async () => { await tap('nav-save'); await expect('screen-saveLoad'); await shot('08-save'); await tap('back'); await expect('screen-main'); });
   await step('quit to title with confirm', async () => { await tap('nav-title'); await tap('confirm'); await expect('screen-title'); });
-  await step('screen index -> tutorial preview', async () => { await tap('btn-screen-index'); await expect('screen-screenIndex'); await shot('09-index'); await tap('idx-tutorialPreview'); await expect('screen-tutorialPreview'); });
-  await shot('10-tutorial-1');
-  await step('tutorial next x2 (highlight)', async () => { await tap('tut-next'); await tap('tut-next'); }); await shot('10-tutorial-3');
-  await step('tutorial skip confirm', async () => { await tap('tut-skip'); await tap('confirm'); await expect('screen-screenIndex'); });
+  await step('screen index', async () => { await tap('btn-screen-index'); await expect('screen-screenIndex'); await shot('09-index'); });
   console.log(`== ${name}\n` + steps.join('\n') + `\nerrors: ${errors.length ? errors.join(' | ') : 'none'}`);
   await b.close();
 }

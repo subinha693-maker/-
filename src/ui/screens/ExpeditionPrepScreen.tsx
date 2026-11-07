@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { tutorialSignal } from '../../tutorial/controller';
 import { useGame } from '../../core/gameStore';
 import { launchExpedition } from '../../core/session';
 import { CONFIG } from '../../core/config';
@@ -11,13 +12,14 @@ export function ExpeditionPrepScreen() {
   const size = CONFIG.expedition.partySize;
   const [difficulty, setDifficulty] = useState(1);
   const [party, setParty] = useState<string[]>([]);
+  useEffect(() => { tutorialSignal('party-full', party.length === size ? party : null); }, [party, size]);
   const toggle = (id: string) => setParty((p) => p.includes(id) ? p.filter((x) => x !== id) : p.length < size ? [...p, id] : p);
 
   return (
     <div className="screen" data-testid="screen-expeditionPrep">
       <ScreenHeader title="개척 작전 준비" code="PIONEER OPERATION BRIEFING" />
       <div className="screen-main">
-        <Panel title="01  침식 난이도" tail={<PlaceholderTag label="수치 미정" />} style={{ flex: 0.95 }} bodyClass="col scroll grow">
+        <Panel tut="prep-difficulty" title="01  침식 난이도" tail={<PlaceholderTag label="수치 미정" />} style={{ flex: 0.95 }} bodyClass="col scroll grow">
           {DATA.difficulties.map((d) => {
             const unlocked = s.progress.unlockedDifficulties.includes(d.level);
             return (
@@ -29,7 +31,7 @@ export function ExpeditionPrepScreen() {
             );
           })}
         </Panel>
-        <Panel title={`02  출전 부대원 선발 (${party.length}/${size})`} style={{ flex: 1.6 }} bodyClass="scroll grow">
+        <Panel tut="prep-party" title={`02  출전 부대원 선발 (${party.length}/${size})`} style={{ flex: 1.6 }} bodyClass="scroll grow">
           <div className="card-grid pick">
             {s.roster.map((r) => {
               const d = getCharacterDef(r.charId)!; const idx = party.indexOf(r.charId);
@@ -43,7 +45,7 @@ export function ExpeditionPrepScreen() {
             })}
           </div>
         </Panel>
-        <Panel title="03  작전 개요" style={{ flex: 0.9 }} bodyClass="col grow">
+        <Panel tut="prep-summary" title="03  작전 개요" style={{ flex: 0.9 }} bodyClass="col grow">
           <dl className="kv">
             <dt>작전 구역</dt><dd>외부 오염권</dd>
             <dt>침식 난이도</dt><dd>{DATA.difficulties.find((d) => d.level === difficulty)?.name}</dd>

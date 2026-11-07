@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Button, Modal } from '../components/Common';
 import { useProfile } from '../../save/profile';
+import { useGame } from '../../core/gameStore';
+import { startTutorial } from '../../tutorial/controller';
 
 /** Settings. Fullscreen works now (important on mobile); sound/other options arrive with the save phase. */
 export function SettingsModal({ onClose }: { onClose: () => void }) {
   const [fs, setFs] = useState(!!document.fullscreenElement);
   const canFs = !!document.documentElement.requestFullscreen;
   const sound = useProfile((p) => p.profile.settings.sound);
+  const inGame = useGame((g) => !!g.state);
+  const inBattle = useGame((g) => g.inBattle);
+  const tutorialActive = useGame((g) => !!g.state?.tutorial.active);
   const update = useProfile((p) => p.update);
   const setSound = (k: keyof typeof sound, v: number) => update((p) => ({ ...p, settings: { ...p.settings, sound: { ...p.settings.sound, [k]: v } } }));
   useEffect(() => {
@@ -40,6 +45,12 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           </label>
         ))}
         <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>사운드 설정은 기기에 저장됩니다. 실제 음향은 아직 없습니다.</span>
+        {inGame && (
+          <div className="row setting-row">
+            <span className="grow">튜토리얼 다시 보기</span>
+            <Button small disabled={tutorialActive || inBattle} onClick={() => { onClose(); startTutorial(); }} data-testid="replay-tutorial">시작</Button>
+          </div>
+        )}
         <div className="row setting-row"><span className="grow">게임 속도 기본값</span><Button small pendingPhase={4}>조정</Button></div>
       </div>
     </Modal>

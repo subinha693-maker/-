@@ -1,5 +1,14 @@
 {
   "npcs": [
-    { "id": "aila", "name": "아일라", "role": "secretary", "personality": null, "art": { "full": "npc/aila.webp" } }
+    {
+      "id": "aila",
+      "name": "아일라",
+      "role": "secretary",
+      "personality": "활발하고 분위기 메이커, 친화력이 좋다",
+      "art": {
+        "full": "npc/aila.webp",
+        "portrait": "npc/aila_portrait.webp"
+      }
+    }
   ]
 }

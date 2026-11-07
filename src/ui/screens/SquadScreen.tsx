@@ -17,12 +17,12 @@ export function SquadScreen() {
     <div className="screen" data-testid="screen-squad">
       <ScreenHeader title="개척부대" code="PIONEER CORPS ROSTER" tail={<span className="tag">보유 {s.roster.length}명</span>} />
       <div className="screen-main">
-        <Panel title="부대원 목록" style={{ flex: 1.15 }} bodyClass="scroll grow">
+        <Panel title="부대원 목록" tut="squad-list" style={{ flex: 1.15 }} bodyClass="scroll grow">
           <div className="card-grid">
             {s.roster.map((r) => {
               const d = getCharacterDef(r.charId)!;
               return (
-                <button key={r.charId} className={`char-card ${sel === r.charId ? 'sel' : ''}`} onClick={() => setSel(r.charId)} data-testid={`card-${r.charId}`}>
+                <button key={r.charId} className={`char-card ${sel === r.charId ? 'sel' : ''}`} onClick={() => setSel(r.charId)} data-testid={`card-${r.charId}`} data-tut="char-card">
                   <CharacterArt def={d} zoom={2.1} className="char-card-art" />
                   <div className="char-card-info">
                     <b>{charName(d)}</b>
@@ -35,7 +35,7 @@ export function SquadScreen() {
           </div>
         </Panel>
         {def && inst && (
-          <section className="char-detail panel" data-testid="char-detail">
+          <section className="char-detail panel" data-testid="char-detail" data-tut="char-detail">
             <CharacterArt def={def} className="char-full" />
             <div className="char-sheet">
               <div className="char-name-row">

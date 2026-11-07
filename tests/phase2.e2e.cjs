@@ -22,14 +22,14 @@ async function run(name, ctxOpts) {
 
   await p.goto(URL); await see('screen-title');
   await step('fresh start: 이어하기 disabled', async () => assert(await p.getByTestId('btn-continue').isDisabled(), 'continue enabled'));
-  await step('new game', async () => { await tap('btn-new-game'); await see('screen-main'); });
+  await step('new game (decline tutorial)', async () => { await tap('btn-new-game'); await see('screen-main'); await tap('tut-decline'); await tap('confirm'); });
   await step('change BGM volume in settings', async () => {
     await tap('nav-settings'); await p.getByTestId('vol-bgm').fill('35'); await tap('settings-close');
   });
   await step('launch expedition -> autosave toast, map shows party', async () => {
     await tap('nav-expeditionPrep'); await tap('pick-aion'); await tap('pick-ling'); await tap('pick-zerag'); await tap('btn-launch');
-    await see('screen-expeditionMap'); await see('toast');
-    assert((await p.getByTestId('toast').first().innerText()).includes('자동 저장'), 'no autosave toast');
+    await see('screen-expeditionMap'); await p.getByTestId('toast').last().waitFor();
+    assert((await p.getByTestId('toast').last().innerText()).includes('자동 저장'), 'no autosave toast');
   });
   await step('manual save to slot 1 during expedition', async () => {
     await tap('btn-map-save'); await see('screen-saveLoad'); await tap('slot-1'); await tap('btn-save');

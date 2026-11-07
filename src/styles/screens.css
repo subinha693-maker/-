@@ -177,30 +177,51 @@
 .result-title.accent { color: var(--accent); }
 .result-title.danger { color: #d48e87; }
 
-/* ---------- Tutorial ---------- */
-.tut-layer { position: absolute; inset: 0; z-index: 40; }
-.tut-veil { position: absolute; inset: 0; background: rgba(5,9,12,.62); }
-.tut-hole { position: absolute; border: 3px solid var(--accent); box-shadow: 0 0 0 4000px rgba(5,9,12,.62), 0 0 24px rgba(86,197,192,.45); transition: all .25s; pointer-events: none; }
-.tut-step { margin-left: auto; font-size: var(--fs-xs); color: var(--accent); font-weight: 700; letter-spacing: .06em; padding: 4px 12px; border: 1px solid var(--accent-dim); }
-.tut-dialog { position: absolute; left: 60px; right: 60px; bottom: 30px; height: 300px; display: flex; align-items: flex-end; }
-.tut-npc { position: absolute; left: -10px; bottom: -30px; height: 720px; pointer-events: none; filter: drop-shadow(0 0 30px rgba(0,0,0,.6)); }
-.tut-box { margin-left: 400px; flex: 1; height: 100%; display: flex; flex-direction: column; gap: 14px; padding: 26px 32px; background: rgba(24,34,43,.97); border: 1px solid var(--line); border-top: 3px solid var(--accent); }
-.tut-name { display: flex; align-items: baseline; gap: 16px; }
-.tut-name b { font-size: 34px; color: var(--accent); }
-.tut-text { flex: 1; margin: 0; font-size: 30px; line-height: 1.5; }
-.tut-dots { display: flex; gap: 8px; }
-.tut-dots i { width: 28px; height: 6px; background: var(--line); }
-.tut-dots i.on { background: var(--accent); }
-.tut-preview-tag { position: absolute; left: 50%; bottom: 344px; transform: translateX(-50%); }
-
 /* ---------- Dev index ---------- */
 .index-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
 /* ---------- PHASE 2: save/toast ---------- */
 .btn .btn-sub { margin-left: auto; font-size: var(--fs-xs); font-weight: 500; color: var(--text-3); }
 .notice.danger-notice { color: #e0a7a1; background: var(--danger-bg); border-color: rgba(176,96,90,.6); }
-.toast-host { position: absolute; left: 50%; top: 24px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 200; pointer-events: none; }
+.toast-host { position: absolute; right: 28px; bottom: 28px; display: flex; flex-direction: column; gap: 8px; z-index: 200; pointer-events: none; }
 .toast { pointer-events: auto; min-width: 420px; padding: 14px 24px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); font-size: var(--fs-s); box-shadow: 0 8px 30px rgba(0,0,0,.4); animation: fadein .2s; }
 .toast.warn { border-left-color: var(--warn); }
 .toast.danger { border-left-color: var(--danger); color: #e8b9b4; }
 .slider { width: 320px; accent-color: var(--accent); height: 40px; }
+
+/* ---------- PHASE 3: resource popover ---------- */
+.res-strip { position: relative; }
+button.res { background: none; border: none; border-left: 1px solid var(--line-soft); cursor: pointer; text-align: left; color: var(--text); font: inherit; }
+button.res:hover, button.res.on { background: var(--accent-bg); }
+.res-pop { position: absolute; top: calc(100% + 12px); left: 0; width: 520px; z-index: 30; display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--accent); box-shadow: 0 12px 30px rgba(0,0,0,.5); font-size: var(--fs-s); }
+
+/* ---------- PHASE 3: tutorial ---------- */
+.tut-layer { position: absolute; inset: 0; z-index: 60; pointer-events: none; }
+.tut-shield { position: absolute; background: rgba(5,9,12,.62); pointer-events: auto; }
+.tut-shield.full { inset: 0; }
+.tut-shield.clear { background: transparent; }
+.tut-hole { position: absolute; border: 3px solid var(--accent); box-shadow: 0 0 24px rgba(86,197,192,.45); pointer-events: none; transition: left .2s, top .2s, width .2s, height .2s; }
+.tut-hole.act { animation: tutpulse 1.2s ease-in-out infinite; }
+@keyframes tutpulse { 50% { box-shadow: 0 0 0 8px rgba(86,197,192,.25), 0 0 30px rgba(86,197,192,.6); } }
+.tut-box {
+  position: absolute; left: 50%; transform: translateX(-50%); width: 1240px; max-width: calc(100% - 80px); min-height: 230px;
+  display: flex; gap: 24px; padding: 22px 26px; background: rgba(24,34,43,.98); border: 1px solid var(--line); border-top: 3px solid var(--accent);
+  pointer-events: auto; box-shadow: 0 16px 40px rgba(0,0,0,.5); cursor: pointer;
+}
+.tut-box.bottom { bottom: 26px; }
+.tut-box.top { top: 26px; }
+.tut-box.left, .tut-box.right { bottom: 26px; width: 900px; transform: none; }
+.tut-box.left { left: 26px; }
+.tut-box.right { left: auto; right: 26px; }
+.tut-box.full { bottom: 30px; left: auto; right: 60px; transform: none; width: auto; max-width: none; left: 480px; min-height: 280px; }
+.tut-portrait { width: 168px; height: 168px; flex: none; object-fit: cover; border: 1px solid var(--line); background: var(--panel-2); }
+.tut-npc { position: absolute; left: 20px; bottom: -40px; height: 1000px; pointer-events: none; filter: drop-shadow(0 0 30px rgba(0,0,0,.6)); }
+.tut-name { display: flex; align-items: baseline; gap: 16px; }
+.tut-name b { font-size: 34px; color: var(--accent); }
+.tut-step { margin-left: auto; font-size: var(--fs-xs); color: var(--accent); font-weight: 700; letter-spacing: .06em; padding: 4px 12px; border: 1px solid var(--accent-dim); white-space: nowrap; }
+.tut-text { flex: 1; margin: 0; font-size: 29px; line-height: 1.5; min-height: 88px; }
+.tut-caret { color: var(--accent); }
+.tut-dots { display: flex; gap: 6px; }
+.tut-dots i { width: 26px; height: 6px; background: var(--line); }
+.tut-dots i.on { background: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .tut-hole.act { animation: none; } }

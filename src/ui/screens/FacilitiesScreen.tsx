@@ -22,7 +22,7 @@ export function FacilitiesScreen() {
     <div className="screen" data-testid="screen-facilities">
       <ScreenHeader title="시설 관리" code="FACILITY MANAGEMENT" tail={<Button pendingPhase={4}>시설 건설</Button>} />
       <div className="screen-main">
-        <Panel title="시설 목록" tail={<PlaceholderTag />} className="grow" bodyClass="col grow" style={{ flex: 1.4 }}>
+        <Panel title="시설 목록" tut="fac-list" tail={<PlaceholderTag />} className="grow" bodyClass="col grow" style={{ flex: 1.4 }}>
           <Tabs items={[{ id: 'all' as const, name: '전체' }, ...DATA.facilityCategories]} value={cat} onChange={setCat} />
           <div className="scroll grow">
             <table className="table">
@@ -46,7 +46,7 @@ export function FacilitiesScreen() {
             {!list.length && <div className="empty">이 분류의 시설이 없습니다.</div>}
           </div>
         </Panel>
-        <Panel title="시설 상세" className="grow" bodyClass="col scroll grow" style={{ flex: 1 }}>
+        <Panel title="시설 상세" tut="fac-detail" className="grow" bodyClass="col scroll grow" style={{ flex: 1 }}>
           {f && def && lv ? (<>
             <div className="fac-hero"><img src={asset(`sprites/kenney/${def.sprite}.png`)} alt="" /></div>
             <div className="row"><h2 className="h2 grow">{def.name}</h2><span className="tag">Lv.{f.level}</span></div>

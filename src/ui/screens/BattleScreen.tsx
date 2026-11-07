@@ -35,8 +35,8 @@ export function BattleScreen() {
         <Button small variant="danger" onClick={() => replace('result', { outcome: 'defeat' })} data-testid="btn-retreat">후퇴</Button>
         <Button small onClick={back} data-testid="btn-battle-back">지도로</Button>
       </header>
-      <div className="battle-field">
-        <div className="outpost">
+      <div className="battle-field" data-tut="battle-lanes">
+        <div className="outpost" data-tut="battle-outpost">
           <img src={asset('sprites/kenney/sp-gate-door.png')} alt="" />
           <span>임시 거점</span>
         </div>
@@ -63,7 +63,7 @@ export function BattleScreen() {
         ))}
       </div>
       <footer className="battle-deck">
-        <div className="deck-units">
+        <div className="deck-units" data-tut="battle-deck">
           {party.map((id) => {
             const d = getCharacterDef(id)!;
             return (
@@ -79,7 +79,7 @@ export function BattleScreen() {
             );
           })}
         </div>
-        <div className="queue">
+        <div className="queue" data-tut="battle-queue">
           <span className="dim" style={{ fontSize: 'var(--fs-xs)', letterSpacing: '.12em' }}>대기열</span>
           <div className="empty" style={{ padding: 16 }}>대기 중인 부대원 없음</div>
         </div>

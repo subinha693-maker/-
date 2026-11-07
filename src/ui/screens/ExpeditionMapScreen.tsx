@@ -15,6 +15,7 @@ export function ExpeditionMapScreen() {
   // Real expeditions live in the game state; the dev screen index passes a preview party instead.
   const party = ex?.members ?? (params.party as string[] | undefined) ?? [];
   const difficulty = ex?.difficulty ?? (params.difficulty as number | undefined) ?? 1;
+  const training = !!params.training; // tutorial practice map: no expedition state, no saving
   const [sel, setSel] = useState<string | null>(null);
   const map = DATA.sampleMap;
   const maxRows = Math.max(...map.columns.map((c) => c.length));
@@ -31,9 +32,9 @@ export function ExpeditionMapScreen() {
   return (
     <div className="screen" data-testid="screen-expeditionMap">
       <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${difficulty}`}
-        tail={<><PlaceholderTag label="샘플 지도" /><Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button><Button small variant="danger" onClick={() => replace('result', { outcome: 'return' })} data-testid="btn-return">원정 종료 · 귀환</Button></>} />
+        tail={training ? <span className="tag accent">훈련 · 튜토리얼</span> : <><PlaceholderTag label="샘플 지도" /><Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button><Button small variant="danger" onClick={() => replace('result', { outcome: 'return' })} data-testid="btn-return">원정 종료 · 귀환</Button></>} />
       <div className="screen-main">
-        <section className="panel map-area grow" style={{ flex: 2.4 }}>
+        <section className="panel map-area grow" style={{ flex: 2.4 }} data-tut="map-area">
           <svg className="map-lines" width="100%" height="100%">
             {map.edges.map(([a, b]) => {
               const p = pos.get(a)!, q = pos.get(b)!;
@@ -44,12 +45,12 @@ export function ExpeditionMapScreen() {
           {[...pos.entries()].map(([id, p]) => {
             const t = getNodeType(p.type)!;
             return (
-              <button key={id} className={`map-node t-${p.type} ${reachable.has(id) ? 'reach' : ''} ${sel === id ? 'sel' : ''}`} style={{ left: `${p.x}%`, top: `${p.y}%` }} onClick={() => setSel(id)} aria-label={t.name} data-testid={`node-${id}`}>
+              <button key={id} className={`map-node t-${p.type} ${reachable.has(id) ? 'reach' : ''} ${sel === id ? 'sel' : ''}`} style={{ left: `${p.x}%`, top: `${p.y}%` }} onClick={() => setSel(id)} aria-label={t.name} data-testid={`node-${id}`} data-tut={`node-${id}`}>
                 <Icon name={t.icon} size={50} />
               </button>
             );
           })}
-          <div className="map-legend">
+          <div className="map-legend" data-tut="map-legend">
             {DATA.nodeTypes.map((t) => <span key={t.id}><Icon name={t.icon} size={22} />{t.name}</span>)}
           </div>
         </section>
@@ -59,11 +60,11 @@ export function ExpeditionMapScreen() {
               <div className="row"><Icon name={nt.icon} size={48} color="var(--accent)" /><h2 className="h2 grow">{nt.name}</h2></div>
               <span className="dim">{reachable.has(sel) ? '이동 가능한 노드입니다.' : '현재 위치에서 연결되지 않았습니다.'}</span>
               {COMBAT.includes(node!.type)
-                ? <Button variant="primary" disabled={!reachable.has(sel)} onClick={() => enterBattle(sel)} data-testid="btn-enter">진입</Button>
+                ? <Button variant="primary" disabled={!reachable.has(sel)} onClick={() => (training ? go('battle', { training: true, party }) : enterBattle(sel))} data-testid="btn-enter" data-tut="btn-enter">진입</Button>
                 : <Button pendingPhase={6}>진입</Button>}
             </>) : <div className="empty">노드를 선택하세요.</div>}
           </Panel>
-          <Panel title={`원정 부대 (${party.length})`} bodyClass="col">
+          <Panel tut="map-party" title={`원정 부대 (${party.length})`} bodyClass="col">
             {party.map((id) => {
               const d = getCharacterDef(id)!;
               return <div key={id} className="row party-mini"><CharacterArt def={d} zoom={2.3} className="mini-art" /><span className="grow">{charName(d)}</span><span className="dim">HP —</span></div>;

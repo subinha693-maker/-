@@ -36,7 +36,7 @@ export function ScreenHeader({ title, code, tail, onBack }: { title: string; cod
   const back = useRouter((s) => s.back);
   return (
     <header className="screen-head">
-      <Button className="back-btn" aria-label="뒤로" onClick={onBack ?? back} data-testid="back">
+      <Button className="back-btn" aria-label="뒤로" onClick={onBack ?? back} data-testid="back" data-tut="back">
         <span style={{ fontSize: 36, lineHeight: 1 }}>‹</span>
       </Button>
       <div className="col" style={{ gap: 2 }}>

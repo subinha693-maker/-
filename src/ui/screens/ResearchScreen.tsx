@@ -26,7 +26,7 @@ export function ResearchScreen() {
     <div className="screen" data-testid="screen-research">
       <ScreenHeader title="연구 개발" code="RESEARCH & DEVELOPMENT" tail={<span className="tag">진행 중: {s.research.active ?? '없음'}</span>} />
       <div className="screen-main">
-        <Panel title="연구 트리" tail={<PlaceholderTag label="연구 항목 임시" />} className="grow" style={{ flex: 2 }} bodyClass="col grow">
+        <Panel title="연구 트리" tut="research-tree" tail={<PlaceholderTag label="연구 항목 임시" />} className="grow" style={{ flex: 2 }} bodyClass="col grow">
           <Tabs items={DATA.researchFields} value={field} onChange={(v) => { setField(v); setSel(null); }} />
           <div className="tree scroll grow">
             <svg className="tree-lines" width={4 * COL_W} height={4 * ROW_H}>
@@ -49,7 +49,7 @@ export function ResearchScreen() {
             })}
           </div>
         </Panel>
-        <Panel title="연구 정보" style={{ flex: 1 }} bodyClass="col">
+        <Panel title="연구 정보" tut="research-info" style={{ flex: 1 }} bodyClass="col">
           {node ? (<>
             <h2 className="h2">{node.name}</h2>
             <dl className="kv">
