@@ -6,8 +6,8 @@
     { "id": "aion",            "name": "아이온",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/aion.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
     { "id": "ling",            "name": "링",            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/ling.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
     { "id": "zerag",           "name": "제라그",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/zerag.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "char_01",         "name": null,            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/char_01.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null }
+    { "id": "miley_sneaker",   "name": "마일리 스니커",            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/miley_sneaker.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null }
   ],
   "_placeholder_startingRoster": true,
-  "startingRoster": ["shion_shirayuko", "james_harold", "aion", "ling", "zerag", "char_01"]
+  "startingRoster": ["shion_shirayuko", "james_harold", "aion", "ling", "zerag", "miley_sneaker"]
 }
