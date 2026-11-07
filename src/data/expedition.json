@@ -1,0 +1,35 @@
+{
+  "_doc": "Node types are confirmed. Difficulty values, weights and the sample map are placeholders.",
+  "nodeTypes": [
+    { "id": "combat",    "name": "일반 전투",       "icon": "node-combat" },
+    { "id": "elite",     "name": "강적 전투",       "icon": "node-elite" },
+    { "id": "boss",      "name": "보스 전투",       "icon": "node-boss" },
+    { "id": "relic",     "name": "유물 획득",       "icon": "node-relic" },
+    { "id": "reinforce", "name": "후발대 모집",     "icon": "node-reinforce" },
+    { "id": "resource",  "name": "자원 탐색",       "icon": "node-resource" },
+    { "id": "event",     "name": "사건 및 선택지",  "icon": "node-event" },
+    { "id": "rest",      "name": "회복 및 정비",    "icon": "node-rest" },
+    { "id": "shop",      "name": "상점 및 교환",    "icon": "node-shop" },
+    { "id": "intel",     "name": "정보 및 연구 자료","icon": "node-intel" }
+  ],
+  "_placeholder_difficulties": true,
+  "difficulties": [
+    { "level": 1, "name": "침식 난이도 1" },
+    { "level": 2, "name": "침식 난이도 2" },
+    { "level": 3, "name": "침식 난이도 3" },
+    { "level": 4, "name": "침식 난이도 4" },
+    { "level": 5, "name": "침식 난이도 5" }
+  ],
+  "_placeholder_sampleMap": true,
+  "sampleMap": {
+    "columns": [
+      [{ "id": "n0", "type": "combat" }],
+      [{ "id": "n1a", "type": "event" }, { "id": "n1b", "type": "combat" }, { "id": "n1c", "type": "resource" }],
+      [{ "id": "n2a", "type": "relic" }, { "id": "n2b", "type": "reinforce" }],
+      [{ "id": "n3a", "type": "elite" }, { "id": "n3b", "type": "rest" }, { "id": "n3c", "type": "shop" }],
+      [{ "id": "n4a", "type": "intel" }, { "id": "n4b", "type": "combat" }],
+      [{ "id": "n5", "type": "boss" }]
+    ],
+    "edges": [["n0","n1a"],["n0","n1b"],["n0","n1c"],["n1a","n2a"],["n1b","n2a"],["n1b","n2b"],["n1c","n2b"],["n2a","n3a"],["n2a","n3b"],["n2b","n3b"],["n2b","n3c"],["n3a","n4a"],["n3b","n4a"],["n3b","n4b"],["n3c","n4b"],["n4a","n5"],["n4b","n5"]]
+  }
+}

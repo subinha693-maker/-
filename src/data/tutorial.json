@@ -1,0 +1,17 @@
+{
+  "_doc": "Step structure follows the master design (10 steps). Dialogue lines are NOT decided; text is a placeholder.",
+  "speaker": "aila",
+  "steps": [
+    { "id": 1,  "title": "최초 보고",        "screen": "main" },
+    { "id": 2,  "title": "메인 화면 안내",   "screen": "main" },
+    { "id": 3,  "title": "자원 관리 안내",   "screen": "main" },
+    { "id": 4,  "title": "시설 관리 안내",   "screen": "facilities" },
+    { "id": 5,  "title": "연구 시스템 안내", "screen": "research" },
+    { "id": 6,  "title": "개척부대 안내",    "screen": "squad" },
+    { "id": 7,  "title": "개척 작전 안내",   "screen": "expeditionPrep" },
+    { "id": 8,  "title": "원정 지도 안내",   "screen": "expeditionMap" },
+    { "id": 9,  "title": "전투 안내",        "screen": "battle" },
+    { "id": 10, "title": "튜토리얼 종료",    "screen": "main" }
+  ],
+  "placeholderLine": "[대사 미정] 사용자가 확정한 뒤 입력됩니다."
+}

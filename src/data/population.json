@@ -1,0 +1,7 @@
+[
+  { "id": "labor",    "name": "노동 인구" },
+  { "id": "research", "name": "연구 인력" },
+  { "id": "admin",    "name": "행정 인력" },
+  { "id": "military", "name": "군사 인력" },
+  { "id": "inactive", "name": "비경제활동 인구" }
+]

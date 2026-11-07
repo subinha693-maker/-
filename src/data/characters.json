@@ -1,0 +1,13 @@
+{
+  "_doc": "Character definitions. Only 'name' and art are confirmed by the user; null = undecided.",
+  "characters": [
+    { "id": "shion_shirayuko", "name": "시온 시라유코", "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/shion_shirayuko.webp", "focus": [50, 20] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
+    { "id": "james_harold",    "name": "제임스 해럴드", "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/james_harold.webp", "focus": [50, 12] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
+    { "id": "aion",            "name": "아이온",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/aion.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
+    { "id": "ling",            "name": "링",            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/ling.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
+    { "id": "zerag",           "name": "제라그",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/zerag.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
+    { "id": "char_01",         "name": null,            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/char_01.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null }
+  ],
+  "_placeholder_startingRoster": true,
+  "startingRoster": ["shion_shirayuko", "james_harold", "aion", "ling", "zerag", "char_01"]
+}

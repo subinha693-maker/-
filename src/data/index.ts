@@ -1,0 +1,51 @@
+// Central access point for static definitions (Data layer).
+import resources from './resources.json';
+import population from './population.json';
+import facilityCategories from './facilityCategories.json';
+import facilities from './facilities.json';
+import research from './research.json';
+import characters from './characters.json';
+import npcs from './npcs.json';
+import expedition from './expedition.json';
+import tutorial from './tutorial.json';
+import type { CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
+
+export const DATA = {
+  resources: resources as ResourceDef[],
+  population: population as NamedDef<PopulationId>[],
+  facilityCategories: facilityCategories as NamedDef<FacilityCategoryId>[],
+  facilities: facilities.facilities as FacilityDef[],
+  startingFacilities: facilities.startingFacilities as unknown as { defId: string; grid: [number, number] }[],
+  researchFields: research.fields as NamedDef[],
+  researchNodes: research.nodes as ResearchNodeDef[],
+  characters: characters.characters as unknown as CharacterDef[],
+  startingRoster: characters.startingRoster as string[],
+  npcs: npcs.npcs as NpcDef[],
+  nodeTypes: expedition.nodeTypes as NodeTypeDef[],
+  difficulties: expedition.difficulties as DifficultyDef[],
+  sampleMap: expedition.sampleMap as unknown as { columns: { id: string; type: string }[][]; edges: [string, string][] },
+  tutorial,
+};
+
+const byId = <T extends { id: string }>(arr: T[]) => new Map(arr.map((x) => [x.id, x]));
+const facilityIndex = byId(DATA.facilities);
+const characterIndex = byId(DATA.characters);
+const nodeTypeIndex = byId(DATA.nodeTypes);
+
+export const getFacilityDef = (id: string) => facilityIndex.get(id);
+export const getCharacterDef = (id: string) => characterIndex.get(id);
+export const getNodeType = (id: string) => nodeTypeIndex.get(id);
+export const getNpc = (id: string) => DATA.npcs.find((n) => n.id === id);
+
+/** Display name helper: undecided names are shown explicitly as undecided. */
+export const charName = (c: CharacterDef | undefined) => c?.name ?? `이름 미정 (${c?.id ?? '?'})`;
+
+/** Basic integrity check run at startup; throws with a readable message on broken data. */
+export function validateData(): string[] {
+  const errors: string[] = [];
+  for (const f of DATA.startingFacilities) if (!facilityIndex.has(f.defId)) errors.push(`startingFacilities: unknown facility ${f.defId}`);
+  for (const id of DATA.startingRoster) if (!characterIndex.has(id)) errors.push(`startingRoster: unknown character ${id}`);
+  for (const n of DATA.researchNodes) for (const p of n.prereq) if (!DATA.researchNodes.some((x) => x.id === p)) errors.push(`research ${n.id}: unknown prereq ${p}`);
+  for (const col of DATA.sampleMap.columns) for (const n of col) if (!nodeTypeIndex.has(n.type)) errors.push(`sampleMap: unknown node type ${n.type}`);
+  return errors;
+}

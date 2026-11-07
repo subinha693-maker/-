@@ -1,0 +1,32 @@
+{
+  "_doc": "PLACEHOLDER facility definitions for layout only. Names, numbers and the facility list are not confirmed.",
+  "_placeholder": true,
+  "facilities": [
+    { "id": "fac_farm",      "name": "식량 생산 시설 (임시)", "category": "production", "sprite": "ind-building-j", "spriteWidth": 230,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_power",     "name": "발전 시설 (임시)",      "category": "production", "sprite": "ind-solar-panel-landscape-group", "spriteWidth": 230,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_plant",     "name": "산업 시설 (임시)",      "category": "industry",   "sprite": "ind-building-m", "spriteWidth": 250,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_depot",     "name": "자재 시설 (임시)",      "category": "industry",   "sprite": "ind-detail-tank-large", "spriteWidth": 170,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_lab",       "name": "연구 시설 (임시)",      "category": "research",   "sprite": "com-building-n", "spriteWidth": 200,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_barracks",  "name": "군사 시설 (임시)",      "category": "military",   "sprite": "ind-building-o", "spriteWidth": 220,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_housing",   "name": "주거 시설 (임시)",      "category": "living",     "sprite": "com-building-k", "spriteWidth": 230,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
+    { "id": "fac_admin",     "name": "행정 시설 (임시)",      "category": "admin",      "sprite": "com-skyscraper-a", "spriteWidth": 140,
+      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] }
+  ],
+  "startingFacilities": [
+    { "defId": "fac_admin",    "grid": [3, 3] },
+    { "defId": "fac_housing",  "grid": [1, 3] },
+    { "defId": "fac_farm",     "grid": [3, 1] },
+    { "defId": "fac_power",    "grid": [5, 1] },
+    { "defId": "fac_plant",    "grid": [5, 3] },
+    { "defId": "fac_depot",    "grid": [5, 5] },
+    { "defId": "fac_lab",      "grid": [1, 5] },
+    { "defId": "fac_barracks", "grid": [3, 5] }
+  ]
+}

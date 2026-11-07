@@ -1,0 +1,5 @@
+{
+  "npcs": [
+    { "id": "aila", "name": "아일라", "role": "secretary", "personality": null, "art": { "full": "npc/aila.webp" } }
+  ]
+}

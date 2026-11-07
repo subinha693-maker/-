@@ -1,0 +1,10 @@
+[
+  { "id": "food",      "name": "식량",       "category": "basic",   "icon": "food" },
+  { "id": "power",     "name": "전력",       "category": "basic",   "icon": "power" },
+  { "id": "material",  "name": "건설 자재",  "category": "basic",   "icon": "material" },
+  { "id": "parts",     "name": "산업 부품",  "category": "basic",   "icon": "parts" },
+  { "id": "budget",    "name": "예산",       "category": "basic",   "icon": "budget" },
+  { "id": "data",      "name": "연구 데이터","category": "special", "icon": "data" },
+  { "id": "biosample", "name": "생체시료",   "category": "special", "icon": "biosample" },
+  { "id": "alloy",     "name": "특수 합금",  "category": "special", "icon": "alloy" }
+]

@@ -1,0 +1,28 @@
+{
+  "_doc": "Research FIELDS are confirmed. Research NODES are placeholders to demonstrate the tree layout.",
+  "fields": [
+    { "id": "buthos_bio", "name": "부토스 생물학" },
+    { "id": "weapons",    "name": "무장 기술" },
+    { "id": "protection", "name": "방호 기술" },
+    { "id": "industry",   "name": "산업 기술" },
+    { "id": "medicine",   "name": "의학 기술" },
+    { "id": "admin",      "name": "행정 기술" }
+  ],
+  "_placeholder_nodes": true,
+  "nodes": [
+    { "id": "r_bio_1", "field": "buthos_bio", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] },
+    { "id": "r_bio_2", "field": "buthos_bio", "tier": 2, "name": "연구 항목 B (임시)", "prereq": ["r_bio_1"], "unlocks": [] },
+    { "id": "r_bio_3", "field": "buthos_bio", "tier": 2, "name": "연구 항목 C (임시)", "prereq": ["r_bio_1"], "unlocks": [] },
+    { "id": "r_bio_4", "field": "buthos_bio", "tier": 3, "name": "연구 항목 D (임시)", "prereq": ["r_bio_2", "r_bio_3"], "unlocks": [] },
+    { "id": "r_wpn_1", "field": "weapons", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] },
+    { "id": "r_wpn_2", "field": "weapons", "tier": 2, "name": "연구 항목 B (임시)", "prereq": ["r_wpn_1"], "unlocks": [] },
+    { "id": "r_wpn_3", "field": "weapons", "tier": 3, "name": "연구 항목 C (임시)", "prereq": ["r_wpn_2"], "unlocks": [] },
+    { "id": "r_pro_1", "field": "protection", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] },
+    { "id": "r_pro_2", "field": "protection", "tier": 2, "name": "연구 항목 B (임시)", "prereq": ["r_pro_1"], "unlocks": [] },
+    { "id": "r_ind_1", "field": "industry", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] },
+    { "id": "r_ind_2", "field": "industry", "tier": 2, "name": "연구 항목 B (임시)", "prereq": ["r_ind_1"], "unlocks": [] },
+    { "id": "r_med_1", "field": "medicine", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] },
+    { "id": "r_med_2", "field": "medicine", "tier": 2, "name": "연구 항목 B (임시)", "prereq": ["r_med_1"], "unlocks": [] },
+    { "id": "r_adm_1", "field": "admin", "tier": 1, "name": "연구 항목 A (임시)", "prereq": [], "unlocks": [] }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  { "id": "production", "name": "생산 시설" },
+  { "id": "industry",   "name": "산업 시설" },
+  { "id": "research",   "name": "연구 시설" },
+  { "id": "military",   "name": "군사 시설" },
+  { "id": "living",     "name": "생활 시설" },
+  { "id": "admin",      "name": "행정 시설" }
+]

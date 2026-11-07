@@ -1,0 +1,6 @@
+{
+  "_doc": "ALL values in this file are placeholders. Production formulas and numbers are not decided yet.",
+  "_placeholder": true,
+  "startingResources": { "food": 1000, "power": 500, "material": 800, "parts": 300, "budget": 5000, "data": 0, "biosample": 0, "alloy": 0 },
+  "startingPopulation": { "labor": 600000, "research": 50000, "admin": 40000, "military": 60000, "inactive": 250000 }
+}

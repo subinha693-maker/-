@@ -1,0 +1,10 @@
+{
+  "name": "통합인류행정부 UNIFIED HUMAN ADMINISTRATION",
+  "short_name": "통합인류행정부",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#111820",
+  "theme_color": "#111820",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

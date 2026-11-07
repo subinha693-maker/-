@@ -1,0 +1,342 @@
+[
+ {
+  "id": "ind-building-a",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-a"
+ },
+ {
+  "id": "ind-building-b",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-b"
+ },
+ {
+  "id": "ind-building-c",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-c"
+ },
+ {
+  "id": "ind-building-d",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-d"
+ },
+ {
+  "id": "ind-building-e",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-e"
+ },
+ {
+  "id": "ind-building-f",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-f"
+ },
+ {
+  "id": "ind-building-g",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-g"
+ },
+ {
+  "id": "ind-building-h",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-h"
+ },
+ {
+  "id": "ind-building-i",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-i"
+ },
+ {
+  "id": "ind-building-j",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-j"
+ },
+ {
+  "id": "ind-building-k",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-k"
+ },
+ {
+  "id": "ind-building-l",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-l"
+ },
+ {
+  "id": "ind-building-m",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-m"
+ },
+ {
+  "id": "ind-building-n",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-n"
+ },
+ {
+  "id": "ind-building-o",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-o"
+ },
+ {
+  "id": "ind-building-p",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-p"
+ },
+ {
+  "id": "ind-building-q",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-q"
+ },
+ {
+  "id": "ind-building-r",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-r"
+ },
+ {
+  "id": "ind-building-s",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-s"
+ },
+ {
+  "id": "ind-building-t",
+  "kit": "city-kit-industrial_2.0",
+  "model": "building-t"
+ },
+ {
+  "id": "ind-chimney-large",
+  "kit": "city-kit-industrial_2.0",
+  "model": "chimney-large"
+ },
+ {
+  "id": "ind-chimney-medium",
+  "kit": "city-kit-industrial_2.0",
+  "model": "chimney-medium"
+ },
+ {
+  "id": "ind-detail-tank-large",
+  "kit": "city-kit-industrial_2.0",
+  "model": "detail-tank-large"
+ },
+ {
+  "id": "ind-detail-tank",
+  "kit": "city-kit-industrial_2.0",
+  "model": "detail-tank"
+ },
+ {
+  "id": "ind-solar-panel-landscape-group",
+  "kit": "city-kit-industrial_2.0",
+  "model": "solar-panel-landscape-group"
+ },
+ {
+  "id": "ind-windmill",
+  "kit": "city-kit-industrial_2.0",
+  "model": "windmill"
+ },
+ {
+  "id": "ind-water-tower",
+  "kit": "city-kit-industrial_2.0",
+  "model": "water-tower"
+ },
+ {
+  "id": "ind-shipping-container-a",
+  "kit": "city-kit-industrial_2.0",
+  "model": "shipping-container-a"
+ },
+ {
+  "id": "ind-shipping-container-b",
+  "kit": "city-kit-industrial_2.0",
+  "model": "shipping-container-b"
+ },
+ {
+  "id": "ind-shipping-container-c",
+  "kit": "city-kit-industrial_2.0",
+  "model": "shipping-container-c"
+ },
+ {
+  "id": "com-skyscraper-a",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-skyscraper-a"
+ },
+ {
+  "id": "com-skyscraper-b",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-skyscraper-b"
+ },
+ {
+  "id": "com-skyscraper-c",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-skyscraper-c"
+ },
+ {
+  "id": "com-skyscraper-d",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-skyscraper-d"
+ },
+ {
+  "id": "com-skyscraper-e",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-skyscraper-e"
+ },
+ {
+  "id": "com-building-a",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-a"
+ },
+ {
+  "id": "com-building-b",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-b"
+ },
+ {
+  "id": "com-building-c",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-c"
+ },
+ {
+  "id": "com-building-d",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-d"
+ },
+ {
+  "id": "com-building-e",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-e"
+ },
+ {
+  "id": "com-building-f",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-f"
+ },
+ {
+  "id": "com-building-g",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-g"
+ },
+ {
+  "id": "com-building-h",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-h"
+ },
+ {
+  "id": "com-building-i",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-i"
+ },
+ {
+  "id": "com-building-j",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-j"
+ },
+ {
+  "id": "com-building-k",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-k"
+ },
+ {
+  "id": "com-building-l",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-l"
+ },
+ {
+  "id": "com-building-m",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-m"
+ },
+ {
+  "id": "com-building-n",
+  "kit": "city-kit-commercial_2.1",
+  "model": "building-n"
+ },
+ {
+  "id": "sp-room-large",
+  "kit": "modular-space-kit_1.0",
+  "model": "room-large"
+ },
+ {
+  "id": "sp-room-small",
+  "kit": "modular-space-kit_1.0",
+  "model": "room-small"
+ },
+ {
+  "id": "sp-room-wide",
+  "kit": "modular-space-kit_1.0",
+  "model": "room-wide"
+ },
+ {
+  "id": "sp-gate-door",
+  "kit": "modular-space-kit_1.0",
+  "model": "gate-door"
+ },
+ {
+  "id": "sp-gate-lasers",
+  "kit": "modular-space-kit_1.0",
+  "model": "gate-lasers"
+ },
+ {
+  "id": "sp-corridor-wide",
+  "kit": "modular-space-kit_1.0",
+  "model": "corridor-wide"
+ },
+ {
+  "id": "sp-stairs-wide",
+  "kit": "modular-space-kit_1.0",
+  "model": "stairs-wide"
+ },
+ {
+  "id": "fac-machine",
+  "kit": "factory-kit_3.0",
+  "model": "machine"
+ },
+ {
+  "id": "fac-machine-fortified",
+  "kit": "factory-kit_3.0",
+  "model": "machine-fortified"
+ },
+ {
+  "id": "fac-robot-arm-a",
+  "kit": "factory-kit_3.0",
+  "model": "robot-arm-a"
+ },
+ {
+  "id": "fac-robot-arm-b",
+  "kit": "factory-kit_3.0",
+  "model": "robot-arm-b"
+ },
+ {
+  "id": "fac-crane",
+  "kit": "factory-kit_3.0",
+  "model": "crane"
+ },
+ {
+  "id": "fac-scanner-high",
+  "kit": "factory-kit_3.0",
+  "model": "scanner-high"
+ },
+ {
+  "id": "fac-hopper-high-round",
+  "kit": "factory-kit_3.0",
+  "model": "hopper-high-round"
+ },
+ {
+  "id": "fac-screen-wide",
+  "kit": "factory-kit_3.0",
+  "model": "screen-wide"
+ },
+ {
+  "id": "fac-structure-tall",
+  "kit": "factory-kit_3.0",
+  "model": "structure-tall"
+ },
+ {
+  "id": "fac-pipe-glass-large",
+  "kit": "factory-kit_3.0",
+  "model": "pipe-glass-large"
+ },
+ {
+  "id": "fac-box-large",
+  "kit": "factory-kit_3.0",
+  "model": "box-large"
+ },
+ {
+  "id": "fac-warning-traffic",
+  "kit": "factory-kit_3.0",
+  "model": "warning-traffic"
+ }
+]

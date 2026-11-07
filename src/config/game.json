@@ -1,0 +1,18 @@
+{
+  "_doc": "Game rules & system settings. Keys marked in _placeholders are NOT confirmed by the user and must be replaced later.",
+  "_placeholders": ["time.startDate", "save.slotCount", "save.autosave", "progress.initialUnlockedDifficulties"],
+  "version": "0.1.0",
+  "display": { "baseWidth": 1920, "baseHeight": 1080, "maxWidth": 2400 },
+  "time": {
+    "gameMinutesPerRealSecond": 10,
+    "speeds": [1, 2, 4],
+    "startDate": { "year": 1, "month": 1, "day": 1, "hour": 8, "minute": 0 }
+  },
+  "save": {
+    "slotCount": 3,
+    "autosave": { "intervalGameMinutes": 1440, "onFacilityComplete": true, "onResearchComplete": true, "onExpeditionStart": true, "onExpeditionEnd": true, "onStoryEvent": true }
+  },
+  "expedition": { "partySize": 3 },
+  "battle": { "lanes": 2, "slotsPerLane": 4, "saveDuringBattle": false },
+  "progress": { "initialUnlockedDifficulties": [1] }
+}

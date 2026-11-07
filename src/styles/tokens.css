@@ -1,0 +1,29 @@
+:root {
+  --bg: #111820;
+  --bg-2: #0c1218;
+  --panel: #202c36;
+  --panel-2: #18222b;
+  --panel-3: #263441;
+  --line: #34444f;
+  --line-soft: #26333d;
+  --accent: #56c5c0;
+  --accent-dim: #2f6e6b;
+  --accent-bg: rgba(86, 197, 192, 0.1);
+  --warn: #d18a4b;
+  --warn-bg: rgba(209, 138, 75, 0.12);
+  --danger: #b0605a;
+  --danger-bg: rgba(176, 96, 90, 0.14);
+  --text: #d9e2e8;
+  --text-2: #a3b1bb;
+  --text-3: #6d7d88;
+  --font: 'Pretendard Variable', Pretendard, 'Noto Sans KR', system-ui, sans-serif;
+  --mono: 'Pretendard Variable', ui-monospace, monospace;
+  /* sizes are in logical stage pixels (1080p stage); chosen to stay legible when scaled down on phones */
+  --fs-xs: 20px;
+  --fs-s: 23px;
+  --fs-m: 26px;
+  --fs-l: 32px;
+  --fs-xl: 42px;
+  --gap: 16px;
+  --radius: 2px;
+}
