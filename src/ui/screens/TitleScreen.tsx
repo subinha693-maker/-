@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useGame } from '../../core/gameStore';
+import { useMemo, useState } from 'react';
 import { useRouter } from '../../core/router';
+import { continueLatest, newGameSession, saves } from '../../core/session';
 import { CONFIG } from '../../core/config';
 import { Button } from '../components/Common';
 import { asset } from '../components/Icon';
@@ -14,10 +14,11 @@ const SKYLINE: [string, number, number][] = [
 ];
 
 export function TitleScreen() {
-  const newGame = useGame((g) => g.newGame);
-  const reset = useRouter((r) => r.reset);
   const go = useRouter((r) => r.go);
   const [settings, setSettings] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const latest = useMemo(() => saves.latest(), []);
+  const onContinue = () => { const r = continueLatest(); if (r && !r.ok) setError(r.message); };
 
   return (
     <div className="screen title-screen" data-testid="screen-title">
@@ -33,14 +34,18 @@ export function TitleScreen() {
         <h1 className="title-main">통합인류행정부</h1>
         <div className="title-sub">UNIFIED HUMAN ADMINISTRATION</div>
         <nav className="title-menu">
-          <Button variant="primary" block onClick={() => { newGame(); reset('main'); }} data-testid="btn-new-game">새 게임</Button>
-          <Button block pendingPhase={2}>이어하기</Button>
+          <Button variant="primary" block onClick={newGameSession} data-testid="btn-new-game">새 게임</Button>
+          <Button block disabled={!latest} onClick={onContinue} data-testid="btn-continue">
+            이어하기
+            {latest?.meta && <span className="btn-sub">{latest.slot === 'auto' ? '자동' : `슬롯 ${latest.slot}`} · {latest.meta.summary.gameDate} {latest.meta.summary.gameTime}</span>}
+          </Button>
           <Button block onClick={() => go('saveLoad', { mode: 'load' })} data-testid="btn-load">불러오기</Button>
           <Button block onClick={() => setSettings(true)} data-testid="btn-settings">설정</Button>
         </nav>
+        {error && <div className="notice danger-notice" style={{ marginTop: 16, width: 480 }} data-testid="title-error">{error}</div>}
       </div>
       <footer className="title-foot">
-        <span className="dim">v{CONFIG.version} · PHASE 1 프로토타입</span>
+        <span className="dim">v{CONFIG.version} · PHASE 2 프로토타입</span>
         <button className="link-btn" onClick={() => go('screenIndex')} data-testid="btn-screen-index">화면 목록 (개발용)</button>
       </footer>
       {settings && <SettingsModal onClose={() => setSettings(false)} />}

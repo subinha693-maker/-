@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from '../../core/router';
+import { useGame } from '../../core/gameStore';
+import { enterBattle } from '../../core/session';
 import { DATA, charName, getCharacterDef, getNodeType } from '../../data';
 import { Button, Notice, Panel, PlaceholderTag, ScreenHeader } from '../components/Common';
 import { Icon } from '../components/Icon';
@@ -9,7 +11,10 @@ const COMBAT = ['combat', 'elite', 'boss'];
 
 export function ExpeditionMapScreen() {
   const { params, go, replace } = useRouter();
-  const party = (params.party as string[] | undefined) ?? [];
+  const ex = useGame((g) => g.state?.expedition);
+  // Real expeditions live in the game state; the dev screen index passes a preview party instead.
+  const party = ex?.members ?? (params.party as string[] | undefined) ?? [];
+  const difficulty = ex?.difficulty ?? (params.difficulty as number | undefined) ?? 1;
   const [sel, setSel] = useState<string | null>(null);
   const map = DATA.sampleMap;
   const maxRows = Math.max(...map.columns.map((c) => c.length));
@@ -25,8 +30,8 @@ export function ExpeditionMapScreen() {
 
   return (
     <div className="screen" data-testid="screen-expeditionMap">
-      <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${params.difficulty ?? 1}`}
-        tail={<><PlaceholderTag label="샘플 지도" /><Button small variant="danger" onClick={() => replace('result', { outcome: 'return' })} data-testid="btn-return">원정 종료 · 귀환</Button></>} />
+      <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${difficulty}`}
+        tail={<><PlaceholderTag label="샘플 지도" /><Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button><Button small variant="danger" onClick={() => replace('result', { outcome: 'return' })} data-testid="btn-return">원정 종료 · 귀환</Button></>} />
       <div className="screen-main">
         <section className="panel map-area grow" style={{ flex: 2.4 }}>
           <svg className="map-lines" width="100%" height="100%">
@@ -54,7 +59,7 @@ export function ExpeditionMapScreen() {
               <div className="row"><Icon name={nt.icon} size={48} color="var(--accent)" /><h2 className="h2 grow">{nt.name}</h2></div>
               <span className="dim">{reachable.has(sel) ? '이동 가능한 노드입니다.' : '현재 위치에서 연결되지 않았습니다.'}</span>
               {COMBAT.includes(node!.type)
-                ? <Button variant="primary" disabled={!reachable.has(sel)} onClick={() => go('battle', { party, node: sel })} data-testid="btn-enter">진입</Button>
+                ? <Button variant="primary" disabled={!reachable.has(sel)} onClick={() => enterBattle(sel)} data-testid="btn-enter">진입</Button>
                 : <Button pendingPhase={6}>진입</Button>}
             </>) : <div className="empty">노드를 선택하세요.</div>}
           </Panel>

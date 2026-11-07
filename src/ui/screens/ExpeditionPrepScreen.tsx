@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGame } from '../../core/gameStore';
-import { useRouter } from '../../core/router';
+import { launchExpedition } from '../../core/session';
 import { CONFIG } from '../../core/config';
 import { DATA, charName, getCharacterDef } from '../../data';
 import { Button, Notice, Panel, PlaceholderTag, ScreenHeader } from '../components/Common';
@@ -8,7 +8,6 @@ import { CharacterArt } from '../components/CharacterArt';
 
 export function ExpeditionPrepScreen() {
   const s = useGame((g) => g.state)!;
-  const go = useRouter((r) => r.go);
   const size = CONFIG.expedition.partySize;
   const [difficulty, setDifficulty] = useState(1);
   const [party, setParty] = useState<string[]>([]);
@@ -57,7 +56,7 @@ export function ExpeditionPrepScreen() {
           <div className="grow" />
           <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>잠긴 난이도는 이전 난이도를 완수하면 해금됩니다.</span>
           <Notice>PHASE 6 전까지 원정 지도는 고정된 샘플 지도로 표시됩니다.</Notice>
-          <Button variant="primary" disabled={party.length !== size} onClick={() => go('expeditionMap', { difficulty, party })} data-testid="btn-launch">작전 개시</Button>
+          <Button variant="primary" disabled={party.length !== size} onClick={() => launchExpedition(difficulty, party)} data-testid="btn-launch">작전 개시</Button>
         </Panel>
       </div>
     </div>

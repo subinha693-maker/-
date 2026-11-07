@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import { useGame } from '../core/gameStore';
 import { useRouter, type ScreenId } from '../core/router';
 import { Stage } from './components/Stage';
+import { ToastHost } from './components/Toast';
 import { TitleScreen } from './screens/TitleScreen';
 import { MainScreen } from './screens/MainScreen';
 import { FacilitiesScreen } from './screens/FacilitiesScreen';
@@ -30,5 +31,5 @@ export function App() {
   const screen = useRouter((r) => r.screen);
   const hasGame = useGame((g) => !!g.state);
   const Current = !hasGame && !NO_SESSION.includes(screen) ? TitleScreen : SCREENS[screen];
-  return <Stage><Current key={screen} /></Stage>;
+  return <Stage><Current key={screen} /><ToastHost /></Stage>;
 }

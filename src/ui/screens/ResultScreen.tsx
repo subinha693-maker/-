@@ -1,4 +1,6 @@
 import { useRouter } from '../../core/router';
+import { useGame } from '../../core/gameStore';
+import { finishExpedition } from '../../core/session';
 import { DATA } from '../../data';
 import { Button, Notice, Panel, PlaceholderTag } from '../components/Common';
 import { Icon } from '../components/Icon';
@@ -11,6 +13,7 @@ const OUTCOME: Record<string, { title: string; tone: string; desc: string }> = {
 
 export function ResultScreen() {
   const { params, reset } = useRouter();
+  const inExpedition = useGame((g) => !!g.state?.expedition);
   const o = OUTCOME[(params.outcome as string) ?? 'return'] ?? OUTCOME.return;
   return (
     <div className="screen result" data-testid="screen-result">
@@ -35,7 +38,7 @@ export function ResultScreen() {
           </dl>
           <Notice>원정 보상 정산과 정부 반영은 PHASE 8에서 연결됩니다.</Notice>
           <div className="grow" />
-          <Button variant="primary" onClick={() => reset('main')} data-testid="btn-to-base">기지로 복귀</Button>
+          <Button variant="primary" onClick={() => (inExpedition ? finishExpedition((params.outcome as string) ?? 'return') : reset('main'))} data-testid="btn-to-base">기지로 복귀</Button>
         </Panel>
       </div>
     </div>

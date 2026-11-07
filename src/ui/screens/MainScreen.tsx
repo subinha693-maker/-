@@ -22,6 +22,7 @@ const fmt = new Intl.NumberFormat('ko-KR');
 export function MainScreen() {
   const s = useGame((g) => g.state)!;
   const quit = useGame((g) => g.quitToTitle);
+  const lastSavedAt = useGame((g) => g.lastSavedAt);
   const { go, reset } = useRouter();
   const [confirmQuit, setConfirmQuit] = useState(false);
   const [settings, setSettings] = useState(false);
@@ -80,7 +81,7 @@ export function MainScreen() {
           <Panel title="알림 및 경고" className="grow" bodyClass="scroll alerts" tut="alerts">
             <div className="alert info"><b>행정 단말 연결</b><span>새 행정 세션이 시작되었습니다.</span></div>
             <div className="alert warn"><b>시간 흐름 미가동</b><span>자원 생산·소비는 PHASE 4에서 연결됩니다.</span></div>
-            <div className="alert"><b>저장 기능 준비 중</b><span>세이브/로드는 PHASE 2에서 연결됩니다.</span></div>
+            <div className="alert"><b>저장 상태</b><span>{lastSavedAt ? `마지막 저장 ${new Date(lastSavedAt).toLocaleString('ko-KR')}` : '아직 저장하지 않았습니다.'}</span></div>
           </Panel>
         </aside>
       </div>
@@ -89,7 +90,7 @@ export function MainScreen() {
         <ConfirmDialog
           title="타이틀로 이동"
           warn
-          message="현재 진행 상황은 아직 저장 기능이 없어 사라집니다. 타이틀로 이동할까요?"
+          message={lastSavedAt ? `마지막 저장(${new Date(lastSavedAt).toLocaleString('ko-KR')}) 이후의 진행 내용은 사라집니다. 타이틀로 이동할까요?` : '아직 저장하지 않았습니다. 지금 이동하면 진행 내용이 사라집니다. 타이틀로 이동할까요?'}
           confirmLabel="이동"
           onCancel={() => setConfirmQuit(false)}
           onConfirm={() => { quit(); reset('title'); }}

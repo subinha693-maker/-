@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { useRouter } from '../../core/router';
+import { useGame } from '../../core/gameStore';
+import { leaveBattle } from '../../core/session';
 import { CONFIG } from '../../core/config';
 import { DATA, charName, getCharacterDef } from '../../data';
 import { Bar, Button, PlaceholderTag } from '../components/Common';
@@ -9,7 +12,9 @@ const LANES = ['1열', '2열'];
 
 export function BattleScreen() {
   const { params, replace, back } = useRouter();
-  const party = ((params.party as string[] | undefined)?.length ? params.party as string[] : DATA.startingRoster.slice(0, 3));
+  const ex = useGame((g) => g.state?.expedition);
+  const party = ex?.members ?? ((params.party as string[] | undefined)?.length ? params.party as string[] : DATA.startingRoster.slice(0, 3));
+  useEffect(() => { useGame.getState().setInBattle(true); return leaveBattle; }, []);
   const { slotsPerLane } = CONFIG.battle;
   // Layout preview: members fill lane 1 then lane 2. Real placement & swapping come in PHASE 7.
   const slots = LANES.map((_, li) => Array.from({ length: slotsPerLane }, (_, si) => party[li * slotsPerLane + si] ?? null));
@@ -23,6 +28,7 @@ export function BattleScreen() {
         </div>
         <div className="wave"><span className="dim">WAVE</span><b className="num">1 / 3</b></div>
         <PlaceholderTag label="전투 화면 레이아웃 · 로직은 PHASE 7" />
+        <span className="tag" data-testid="battle-nosave">전투 중 저장 불가</span>
         <div className="grow" />
         <Button small pendingPhase={7}>일시정지</Button>
         <Button small pendingPhase={7}>x2</Button>
