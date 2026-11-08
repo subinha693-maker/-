@@ -353,5 +353,27 @@
     "heal": 0.5
    }
   }
+ },
+ "settlement": {
+  "_doc": "원정 정산 (placeholders): share of collected loot delivered to the government by outcome, and growth materials granted on completion.",
+  "ratio": {
+   "victory": 1.0,
+   "return": 0.7,
+   "defeat": 0.3
+  },
+  "items": {
+   "victory": {
+    "career_record": 2,
+    "service_medal": 1
+   },
+   "return": {
+    "career_record": 1
+   },
+   "defeat": {}
+  },
+  "bossItems": {
+   "special_biosample": 2,
+   "relic_remnant": 2
+  }
  }
 }

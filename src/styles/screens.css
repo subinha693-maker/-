@@ -414,3 +414,8 @@ button.res:hover, button.res.on { background: var(--accent-bg); }
 .region-detail > * { flex: none; }
 .rn-label { white-space: nowrap; }
 .strat-base { flex-direction: row; }
+button.purpose { text-align: left; color: var(--text); cursor: pointer; border: 1px solid transparent; border-left: 3px solid var(--accent-dim); }
+button.purpose.on { border-color: var(--accent); background: var(--accent-bg); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.sel-chip { min-height: 46px; padding: 0 12px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 18px; cursor: pointer; }
+.sel-chip.on { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }

@@ -49,7 +49,7 @@ export function ExpeditionMapScreen() {
 
   return (
     <div className="screen" data-testid="screen-expeditionMap">
-      <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${difficulty}`} onBack={() => replace('main')}
+      <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${difficulty}${ex ? ` · ${DATA.regions.find((r) => r.id === ex.regionId)?.name} · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name ?? ''}` : ''}`} onBack={() => replace('main')}
         tail={training ? <span className="tag accent">훈련 · 튜토리얼</span> : <>
           <PlaceholderTag label="노드 구성·수치 임시" />
           <Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button>
@@ -116,7 +116,7 @@ export function ExpeditionMapScreen() {
           <Panel title={`보유 유물 (${ex?.relics.length ?? 0})`} bodyClass="col" >
             {ex?.relics.length ? ex.relics.map((r) => <span key={r} className="relic-line" data-testid="relic-owned">{getRelic(r)?.name}<span className="dim" style={{ display: 'block', fontSize: 18 }}>{relicFx(r)}</span></span>) : <div className="empty" style={{ padding: 16 }}>획득한 유물 없음</div>}
           </Panel>
-          {ex && <Panel title="원정 획득물" bodyClass="col"><span data-testid="loot">{costText(ex.loot, RES) || '없음'}</span><span className="dim" style={{ fontSize: 18 }}>귀환 후 정산됩니다 (PHASE 8).</span></Panel>}
+          {ex && <Panel title="원정 획득물" bodyClass="col"><span data-testid="loot">{costText(ex.loot, RES) || '없음'}</span><span className="dim" style={{ fontSize: 18 }}>원정 종료 시 결과에 따라 정부 자원으로 정산됩니다.</span></Panel>}
         </aside>
       </div>
       {ex?.pending && !training && <NodeEvent offer={ex.pending} />}

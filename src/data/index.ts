@@ -43,7 +43,8 @@ export const DATA = {
   regionStates: regions.states as { id: number; name: string }[],
   regionTypes: regions.types as { id: string; name: string; feature: string; develop: string }[],
   regions: regions.regions as unknown as RegionDef[],
-  generalPurposes: regions.generalPurposes as { id: string; name: string; focus: string }[],
+  generalPurposes: regions.generalPurposes as unknown as { id: string; name: string; focus: string; weightMul: Record<string, number>; lootMul: Record<string, number> }[],
+  settlement: expedition.settlement as { ratio: Record<string, number>; items: Record<string, Record<string, number>>; bossItems: Record<string, number> },
   strategicOps: strategicOps.ops as unknown as StrategicOpDef[],
 };
 

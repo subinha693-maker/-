@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
 import { DATA, getOp, getRegion } from '../../data';
 import type { GameState, RegionDef } from '../../core/types';
@@ -76,6 +77,8 @@ function RegionDetail({ s, r }: { s: GameState; r: RegionDef }) {
   const p = s.regions[r.id];
   const type = DATA.regionTypes.find((t) => t.id === r.type)!;
   const generalWhy = canRunGeneral(s, r.id);
+  const go = useRouter((x) => x.go);
+  const [purpose, setPurpose] = useState(r.general.purposes[0]);
   const follow = followUpRegions(r.id);
   return (
     <aside className="col scroll region-detail" style={{ flex: 1, minWidth: 0 }} data-testid="region-detail">
@@ -103,13 +106,15 @@ function RegionDetail({ s, r }: { s: GameState; r: RegionDef }) {
         <header className="panel-head"><Icon name="expedition" size={22} color="var(--accent)" />일반 원정<span className="tag accent" style={{ marginLeft: 'auto' }}>반복 가능</span></header>
         <div className="panel-body col">
           <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>반복해도 지역 통제권이나 영토는 늘어나지 않습니다.</span>
-          <div className="purpose-list">{r.general.purposes.map((id) => { const g = DATA.generalPurposes.find((x) => x.id === id)!; return <div key={id} className="purpose"><b>{g.name}</b><span className="dim">{g.focus}</span></div>; })}</div>
+          <div className="purpose-list">{r.general.purposes.map((id) => { const g = DATA.generalPurposes.find((x) => x.id === id)!; return <button key={id} className={`purpose ${purpose === id ? 'on' : ''}`} onClick={() => setPurpose(id)} data-testid={`purpose-${id}`}><b>{g.name}</b><span className="dim">{g.focus}</span></button>; })}</div>
           <dl className="kv">
             <dt>예상 위험</dt><dd>침식 난이도 {r.difficulty} 수준</dd>
             <dt>이전 탐사 기록</dt><dd className="num" data-testid="general-record">출격 {p.generalRuns}회 · 완수 {p.generalClears}회</dd>
           </dl>
           {generalWhy.length ? <span className="neg" style={{ fontSize: 'var(--fs-xs)' }}>{generalWhy.join(' ')}</span> : null}
-          <Button pendingPhase={3}>일반 원정 출격</Button>
+          <Button variant="primary" disabled={generalWhy.length > 0 || !!s.expedition} onClick={() => go('expeditionPrep', { regionId: r.id, purpose })} data-testid="btn-general-sortie">
+            {s.expedition ? '진행 중인 원정이 있습니다' : '일반 원정 출격'}
+          </Button>
         </div>
       </section>
 

@@ -9,7 +9,7 @@ import { LocalStorageAdapter, type StorageAdapter } from '../save/storage';
 import { useProfile } from '../save/profile';
 import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
-import { endExpedition, enterNode, resolveOffer, startExpedition, winCombat, type OfferChoice } from '../systems/expedition';
+import { endExpedition, enterNode, resolveOffer, startExpedition, winCombat, type ExpeditionTarget, type OfferChoice } from '../systems/expedition';
 import { act } from './actions';
 import { offerTutorial, resumeTutorial } from '../tutorial/controller';
 import { clearLog } from './log';
@@ -89,8 +89,8 @@ export function continueLatest() {
 }
 
 // ---- Expedition lifecycle (state + autosave triggers) ----
-export function launchExpedition(difficulty: number, members: string[]) {
-  useGame.getState().mutate((s) => startExpedition(s, difficulty, members));
+export function launchExpedition(difficulty: number, members: string[], target?: ExpeditionTarget) {
+  useGame.getState().mutate((s) => startExpedition(s, difficulty, members, undefined, target));
   events.emit('expedition:start', { difficulty });
   useRouter.getState().reset('expeditionMap');
 }

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { tutorialSignal } from '../../tutorial/controller';
 import { useGame } from '../../core/gameStore';
 import { launchExpedition } from '../../core/session';
+import { useRouter } from '../../core/router';
+import { canRunGeneral } from '../../systems/regions';
 import { CONFIG } from '../../core/config';
 import { DATA, charName, getCharacterDef } from '../../data';
 import { Button, Notice, Panel, PlaceholderTag, ScreenHeader } from '../components/Common';
@@ -10,6 +12,11 @@ import { CharacterArt } from '../components/CharacterArt';
 export function ExpeditionPrepScreen() {
   const s = useGame((g) => g.state)!;
   const size = CONFIG.expedition.partySize;
+  const params = useRouter((r) => r.params);
+  const openRegions = DATA.regions.filter((r) => canRunGeneral(s, r.id).length === 0);
+  const [regionId, setRegionId] = useState<string>((params.regionId as string) ?? openRegions[0]?.id);
+  const [purpose, setPurpose] = useState<string>((params.purpose as string) ?? 'resource');
+  const region = DATA.regions.find((r) => r.id === regionId);
   const [difficulty, setDifficulty] = useState(1);
   const [party, setParty] = useState<string[]>([]);
   useEffect(() => { tutorialSignal('party-full', party.length === size ? party : null); }, [party, size]);
@@ -46,8 +53,14 @@ export function ExpeditionPrepScreen() {
           </div>
         </Panel>
         <Panel tut="prep-summary" title="03  작전 개요" style={{ flex: 0.9 }} bodyClass="col grow">
+          <div className="col" style={{ gap: 6 }} data-testid="prep-region">
+            <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>작전 지역 · 일반 원정</span>
+            <div className="chip-row">{openRegions.map((r) => <button key={r.id} className={`sel-chip ${regionId === r.id ? 'on' : ''}`} onClick={() => setRegionId(r.id)} data-testid={`prep-region-${r.id}`}>{r.name}</button>)}</div>
+            <div className="chip-row">{(region?.general.purposes ?? []).map((id) => <button key={id} className={`sel-chip ${purpose === id ? 'on' : ''}`} onClick={() => setPurpose(id)} data-testid={`prep-purpose-${id}`}>{DATA.generalPurposes.find((g) => g.id === id)?.name}</button>)}</div>
+          </div>
           <dl className="kv">
-            <dt>작전 구역</dt><dd>외부 오염권</dd>
+            <dt>작전 지역</dt><dd data-testid="prep-region-name">{region?.name ?? '없음'}</dd>
+            <dt>권장 난이도</dt><dd className="num">{region?.difficulty ?? '-'}</dd>
             <dt>침식 난이도</dt><dd>{DATA.difficulties.find((d) => d.level === difficulty)?.name}</dd>
             <dt>출전 인원</dt><dd className="num">{party.length} / {size}</dd>
           </dl>
@@ -58,7 +71,7 @@ export function ExpeditionPrepScreen() {
           <div className="grow" />
           <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>잠긴 난이도는 이전 난이도를 완수하면 해금됩니다.</span>
           <Notice>PHASE 6 전까지 원정 지도는 고정된 샘플 지도로 표시됩니다.</Notice>
-          <Button variant="primary" disabled={party.length !== size} onClick={() => launchExpedition(difficulty, party)} data-testid="btn-launch">작전 개시</Button>
+          <Button variant="primary" disabled={party.length !== size || !region} onClick={() => launchExpedition(difficulty, party, { regionId, purpose, kind: 'general' })} data-testid="btn-launch">작전 개시</Button>
         </Panel>
       </div>
     </div>

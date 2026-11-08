@@ -109,6 +109,10 @@ export type RewardChoice = { type: 'loot'; loot: ResourceMap } | { type: 'relic'
 export interface ExpeditionBuff { id: string; source: string; text: string }
 export interface ExpeditionState {
   seed: number;
+  kind: 'general' | 'strategic';   // general = repeatable; strategic = PHASE 4 operations
+  regionId: string;
+  purpose: string;                 // general expedition purpose (자원 회수 / 생체시료 / 특수 조사 / 잔존 위협)
+  opId: string | null;
   difficulty: number;
   members: string[];               // the 3 who departed
   reinforcements: string[];        // 후발대 joined during the expedition
@@ -126,7 +130,7 @@ export interface ExpeditionState {
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 4;
+  schema: 5;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;

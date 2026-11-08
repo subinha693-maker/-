@@ -4,6 +4,7 @@
 import { DATA, getEvent, getRelic, getCharacterDef } from '../data';
 import type { ExpeditionMap, ExpeditionState, GameState, MapNode, NodeOffer, ResourceMap, RewardChoice } from '../core/types';
 import type { ActionResult } from './government';
+import { recordGeneralExpedition } from './regions';
 
 const GEN = DATA.generation;
 const fail = (message: string): ActionResult => ({ ok: false, message });
@@ -25,7 +26,8 @@ function sample<T>(r: () => number, arr: T[], n: number): T[] {
 }
 
 // ---------- map ----------
-export function generateMap(seed: number, difficulty: number): ExpeditionMap {
+export function generateMap(seed: number, difficulty: number, purpose?: string): ExpeditionMap {
+  const wm = DATA.generalPurposes.find((g) => g.id === purpose)?.weightMul ?? {};
   const r = rng(seed);
   const nCols = (GEN.columnsByDifficulty as Record<string, number>)[String(difficulty)] ?? 6;
   const columns: MapNode[][] = [];
@@ -33,7 +35,7 @@ export function generateMap(seed: number, difficulty: number): ExpeditionMap {
     if (c === 0) { columns.push([{ id: 'c0r0', type: GEN.firstType }]); continue; }
     if (c === nCols - 1) { columns.push([{ id: `c${c}r0`, type: GEN.lastType }]); continue; }
     const rows = GEN.rows.min + Math.floor(r() * (GEN.rows.max - GEN.rows.min + 1));
-    const pool = GEN.weights.filter((w) => !('minCol' in w) || c >= (w.minCol as number));
+    const pool = GEN.weights.filter((w) => !('minCol' in w) || c >= (w.minCol as number)).map((w) => ({ ...w, w: w.w * (wm[w.type] ?? 1) }));
     const total = pool.reduce((s, w) => s + w.w, 0);
     const col: MapNode[] = [];
     for (let i = 0; i < rows; i++) {
@@ -69,23 +71,45 @@ export const isCleared = (ex: ExpeditionState) => !!ex.currentNode && !ex.pendin
 export const party = (ex: ExpeditionState) => [...ex.members, ...ex.reinforcements];
 
 // ---------- lifecycle ----------
-export function startExpedition(s: GameState, difficulty: number, members: string[], seed = Math.floor(Math.random() * 2 ** 31)): GameState {
+export interface ExpeditionTarget { regionId: string; purpose: string; kind?: 'general' | 'strategic'; opId?: string | null }
+const DEFAULT_TARGET: ExpeditionTarget = { regionId: 'rg_industrial', purpose: 'resource' };
+
+export function startExpedition(s: GameState, difficulty: number, members: string[], seed = Math.floor(Math.random() * 2 ** 31), target: ExpeditionTarget = DEFAULT_TARGET): GameState {
   return {
     ...s,
     expedition: {
       seed, difficulty, members: [...members], reinforcements: [],
+      kind: target.kind ?? 'general', regionId: target.regionId, purpose: target.purpose, opId: target.opId ?? null,
       hp: Object.fromEntries(members.map((m) => [m, 1])),
-      map: generateMap(seed, difficulty), currentNode: null, path: [], pending: null,
+      map: generateMap(seed, difficulty, target.purpose), currentNode: null, path: [], pending: null,
       relics: [], buffs: [], loot: {}, outpost: { hp: GEN.outpostHp, maxHp: GEN.outpostHp }, log: [],
     },
   };
 }
 
-/** Ends the expedition. Victory records the cleared difficulty and unlocks the next one. Relics vanish. */
+export interface Settlement { ratio: number; resources: ResourceMap; items: Record<string, number>; bossCleared: boolean }
+/** What the base receives when an expedition ends with `outcome` (shown on the result screen). */
+export function settlementFor(ex: ExpeditionState, outcome: string): Settlement {
+  const st = DATA.settlement;
+  const ratio = st.ratio[outcome] ?? 0;
+  const resources = Object.fromEntries(Object.entries(ex.loot).map(([k, v]) => [k, Math.floor((v ?? 0) * ratio)]).filter(([, v]) => (v as number) > 0));
+  const boss = ex.map.columns[ex.map.columns.length - 1][0].id;
+  const bossCleared = outcome === 'victory' && ex.path.includes(boss);
+  const items: Record<string, number> = { ...(st.items[outcome] ?? {}) };
+  if (bossCleared) for (const [k, v] of Object.entries(st.bossItems)) items[k] = (items[k] ?? 0) + v;
+  return { ratio, resources, items, bossCleared };
+}
+
+/**
+ * Ends the expedition and settles it in one step (so it can only happen once): loot -> government
+ * resources by outcome, growth materials, difficulty clear/unlock on victory, and the region's
+ * general-expedition record (which can never grant control). Relics vanish.
+ */
 export function endExpedition(s: GameState, outcome = 'return'): GameState {
   const ex = s.expedition;
+  if (!ex) return s;
   let progress = s.progress;
-  if (ex && outcome === 'victory') {
+  if (outcome === 'victory') {
     const next = ex.difficulty + 1;
     const exists = DATA.difficulties.some((d) => d.level === next);
     progress = {
@@ -94,9 +118,21 @@ export function endExpedition(s: GameState, outcome = 'return'): GameState {
       unlockedDifficulties: exists && !progress.unlockedDifficulties.includes(next) ? [...progress.unlockedDifficulties, next] : progress.unlockedDifficulties,
     };
   }
-  return { ...s, expedition: null, progress };
+  const st = settlementFor(ex, outcome);
+  const resources = { ...s.resources };
+  for (const [k, v] of Object.entries(st.resources)) resources[k as keyof typeof resources] += v ?? 0;
+  const inventory = { ...s.inventory };
+  for (const [k, v] of Object.entries(st.items)) inventory[k] = (inventory[k] ?? 0) + v;
+  let next: GameState = { ...s, expedition: null, progress, resources, inventory };
+  if (ex.kind === 'general') next = recordGeneralExpedition(next, ex.regionId, outcome);
+  return next;
 }
 
+/** Loot scaled by the general expedition's purpose (placeholder multipliers in regions.json). */
+export function purposeLoot(purpose: string, loot: ResourceMap): ResourceMap {
+  const m = DATA.generalPurposes.find((g) => g.id === purpose)?.lootMul ?? {};
+  return Object.fromEntries(Object.entries(loot).map(([k, v]) => [k, Math.round((v ?? 0) * (m[k] ?? 1))]));
+}
 const withEx = (s: GameState, fn: (ex: ExpeditionState) => ExpeditionState): GameState => ({ ...s, expedition: fn(s.expedition!) });
 const addLoot = (a: ResourceMap, b: ResourceMap): ResourceMap => {
   const out = { ...a };
@@ -111,8 +147,8 @@ function rollOffer(ex: ExpeditionState, node: MapNode): NodeOffer {
   switch (node.type) {
     case 'relic': return { kind: 'relic', node: node.id, choices: sample(r, DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id), GEN.relicChoices) };
     case 'reinforce': return { kind: 'reinforce', node: node.id, candidates: [] }; // filled by caller (needs roster)
-    case 'resource': return { kind: 'resource', node: node.id, loot: GEN.loot.resource };
-    case 'intel': return { kind: 'intel', node: node.id, loot: GEN.loot.intel };
+    case 'resource': return { kind: 'resource', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.resource) };
+    case 'intel': return { kind: 'intel', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.intel) };
     case 'event': return { kind: 'event', node: node.id, eventId: pick(r, DATA.events).id };
     case 'rest': return { kind: 'rest', node: node.id };
     case 'shop': return { kind: 'shop', node: node.id, stock: sample(r, DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id), GEN.shopStock).map((relic) => ({ relic, price: GEN.shopPrice })) };
@@ -142,7 +178,7 @@ function rollBattleReward(ex: ExpeditionState, node: MapNode): NodeOffer {
   const choices: RewardChoice[] = [];
   const free = DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id);
   if (free.length && r() < t.relicChance) choices.push({ type: 'relic', relic: pick(r, free) });
-  for (const l of sample(r, t.loot, t.count)) if (choices.length < t.count - 1) choices.push({ type: 'loot', loot: l });
+  for (const l of sample(r, t.loot, t.count)) if (choices.length < t.count - 1) choices.push({ type: 'loot', loot: purposeLoot(ex.purpose, l) });
   choices.push({ type: 'heal', amount: t.heal });
   return { kind: 'battleReward', node: node.id, choices };
 }
