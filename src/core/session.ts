@@ -110,9 +110,10 @@ export function leaveBattle() { useGame.getState().setInBattle(false); }
 
 export const enterExpeditionNode = (id: string) => act((s) => enterNode(s, id));
 export const resolveNodeEvent = (c: OfferChoice) => act((s) => resolveOffer(s, c));
-/** Temporary until PHASE 7: records a combat node as won and returns to the map. */
-export function winBattle(node: string) {
+/** Battle victory: write HP/outpost back to the expedition and mark the combat node as won. */
+export function winBattle(node: string, result?: { hp: Record<string, number>; outpostHp: number }) {
   leaveBattle();
+  if (result) useGame.getState().mutate((s) => (s.expedition ? { ...s, expedition: { ...s.expedition, hp: { ...s.expedition.hp, ...result.hp }, outpost: { ...s.expedition.outpost, hp: Math.max(1, Math.min(s.expedition.outpost.maxHp, result.outpostHp)) } } } : s));
   if (act((s) => winCombat(s, node))) useRouter.getState().reset('expeditionMap');
 }
 /** Battle defeat = expedition failure (master design 8.5). */

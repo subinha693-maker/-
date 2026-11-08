@@ -1,0 +1,44 @@
+{
+  "_doc": "Real-time defense battle. Confirmed rules: 2 lanes x 4 slots (max 8 deployed), auto attacks, player-cast skills when the gauge is full, swap (select then click a deployed agent), queue HP regen, outpost HP 0 = defeat = expedition failure. ALL numbers below are placeholders.",
+  "_placeholder_numbers": true,
+  "laneLength": 100,
+  "slotX": [38, 30, 22, 14],
+  "spawnX": 104,
+  "outpostX": 4,
+  "contactGap": 6,
+  "introSeconds": 1.6,
+  "advanceSeconds": 1.6,
+  "queueRegenPerSec": 0.04,
+  "tick": 0.05,
+  "ally": {
+    "base": { "hp": 1000, "atk": 100, "def": 30, "atkInterval": 1.1, "eva": 0.05, "acc": 0.95, "crit": 0.05, "skillCharge": 16, "buthosDmg": 0 },
+    "melee": { "range": 30, "defMul": 1.3, "hpMul": 1.15 },
+    "ranged": { "range": 78, "defMul": 0.8, "hpMul": 0.9 },
+    "gradeMul": { "S+": 1.6, "S": 1.4, "A": 1.2, "B": 1.0 },
+    "perLevel": 0.03,
+    "phaseMul": { "1": 1.0, "2": 1.12, "3": 1.3 },
+    "skillLevelPower": 0.1,
+    "supplyBuff": { "atk": 0.2, "def": 0.2 }
+  },
+  "tendencyEffects": {
+    "화력": ["atk"], "파괴력": ["atk"], "공격력": ["atk"], "체력": ["hp"], "공격속도": ["atkSpeed"],
+    "기동력": ["atkSpeed", "eva"], "회피율": ["eva"], "단검 회피": ["eva"], "대오염특효": ["buthosDmg"],
+    "통솔": ["skillCharge"], "지능": ["skillCharge"], "정찰력": ["acc", "crit"], "투척적중": ["acc", "crit"]
+  },
+  "weaponClass": { "shion_shirayuko": "melee", "aion": "melee", "ring": "melee", "james_harold": "ranged", "jerag": "ranged", "miley_sneaker": "ranged" },
+  "skills": {
+    "sk_miley":  { "target": "lane",   "dmg": 1.2, "slow": 0.3, "accDown": 0.25, "duration": 6 },
+    "sk_aion":   { "target": "nearest","dmg": 2.6, "selfEva": 0.6, "duration": 4 },
+    "sk_shion":  { "target": "melee",  "dmg": 2.0, "bleed": 0.35, "duration": 5, "rangeMul": 1.5 },
+    "sk_ring":   { "target": "lane",   "dmg": 0.8, "accDown": 0.5, "duration": 5 },
+    "sk_james":  { "target": "all",    "dmg": 0.8, "slow": 0.4, "accDown": 0.3, "duration": 5 },
+    "sk_jerag":  { "target": "random", "hits": 6, "dmg": 0.9, "stun": 2, "atkDown": 0.2, "duration": 6 }
+  },
+  "waves": {
+    "combat": { "waves": 2, "count": [3, 4], "pool": ["normal"] },
+    "elite":  { "waves": 3, "count": [3, 4, 3], "pool": ["normal"], "last": "elite" },
+    "boss":   { "waves": 3, "count": [4, 4, 2], "pool": ["normal"], "last": "boss" },
+    "spawnGap": 1.6,
+    "perDifficulty": { "hp": 0.25, "atk": 0.15, "count": 0.5 }
+  }
+}

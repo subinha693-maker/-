@@ -11,7 +11,10 @@ import tutorial from './tutorial.json';
 import items from './items.json';
 import relics from './relics.json';
 import events from './events.json';
-import type { RelicDef, EventDef, ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
+import enemies from './enemies.json';
+import unitSprites from './unitSprites.json';
+import enemySprites from './enemySprites.json';
+import type { EnemyDef, SpriteMeta, RelicDef, EventDef, ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
 
 export const DATA = {
   resources: resources as ResourceDef[],
@@ -32,6 +35,9 @@ export const DATA = {
   relics: relics.relics as RelicDef[],
   events: events.events as EventDef[],
   generation: expedition.generation,
+  enemies: enemies.enemies as EnemyDef[],
+  unitSprites: unitSprites as Record<string, SpriteMeta>,
+  enemySprites: enemySprites as Record<string, SpriteMeta>,
 };
 
 const byId = <T extends { id: string }>(arr: T[]) => new Map(arr.map((x) => [x.id, x]));
@@ -48,6 +54,7 @@ const itemIndex = byId(DATA.items);
 export const getItem = (id: string) => itemIndex.get(id);
 const relicIndex = byId(DATA.relics);
 export const getRelic = (id: string) => relicIndex.get(id);
+export const getEnemy = (id: string) => DATA.enemies.find((e) => e.id === id);
 export const getEvent = (id: string) => DATA.events.find((e) => e.id === id);
 export const getNpc = (id: string) => DATA.npcs.find((n) => n.id === id);
 

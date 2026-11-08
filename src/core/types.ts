@@ -39,6 +39,11 @@ export interface CharacterDef {
 export interface RelicDef { id: string; name: string; effects: { stat: string; op: 'mul' | 'add'; value: number }[]; tags: string[] }
 export type EventOutcome = { type: 'loot'; loot: ResourceMap } | { type: 'hp'; value: number } | { type: 'outpost'; value: number };
 export interface EventDef { id: string; title: string; text: string; choices: { label: string; outcomes: EventOutcome[] }[] }
+export interface EnemyDef {
+  id: string; name: string; role: 'normal' | 'elite' | 'boss'; sprite: string; size: number;
+  hp: number; atk: number; def: number; atkInterval: number; speed: number; range: number; acc: number; eva: number;
+}
+export interface SpriteMeta { frameW: number; frameH: number; cols: number; anchorX?: number; anims: Record<string, { row: number; frames: number }> }
 export interface ItemDef { id: string; name: string; icon: string; source: string; use: string; perCharacter?: boolean }
 export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }

@@ -3,7 +3,7 @@
 // return, and see the next difficulty unlocked. Also checks battle retreat = expedition failure.
 const { chromium, devices } = require('playwright');
 const OUT = process.argv[2] || 'shots';
-const URL = process.argv[3] || 'http://localhost:4173/';
+const URL = (process.argv[3] || 'http://localhost:4173/') + '?e2e';
 require('fs').mkdirSync(OUT, { recursive: true });
 
 async function run(name, ctxOpts) {
@@ -26,7 +26,7 @@ async function run(name, ctxOpts) {
     const node = reach.nth(i % n);
     const type = await node.getAttribute('data-type'); seen.add(type);
     await node.click(); await tap('btn-enter');
-    if (['combat', 'elite', 'boss'].includes(type)) { await see('screen-battle'); await tap('btn-temp-win'); await see('screen-expeditionMap'); return type; }
+    if (['combat', 'elite', 'boss'].includes(type)) { await see('screen-battle'); await p.evaluate(() => window.__uhaBattle.win()); await tap('btn-battle-continue'); await see('screen-expeditionMap'); return type; }
     await p.waitForTimeout(150);
     for (let k = 0; k < 3; k++) {
       if (await visible('[data-testid^="ev-relic-"]')) await p.locator('[data-testid^="ev-relic-"]').first().click();

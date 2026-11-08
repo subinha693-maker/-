@@ -32,7 +32,7 @@ async function run(name, ctxOpts) {
     await tap('btn-launch'); await expect('screen-expeditionMap');
   }); await shot('05-map');
   await step('enter combat node -> battle', async () => { await tap('node-c0r0'); await tap('btn-enter'); await expect('screen-battle'); }); await shot('06-battle');
-  await step('battle -> back to map -> return -> result', async () => { await tap('btn-battle-back'); await expect('screen-expeditionMap'); await tap('btn-return'); await tap('confirm'); await expect('screen-result'); }); await shot('07-result');
+  await step('battle -> retreat (confirm) -> result', async () => { await tap('btn-retreat'); await tap('confirm'); await expect('screen-result'); }); await shot('07-result');
   await step('result -> main', async () => { await tap('btn-to-base'); await expect('screen-main'); });
   await step('main -> save screen', async () => { await tap('nav-save'); await expect('screen-saveLoad'); await shot('08-save'); await tap('back'); await expect('screen-main'); });
   await step('quit to title with confirm', async () => { await tap('nav-title'); await tap('confirm'); await expect('screen-title'); });

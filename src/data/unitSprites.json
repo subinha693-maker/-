@@ -1,0 +1,146 @@
+{
+ "shion_shirayuko": {
+  "frameW": 213,
+  "frameH": 188,
+  "anchorX": 102,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 6
+   },
+   "attack": {
+    "row": 1,
+    "frames": 7
+   },
+   "move": {
+    "row": 2,
+    "frames": 5
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 7
+ },
+ "james_harold": {
+  "frameW": 149,
+  "frameH": 151,
+  "anchorX": 67,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 6
+   },
+   "attack": {
+    "row": 1,
+    "frames": 7
+   },
+   "move": {
+    "row": 2,
+    "frames": 5
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 7
+ },
+ "aion": {
+  "frameW": 164,
+  "frameH": 189,
+  "anchorX": 76,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 5
+   },
+   "attack": {
+    "row": 1,
+    "frames": 8
+   },
+   "move": {
+    "row": 2,
+    "frames": 6
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 8
+ },
+ "ring": {
+  "frameW": 174,
+  "frameH": 194,
+  "anchorX": 71,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 6
+   },
+   "attack": {
+    "row": 1,
+    "frames": 8
+   },
+   "move": {
+    "row": 2,
+    "frames": 6
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 8
+ },
+ "jerag": {
+  "frameW": 187,
+  "frameH": 164,
+  "anchorX": 90,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 6
+   },
+   "attack": {
+    "row": 1,
+    "frames": 7
+   },
+   "move": {
+    "row": 2,
+    "frames": 5
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 7
+ },
+ "miley_sneaker": {
+  "frameW": 167,
+  "frameH": 193,
+  "anchorX": 94,
+  "anims": {
+   "idle": {
+    "row": 0,
+    "frames": 6
+   },
+   "attack": {
+    "row": 1,
+    "frames": 8
+   },
+   "move": {
+    "row": 2,
+    "frames": 6
+   },
+   "extra": {
+    "row": 3,
+    "frames": 5
+   }
+  },
+  "cols": 8
+ }
+}

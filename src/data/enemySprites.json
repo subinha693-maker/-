@@ -1,0 +1,218 @@
+{
+ "bloodferal": {
+  "frameW": 256,
+  "frameH": 256,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "bigfish": {
+  "frameW": 256,
+  "frameH": 256,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "doppelslime": {
+  "frameW": 192,
+  "frameH": 192,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "godnovus": {
+  "frameW": 192,
+  "frameH": 192,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "khronos": {
+  "frameW": 256,
+  "frameH": 256,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "tuskgod": {
+  "frameW": 256,
+  "frameH": 256,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "sungoddess": {
+  "frameW": 192,
+  "frameH": 192,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ },
+ "peacock": {
+  "frameW": 256,
+  "frameH": 256,
+  "cols": 3,
+  "anims": {
+   "walk": {
+    "row": 0,
+    "frames": 3
+   },
+   "wait": {
+    "row": 1,
+    "frames": 3
+   },
+   "attack": {
+    "row": 2,
+    "frames": 3
+   },
+   "damage": {
+    "row": 3,
+    "frames": 3
+   },
+   "dead": {
+    "row": 4,
+    "frames": 3
+   }
+  }
+ }
+}
