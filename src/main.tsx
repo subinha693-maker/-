@@ -7,10 +7,11 @@ import './styles/components.css';
 import './styles/screens.css';
 import { App } from './ui/App';
 import { validateData } from './data';
+import { validateRegionData } from './systems/regions';
 import { initSession } from './core/session';
 import { startClock } from './core/loop';
 
-const errors = validateData();
+const errors = [...validateData(), ...validateRegionData()];
 if (errors.length) console.error('[data] integrity errors:\n' + errors.join('\n'));
 
 const { repaired } = initSession();

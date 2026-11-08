@@ -9,7 +9,7 @@ const isInt = (v: unknown) => Number.isInteger(v);
 export function validateGameState(s: unknown): string[] {
   const e: string[] = [];
   if (!isObj(s)) return ['게임 데이터가 객체가 아닙니다.'];
-  if (s.schema !== 3) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
+  if (s.schema !== 4) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
 
   const clock = s.clock;
   if (!isObj(clock) || !isNum(clock.gameMinutes) || (clock.gameMinutes as number) < 0) e.push('게임 시간 정보가 손상되었습니다.');
@@ -66,6 +66,23 @@ export function validateGameState(s: unknown): string[] {
   else for (const [k, v] of Object.entries(inv)) {
     if (!DATA.items.some((i) => i.id === k)) e.push(`알 수 없는 재화: ${k}`);
     if (!isInt(v) || (v as number) < 0) e.push(`재화 '${k}' 수량이 올바르지 않습니다.`);
+  }
+
+  const regs = s.regions;
+  if (!isObj(regs)) e.push('지역 정보가 없습니다.');
+  else {
+    for (const r of DATA.regions) {
+      const p = regs[r.id];
+      if (!isObj(p) || typeof p.unlocked !== 'boolean' || ![1, 2, 3, 4, 5].includes(p.state as number) || !isInt(p.generalRuns) || !isInt(p.generalClears)) e.push(`지역 '${r.name}' 정보가 손상되었습니다.`);
+    }
+    for (const k of Object.keys(regs)) if (!DATA.regions.some((r) => r.id === k)) e.push(`알 수 없는 지역: ${k}`);
+  }
+  const ops = s.strategicOps;
+  if (!isObj(ops)) e.push('전략 작전 기록이 없습니다.');
+  else for (const [k, v] of Object.entries(ops)) {
+    if (!DATA.strategicOps.some((o) => o.id === k)) e.push(`알 수 없는 전략 작전: ${k}`);
+    if (!isObj(v) || typeof v.rewardGranted !== 'boolean' || typeof v.controlGranted !== 'boolean' || typeof v.objectiveAchieved !== 'boolean') e.push(`전략 작전 기록 손상: ${k}`);
+    else if (v.controlGranted && !v.rewardGranted) e.push(`전략 작전 기록 불일치: ${k}`);
   }
 
   const ex = s.expedition;

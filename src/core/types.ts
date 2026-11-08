@@ -44,6 +44,30 @@ export interface EnemyDef {
   hp: number; atk: number; def: number; atkInterval: number; speed: number; range: number; acc: number; eva: number;
 }
 export interface SpriteMeta { frameW: number; frameH: number; cols: number; anchorX?: number; anims: Record<string, { row: number; frames: number }> }
+// ---------- Regions (외부 오염권 지역 탈환) ----------
+export type RegionStateId = 1 | 2 | 3 | 4 | 5;
+export type Condition =
+  | { type: 'regionState'; region: string; atLeast: number }
+  | { type: 'opCompleted'; op: string }
+  | { type: 'research'; id: string }
+  | { type: 'generalClears'; count: number }
+  | { type: 'item'; id: string; count: number };
+export interface RegionDef {
+  id: string; name: string; type: string; description: string; pos: [number, number];
+  connections: string[]; initiallyUnlocked: boolean; unlock: Condition[];
+  progression: Partial<Record<'2' | '3' | '4', Condition[]>>;
+  general: { fromState: number; purposes: string[] }; difficulty: number; strategicOps: string[];
+}
+export interface StrategicOpDef {
+  id: string; name: string; regionId: string; kind: string; description: string;
+  requires: Condition[]; prereqOps: string[];
+  primary: { id: string; label: string; node: string }; optional: { id: string; label: string }[];
+  returnRequired: boolean; grantsState: number; grantsControl: boolean;
+  rewards: { resources: ResourceMap; items: Record<string, number> };
+}
+export interface RegionProgress { unlocked: boolean; state: RegionStateId; generalRuns: number; generalClears: number }
+/** Permanent operation record. Each flag is tracked separately so settlement can never pay twice. */
+export interface OpRecord { attempts: number; objectiveAchieved: boolean; returned: boolean; rewardGranted: boolean; controlGranted: boolean; completedAt: number | null }
 export interface ItemDef { id: string; name: string; icon: string; source: string; use: string; perCharacter?: boolean }
 export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }
@@ -102,7 +126,7 @@ export interface ExpeditionState {
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 3;
+  schema: 4;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;
@@ -112,6 +136,8 @@ export interface GameState {
   unlocks: string[];
   roster: CharacterInstance[];
   inventory: Record<string, number>;   // growth materials (except per-character 인사 공적)
+  regions: Record<string, RegionProgress>;
+  strategicOps: Record<string, OpRecord>;
   expedition: ExpeditionState | null;
   tutorial: TutorialState;
   progress: {

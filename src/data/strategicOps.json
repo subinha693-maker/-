@@ -1,0 +1,361 @@
+{
+ "_doc": "Strategic operations (전략 작전). Data fields follow the user's spec. Operation names, objectives per region, conditions and rewards are PLACEHOLDERS. Success = primary objective achieved AND returned; only then are rewards/control granted, exactly once.",
+ "_placeholder": true,
+ "ops": [
+  {
+   "id": "op_industrial_forward",
+   "name": "외곽 공업 지구 전진 거점 설치 (임시)",
+   "regionId": "rg_industrial",
+   "kind": "forward",
+   "description": "[임시] 지역 방어 거점을 설치해 후속 작전 기반을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_industrial",
+     "atLeast": 2
+    }
+   ],
+   "prereqOps": [],
+   "primary": {
+    "id": "obj_outpost",
+    "label": "지역 방어 거점 설치",
+    "node": "objective"
+   },
+   "optional": [],
+   "returnRequired": true,
+   "grantsState": 3,
+   "grantsControl": false,
+   "rewards": {
+    "resources": {
+     "material": 150,
+     "parts": 40
+    },
+    "items": {}
+   }
+  },
+  {
+   "id": "op_industrial_control",
+   "name": "외곽 공업 지구 통제 작전 (임시)",
+   "regionId": "rg_industrial",
+   "kind": "control",
+   "description": "[임시] 주요 부토스 군집 제거로 지역 통제권을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_industrial",
+     "atLeast": 3
+    }
+   ],
+   "prereqOps": [
+    "op_industrial_forward"
+   ],
+   "primary": {
+    "id": "obj_main",
+    "label": "주요 부토스 군집 제거",
+    "node": "objective"
+   },
+   "optional": [
+    {
+     "id": "obj_survivors",
+     "label": "생존자 흔적 조사 (임시)"
+    }
+   ],
+   "returnRequired": true,
+   "grantsState": 4,
+   "grantsControl": true,
+   "rewards": {
+    "resources": {
+     "budget": 800,
+     "data": 40
+    },
+    "items": {
+     "certificate": 1
+    }
+   }
+  },
+  {
+   "id": "op_residential_forward",
+   "name": "구 주거 지구 전진 거점 설치 (임시)",
+   "regionId": "rg_residential",
+   "kind": "forward",
+   "description": "[임시] 지역 방어 거점을 설치해 후속 작전 기반을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_residential",
+     "atLeast": 2
+    }
+   ],
+   "prereqOps": [],
+   "primary": {
+    "id": "obj_outpost",
+    "label": "지역 방어 거점 설치",
+    "node": "objective"
+   },
+   "optional": [],
+   "returnRequired": true,
+   "grantsState": 3,
+   "grantsControl": false,
+   "rewards": {
+    "resources": {
+     "material": 150,
+     "parts": 40
+    },
+    "items": {}
+   }
+  },
+  {
+   "id": "op_residential_control",
+   "name": "구 주거 지구 통제 작전 (임시)",
+   "regionId": "rg_residential",
+   "kind": "control",
+   "description": "[임시] 지역 핵심 통신 시설 확보로 지역 통제권을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_residential",
+     "atLeast": 3
+    }
+   ],
+   "prereqOps": [
+    "op_residential_forward"
+   ],
+   "primary": {
+    "id": "obj_main",
+    "label": "지역 핵심 통신 시설 확보",
+    "node": "objective"
+   },
+   "optional": [
+    {
+     "id": "obj_survivors",
+     "label": "생존자 흔적 조사 (임시)"
+    }
+   ],
+   "returnRequired": true,
+   "grantsState": 4,
+   "grantsControl": true,
+   "rewards": {
+    "resources": {
+     "budget": 800,
+     "data": 40
+    },
+    "items": {
+     "certificate": 1
+    }
+   }
+  },
+  {
+   "id": "op_energy_forward",
+   "name": "해안 에너지 지구 전진 거점 설치 (임시)",
+   "regionId": "rg_energy",
+   "kind": "forward",
+   "description": "[임시] 지역 방어 거점을 설치해 후속 작전 기반을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_energy",
+     "atLeast": 2
+    }
+   ],
+   "prereqOps": [],
+   "primary": {
+    "id": "obj_outpost",
+    "label": "지역 방어 거점 설치",
+    "node": "objective"
+   },
+   "optional": [],
+   "returnRequired": true,
+   "grantsState": 3,
+   "grantsControl": false,
+   "rewards": {
+    "resources": {
+     "material": 150,
+     "parts": 40
+    },
+    "items": {}
+   }
+  },
+  {
+   "id": "op_energy_control",
+   "name": "해안 에너지 지구 통제 작전 (임시)",
+   "regionId": "rg_energy",
+   "kind": "control",
+   "description": "[임시] 오염 확산 억제 장치 가동로 지역 통제권을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_energy",
+     "atLeast": 3
+    }
+   ],
+   "prereqOps": [
+    "op_energy_forward"
+   ],
+   "primary": {
+    "id": "obj_main",
+    "label": "오염 확산 억제 장치 가동",
+    "node": "objective"
+   },
+   "optional": [
+    {
+     "id": "obj_survivors",
+     "label": "생존자 흔적 조사 (임시)"
+    }
+   ],
+   "returnRequired": true,
+   "grantsState": 4,
+   "grantsControl": true,
+   "rewards": {
+    "resources": {
+     "budget": 800,
+     "data": 40
+    },
+    "items": {
+     "certificate": 1
+    }
+   }
+  },
+  {
+   "id": "op_research_forward",
+   "name": "지하 연구 지구 전진 거점 설치 (임시)",
+   "regionId": "rg_research",
+   "kind": "forward",
+   "description": "[임시] 지역 방어 거점을 설치해 후속 작전 기반을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_research",
+     "atLeast": 2
+    }
+   ],
+   "prereqOps": [],
+   "primary": {
+    "id": "obj_outpost",
+    "label": "지역 방어 거점 설치",
+    "node": "objective"
+   },
+   "optional": [],
+   "returnRequired": true,
+   "grantsState": 3,
+   "grantsControl": false,
+   "rewards": {
+    "resources": {
+     "material": 150,
+     "parts": 40
+    },
+    "items": {}
+   }
+  },
+  {
+   "id": "op_research_control",
+   "name": "지하 연구 지구 통제 작전 (임시)",
+   "regionId": "rg_research",
+   "kind": "control",
+   "description": "[임시] 지하 연구 시설 확보로 지역 통제권을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_research",
+     "atLeast": 3
+    }
+   ],
+   "prereqOps": [
+    "op_research_forward"
+   ],
+   "primary": {
+    "id": "obj_main",
+    "label": "지하 연구 시설 확보",
+    "node": "objective"
+   },
+   "optional": [
+    {
+     "id": "obj_survivors",
+     "label": "생존자 흔적 조사 (임시)"
+    }
+   ],
+   "returnRequired": true,
+   "grantsState": 4,
+   "grantsControl": true,
+   "rewards": {
+    "resources": {
+     "budget": 800,
+     "data": 40
+    },
+    "items": {
+     "certificate": 1
+    }
+   }
+  },
+  {
+   "id": "op_military_forward",
+   "name": "북부 군사 지구 전진 거점 설치 (임시)",
+   "regionId": "rg_military",
+   "kind": "forward",
+   "description": "[임시] 지역 방어 거점을 설치해 후속 작전 기반을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_military",
+     "atLeast": 2
+    }
+   ],
+   "prereqOps": [],
+   "primary": {
+    "id": "obj_outpost",
+    "label": "지역 방어 거점 설치",
+    "node": "objective"
+   },
+   "optional": [],
+   "returnRequired": true,
+   "grantsState": 3,
+   "grantsControl": false,
+   "rewards": {
+    "resources": {
+     "material": 150,
+     "parts": 40
+    },
+    "items": {}
+   }
+  },
+  {
+   "id": "op_military_control",
+   "name": "북부 군사 지구 통제 작전 (임시)",
+   "regionId": "rg_military",
+   "kind": "control",
+   "description": "[임시] 주요 부토스 군집 제거로 지역 통제권을 확보한다.",
+   "requires": [
+    {
+     "type": "regionState",
+     "region": "rg_military",
+     "atLeast": 3
+    }
+   ],
+   "prereqOps": [
+    "op_military_forward"
+   ],
+   "primary": {
+    "id": "obj_main",
+    "label": "주요 부토스 군집 제거",
+    "node": "objective"
+   },
+   "optional": [
+    {
+     "id": "obj_survivors",
+     "label": "생존자 흔적 조사 (임시)"
+    }
+   ],
+   "returnRequired": true,
+   "grantsState": 4,
+   "grantsControl": true,
+   "rewards": {
+    "resources": {
+     "budget": 800,
+     "data": 40
+    },
+    "items": {
+     "certificate": 1
+    }
+   }
+  }
+ ]
+}

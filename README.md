@@ -1,6 +1,6 @@
 # 통합인류행정부 (UNIFIED HUMAN ADMINISTRATION)
 
-정부 운영 + 로그라이크 원정 게임. 현재 PHASE 7(실시간 전투)까지 완료.
+정부 운영 + 로그라이크 원정 게임. 현재 PHASE 7(실시간 전투)까지 완료, PHASE 8(지역 탈환) 진행 중(지역 PHASE 1 완료).
 
 ```bash
 npm install
