@@ -17,12 +17,13 @@ import { ResultScreen } from './screens/ResultScreen';
 import { SaveLoadScreen } from './screens/SaveLoadScreen';
 import { TutorialHost } from '../tutorial/TutorialHost';
 import { ScreenIndexScreen } from './screens/ScreenIndexScreen';
+import { RegionMapScreen } from './screens/RegionMapScreen';
 
 const SCREENS: Record<ScreenId, ComponentType> = {
   title: TitleScreen, main: MainScreen, facilities: FacilitiesScreen, population: PopulationScreen,
   research: ResearchScreen, squad: SquadScreen, recruit: RecruitScreen, expeditionPrep: ExpeditionPrepScreen,
   expeditionMap: ExpeditionMapScreen, battle: BattleScreen, result: ResultScreen, saveLoad: SaveLoadScreen,
-  screenIndex: ScreenIndexScreen,
+  screenIndex: ScreenIndexScreen, regionMap: RegionMapScreen,
 };
 // Screens that can render without an active game session.
 const NO_SESSION: ScreenId[] = ['title', 'saveLoad', 'screenIndex'];

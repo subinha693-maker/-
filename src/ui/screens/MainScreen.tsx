@@ -19,6 +19,7 @@ const MENU: { id: ScreenId; label: string; icon: string; code: string }[] = [
   { id: 'research',       label: '연구 개발',   icon: 'research',   code: 'R&D' },
   { id: 'squad',          label: '개척부대',    icon: 'squad',      code: 'SQD' },
   { id: 'recruit',        label: '이력서 확인', icon: 'recruit',    code: 'REC' },
+  { id: 'regionMap',      label: '외부 오염권', icon: 'node-intel', code: 'MAP' },
   { id: 'expeditionPrep', label: '개척 작전',   icon: 'expedition', code: 'OPS' },
 ];
 

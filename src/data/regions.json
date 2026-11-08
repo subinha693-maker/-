@@ -1,52 +1,358 @@
 {
-  "_doc": "Finite outer contamination zone (fixed by design; never generated). States and region types are from the user's spec. Region names, descriptions, layout, connections, unlock conditions and numbers are PLACEHOLDERS. Progression rule (confirmed): control (state 4) can ONLY come from completing a strategic operation; general expeditions never raise a region above state 2.",
-  "_placeholder": true,
-  "states": [
-    { "id": 1, "name": "미확인" },
-    { "id": 2, "name": "정보 확보" },
-    { "id": 3, "name": "전진 거점 확보" },
-    { "id": 4, "name": "작전 목표 달성 및 통제권 확보" },
-    { "id": 5, "name": "지역 개발 완료" }
-  ],
-  "types": [
-    { "id": "industrial",  "name": "공업 지구",   "feature": "산업 시설과 기계 설비", "develop": "산업 부품 생산" },
-    { "id": "research",    "name": "연구 지구",   "feature": "과학 연구 시설",       "develop": "연구 데이터 생산" },
-    { "id": "residential", "name": "주거 지구",   "feature": "과거 인구 밀집 지역",   "develop": "생존자 구조 및 주거" },
-    { "id": "energy",      "name": "에너지 지구", "feature": "발전 및 에너지 시설",   "develop": "전력 생산" },
-    { "id": "military",    "name": "군사 지구",   "feature": "과거 군사 시설",       "develop": "방어 및 장비 관련 시설" }
-  ],
-  "regions": [
-    { "id": "rg_industrial", "name": "외곽 공업 지구 (임시)", "type": "industrial", "description": "[임시] 행정 구역과 가장 가까운 외부 오염권.", "pos": [22, 58],
-      "connections": ["rg_residential", "rg_energy"], "initiallyUnlocked": true, "unlock": [],
-      "progression": { "2": [{ "type": "generalClears", "count": 1 }], "3": [{ "type": "opCompleted", "op": "op_industrial_forward" }], "4": [{ "type": "opCompleted", "op": "op_industrial_control" }] },
-      "general": { "fromState": 1, "purposes": ["resource", "biosample", "survey", "threat"] }, "difficulty": 1,
-      "strategicOps": ["op_industrial_forward", "op_industrial_control"] },
-    { "id": "rg_residential", "name": "구 주거 지구 (임시)", "type": "residential", "description": "[임시] 과거 인구 밀집 지역.", "pos": [44, 30],
-      "connections": ["rg_industrial", "rg_research"], "initiallyUnlocked": false, "unlock": [{ "type": "regionState", "region": "rg_industrial", "atLeast": 4 }],
-      "progression": { "2": [{ "type": "generalClears", "count": 1 }], "3": [{ "type": "opCompleted", "op": "op_residential_forward" }], "4": [{ "type": "opCompleted", "op": "op_residential_control" }] },
-      "general": { "fromState": 1, "purposes": ["resource", "biosample", "survey", "threat"] }, "difficulty": 2,
-      "strategicOps": ["op_residential_forward", "op_residential_control"] },
-    { "id": "rg_energy", "name": "해안 에너지 지구 (임시)", "type": "energy", "description": "[임시] 발전 설비가 남아 있는 해안 지역.", "pos": [46, 78],
-      "connections": ["rg_industrial", "rg_military"], "initiallyUnlocked": false, "unlock": [{ "type": "regionState", "region": "rg_industrial", "atLeast": 4 }],
-      "progression": { "2": [{ "type": "generalClears", "count": 1 }], "3": [{ "type": "opCompleted", "op": "op_energy_forward" }], "4": [{ "type": "opCompleted", "op": "op_energy_control" }] },
-      "general": { "fromState": 1, "purposes": ["resource", "biosample", "survey", "threat"] }, "difficulty": 2,
-      "strategicOps": ["op_energy_forward", "op_energy_control"] },
-    { "id": "rg_research", "name": "지하 연구 지구 (임시)", "type": "research", "description": "[임시] 지하 연구 시설이 있는 지역.", "pos": [70, 24],
-      "connections": ["rg_residential"], "initiallyUnlocked": false,
-      "unlock": [{ "type": "regionState", "region": "rg_residential", "atLeast": 4 }, { "type": "research", "id": "r_bio_2" }],
-      "progression": { "2": [{ "type": "generalClears", "count": 1 }], "3": [{ "type": "opCompleted", "op": "op_research_forward" }], "4": [{ "type": "opCompleted", "op": "op_research_control" }] },
-      "general": { "fromState": 1, "purposes": ["resource", "biosample", "survey", "threat"] }, "difficulty": 3,
-      "strategicOps": ["op_research_forward", "op_research_control"] },
-    { "id": "rg_military", "name": "북부 군사 지구 (임시)", "type": "military", "description": "[임시] 과거 군사 시설 지역.", "pos": [74, 70],
-      "connections": ["rg_energy"], "initiallyUnlocked": false, "unlock": [{ "type": "regionState", "region": "rg_energy", "atLeast": 4 }],
-      "progression": { "2": [{ "type": "generalClears", "count": 1 }], "3": [{ "type": "opCompleted", "op": "op_military_forward" }], "4": [{ "type": "opCompleted", "op": "op_military_control" }] },
-      "general": { "fromState": 1, "purposes": ["resource", "biosample", "survey", "threat"] }, "difficulty": 3,
-      "strategicOps": ["op_military_forward", "op_military_control"] }
-  ],
-  "generalPurposes": [
-    { "id": "resource",  "name": "자원 회수 작전",       "focus": "건설 자재, 산업 부품 등 일반 자원" },
-    { "id": "biosample", "name": "생체시료 수집 작전",   "focus": "부토스 잔해 조사, 생체시료" },
-    { "id": "survey",    "name": "특수 조사 작전",       "focus": "미확인 부토스·특수 시설 조사, 연구 기록" },
-    { "id": "threat",    "name": "잔존 위협 제거 작전", "focus": "확보 지역의 잔존 부토스 제거, 안전도 정보" }
-  ]
+ "_doc": "Finite outer contamination zone (fixed by design; never generated). States and region types are from the user's spec. Region names, descriptions, layout, connections, unlock conditions and numbers are PLACEHOLDERS. Progression rule (confirmed): control (state 4) can ONLY come from completing a strategic operation; general expeditions never raise a region above state 2.",
+ "_placeholder": true,
+ "states": [
+  {
+   "id": 1,
+   "name": "미확인"
+  },
+  {
+   "id": 2,
+   "name": "정보 확보"
+  },
+  {
+   "id": 3,
+   "name": "전진 거점 확보"
+  },
+  {
+   "id": 4,
+   "name": "작전 목표 달성 및 통제권 확보"
+  },
+  {
+   "id": 5,
+   "name": "지역 개발 완료"
+  }
+ ],
+ "types": [
+  {
+   "id": "industrial",
+   "name": "공업 지구",
+   "feature": "산업 시설과 기계 설비",
+   "develop": "산업 부품 생산"
+  },
+  {
+   "id": "research",
+   "name": "연구 지구",
+   "feature": "과학 연구 시설",
+   "develop": "연구 데이터 생산"
+  },
+  {
+   "id": "residential",
+   "name": "주거 지구",
+   "feature": "과거 인구 밀집 지역",
+   "develop": "생존자 구조 및 주거"
+  },
+  {
+   "id": "energy",
+   "name": "에너지 지구",
+   "feature": "발전 및 에너지 시설",
+   "develop": "전력 생산"
+  },
+  {
+   "id": "military",
+   "name": "군사 지구",
+   "feature": "과거 군사 시설",
+   "develop": "방어 및 장비 관련 시설"
+  }
+ ],
+ "regions": [
+  {
+   "id": "rg_industrial",
+   "name": "외곽 공업 지구 (임시)",
+   "type": "industrial",
+   "description": "[임시] 행정 구역과 가장 가까운 외부 오염권.",
+   "pos": [
+    26,
+    56
+   ],
+   "connections": [
+    "rg_residential",
+    "rg_energy"
+   ],
+   "initiallyUnlocked": true,
+   "unlock": [],
+   "progression": {
+    "2": [
+     {
+      "type": "generalClears",
+      "count": 1
+     }
+    ],
+    "3": [
+     {
+      "type": "opCompleted",
+      "op": "op_industrial_forward"
+     }
+    ],
+    "4": [
+     {
+      "type": "opCompleted",
+      "op": "op_industrial_control"
+     }
+    ]
+   },
+   "general": {
+    "fromState": 1,
+    "purposes": [
+     "resource",
+     "biosample",
+     "survey",
+     "threat"
+    ]
+   },
+   "difficulty": 1,
+   "strategicOps": [
+    "op_industrial_forward",
+    "op_industrial_control"
+   ]
+  },
+  {
+   "id": "rg_residential",
+   "name": "구 주거 지구 (임시)",
+   "type": "residential",
+   "description": "[임시] 과거 인구 밀집 지역.",
+   "pos": [
+    46,
+    28
+   ],
+   "connections": [
+    "rg_industrial",
+    "rg_research"
+   ],
+   "initiallyUnlocked": false,
+   "unlock": [
+    {
+     "type": "regionState",
+     "region": "rg_industrial",
+     "atLeast": 4
+    }
+   ],
+   "progression": {
+    "2": [
+     {
+      "type": "generalClears",
+      "count": 1
+     }
+    ],
+    "3": [
+     {
+      "type": "opCompleted",
+      "op": "op_residential_forward"
+     }
+    ],
+    "4": [
+     {
+      "type": "opCompleted",
+      "op": "op_residential_control"
+     }
+    ]
+   },
+   "general": {
+    "fromState": 1,
+    "purposes": [
+     "resource",
+     "biosample",
+     "survey",
+     "threat"
+    ]
+   },
+   "difficulty": 2,
+   "strategicOps": [
+    "op_residential_forward",
+    "op_residential_control"
+   ]
+  },
+  {
+   "id": "rg_energy",
+   "name": "해안 에너지 지구 (임시)",
+   "type": "energy",
+   "description": "[임시] 발전 설비가 남아 있는 해안 지역.",
+   "pos": [
+    48,
+    80
+   ],
+   "connections": [
+    "rg_industrial",
+    "rg_military"
+   ],
+   "initiallyUnlocked": false,
+   "unlock": [
+    {
+     "type": "regionState",
+     "region": "rg_industrial",
+     "atLeast": 4
+    }
+   ],
+   "progression": {
+    "2": [
+     {
+      "type": "generalClears",
+      "count": 1
+     }
+    ],
+    "3": [
+     {
+      "type": "opCompleted",
+      "op": "op_energy_forward"
+     }
+    ],
+    "4": [
+     {
+      "type": "opCompleted",
+      "op": "op_energy_control"
+     }
+    ]
+   },
+   "general": {
+    "fromState": 1,
+    "purposes": [
+     "resource",
+     "biosample",
+     "survey",
+     "threat"
+    ]
+   },
+   "difficulty": 2,
+   "strategicOps": [
+    "op_energy_forward",
+    "op_energy_control"
+   ]
+  },
+  {
+   "id": "rg_research",
+   "name": "지하 연구 지구 (임시)",
+   "type": "research",
+   "description": "[임시] 지하 연구 시설이 있는 지역.",
+   "pos": [
+    72,
+    22
+   ],
+   "connections": [
+    "rg_residential"
+   ],
+   "initiallyUnlocked": false,
+   "unlock": [
+    {
+     "type": "regionState",
+     "region": "rg_residential",
+     "atLeast": 4
+    },
+    {
+     "type": "research",
+     "id": "r_bio_2"
+    }
+   ],
+   "progression": {
+    "2": [
+     {
+      "type": "generalClears",
+      "count": 1
+     }
+    ],
+    "3": [
+     {
+      "type": "opCompleted",
+      "op": "op_research_forward"
+     }
+    ],
+    "4": [
+     {
+      "type": "opCompleted",
+      "op": "op_research_control"
+     }
+    ]
+   },
+   "general": {
+    "fromState": 1,
+    "purposes": [
+     "resource",
+     "biosample",
+     "survey",
+     "threat"
+    ]
+   },
+   "difficulty": 3,
+   "strategicOps": [
+    "op_research_forward",
+    "op_research_control"
+   ]
+  },
+  {
+   "id": "rg_military",
+   "name": "북부 군사 지구 (임시)",
+   "type": "military",
+   "description": "[임시] 과거 군사 시설 지역.",
+   "pos": [
+    74,
+    72
+   ],
+   "connections": [
+    "rg_energy"
+   ],
+   "initiallyUnlocked": false,
+   "unlock": [
+    {
+     "type": "regionState",
+     "region": "rg_energy",
+     "atLeast": 4
+    }
+   ],
+   "progression": {
+    "2": [
+     {
+      "type": "generalClears",
+      "count": 1
+     }
+    ],
+    "3": [
+     {
+      "type": "opCompleted",
+      "op": "op_military_forward"
+     }
+    ],
+    "4": [
+     {
+      "type": "opCompleted",
+      "op": "op_military_control"
+     }
+    ]
+   },
+   "general": {
+    "fromState": 1,
+    "purposes": [
+     "resource",
+     "biosample",
+     "survey",
+     "threat"
+    ]
+   },
+   "difficulty": 3,
+   "strategicOps": [
+    "op_military_forward",
+    "op_military_control"
+   ]
+  }
+ ],
+ "generalPurposes": [
+  {
+   "id": "resource",
+   "name": "자원 회수 작전",
+   "focus": "건설 자재, 산업 부품 등 일반 자원"
+  },
+  {
+   "id": "biosample",
+   "name": "생체시료 수집 작전",
+   "focus": "부토스 잔해 조사, 생체시료"
+  },
+  {
+   "id": "survey",
+   "name": "특수 조사 작전",
+   "focus": "미확인 부토스·특수 시설 조사, 연구 기록"
+  },
+  {
+   "id": "threat",
+   "name": "잔존 위협 제거 작전",
+   "focus": "확보 지역의 잔존 부토스 제거, 안전도 정보"
+  }
+ ]
 }

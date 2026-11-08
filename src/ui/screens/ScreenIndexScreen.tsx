@@ -9,6 +9,7 @@ const LIST: [ScreenId, string, Record<string, unknown>?][] = [
   ['facilities', '5. 시설 관리'], ['population', '6. 인구 관리'], ['research', '7. 연구 개발'], ['squad', '8. 개척부대'],
   ['recruit', '9. 이력서 확인'], ['expeditionPrep', '10. 개척 작전 준비'], ['expeditionMap', '11. 원정 지도', { party: ['aion', 'ring', 'jerag'], difficulty: 1 }],
   ['battle', '12. 실시간 전투', { party: ['shion_shirayuko', 'james_harold', 'aion'] }], ['result', '13. 원정 결과 및 정산', { outcome: 'return' }],
+  ['regionMap', '15. 외부 오염권 전략 지도'],
 ];
 
 /** Developer screen list for layout review. Creates a temporary session so every screen has data. */

@@ -145,3 +145,18 @@ export function validateRegionData(): string[] {
   }
   return e;
 }
+
+// ---------- view helpers (PHASE 2 UI) ----------
+/** Regions whose unlock conditions mention this region (shown as "후속 지역"). */
+export function followUpRegions(regionId: string): string[] {
+  return DATA.regions.filter((r) => r.unlock.some((c) => c.type === 'regionState' && c.region === regionId)).map((r) => r.id);
+}
+export type OpStatus = 'completed' | 'available' | 'blocked' | 'locked';
+export function opStatus(s: GameState, opId: string): OpStatus {
+  const op = getOp(opId)!;
+  if (opCompleted(s, opId)) return 'completed';
+  if (!s.regions[op.regionId]?.unlocked) return 'locked';
+  return opBlockers(s, opId).length ? 'blocked' : 'available';
+}
+/** Conditions with their met state, for checklists. */
+export const checklist = (s: GameState, conds: Condition[], regionId?: string) => conds.map((c) => ({ label: describeCondition(c), met: conditionMet(s, c, regionId) }));
