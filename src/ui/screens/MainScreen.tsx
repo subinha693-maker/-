@@ -7,6 +7,11 @@ import { Button, ConfirmDialog, Panel, PlaceholderTag } from '../components/Comm
 import { Icon } from '../components/Icon';
 import { BaseView } from '../components/BaseView';
 import { SettingsModal } from './SettingsModal';
+import { useEconomy } from '../useEconomy';
+import { computeWarnings } from '../../systems/alerts';
+import { useLog } from '../../core/log';
+import { getResearch } from '../../data';
+import { statusLabel } from './FacilitiesScreen';
 
 const MENU: { id: ScreenId; label: string; icon: string; code: string }[] = [
   { id: 'facilities',     label: '시설 관리',   icon: 'facility',   code: 'FAC' },
@@ -29,6 +34,10 @@ export function MainScreen() {
   const [selected, setSelected] = useState<string | null>(null);
 
   const popTotal = Object.values(s.population).reduce((a, b) => a + b, 0);
+  const eco = useEconomy()!;
+  const warnings = computeWarnings(s, eco);
+  const log = useLog((l) => l.items);
+  const active = s.research.active ? getResearch(s.research.active) : undefined;
   const sel = s.facilities.find((f) => f.uid === selected);
   const selDef = sel && getFacilityDef(sel.defId);
 
@@ -61,26 +70,28 @@ export function MainScreen() {
           {sel && selDef && (
             <div className="base-pop" data-testid="facility-popup">
               <b>{selDef.name}</b>
-              <span className="dim">{DATA.facilityCategories.find((c) => c.id === selDef.category)?.name} · Lv.{sel.level}</span>
+              <span className="dim">{DATA.facilityCategories.find((c) => c.id === selDef.category)?.name} · Lv.{sel.level} · {statusLabel(sel)} · 가동률 {Math.round((eco.facilities.get(sel.uid)?.efficiency ?? 0) * 100)}%</span>
               <Button small onClick={() => go('facilities', { focus: sel.uid })}>시설 관리에서 보기</Button>
             </div>
           )}
         </section>
 
         <aside className="right-col">
-          <Panel title="정부 현황" tail={<PlaceholderTag />} tut="status">
+          <Panel title="정부 현황" tut="status">
             <dl className="kv">
               <dt>총 인구</dt><dd className="num">{fmt.format(popTotal)}</dd>
-              <dt>운영 시설</dt><dd className="num">{s.facilities.filter((f) => f.status === 'active').length} / {s.facilities.length}</dd>
+              <dt>운영 시설</dt><dd className="num">{s.facilities.filter((f) => f.status === 'active' && !f.job).length} / {s.facilities.length}</dd>
               <dt>개척부대원</dt><dd className="num">{s.roster.length}명</dd>
-              <dt>진행 중 연구</dt><dd>{s.research.active ?? '없음'}</dd>
+              <dt>진행 중 연구</dt><dd>{active ? `${active.name} ${Math.floor(s.research.progress * 100)}%` : '없음'}</dd>
+              <dt>공사 중 시설</dt><dd className="num">{s.facilities.filter((f) => f.job).length}</dd>
               <dt>개척 작전</dt><dd>{s.expedition ? '진행 중' : '대기'}</dd>
               <dt>해금 난이도</dt><dd className="num">{Math.max(...s.progress.unlockedDifficulties)}단계</dd>
             </dl>
           </Panel>
           <Panel title="알림 및 경고" className="grow" bodyClass="scroll alerts" tut="alerts">
-            <div className="alert info"><b>행정 단말 연결</b><span>새 행정 세션이 시작되었습니다.</span></div>
-            <div className="alert warn"><b>시간 흐름 미가동</b><span>자원 생산·소비는 PHASE 4에서 연결됩니다.</span></div>
+            {warnings.map((w) => <div key={w.key} className={`alert ${w.tone}`} data-testid="alert-warning"><b>{w.title}</b><span>{w.body}</span></div>)}
+            {log.map((l) => <div key={l.id} className={`alert ${l.tone}`} data-testid="alert-log"><b>{l.title}</b><span>{l.body}</span></div>)}
+            {!warnings.length && !log.length && <div className="alert info"><b>이상 없음</b><span>현재 경고가 없습니다.</span></div>}
             <div className="alert"><b>저장 상태</b><span>{lastSavedAt ? `마지막 저장 ${new Date(lastSavedAt).toLocaleString('ko-KR')}` : '아직 저장하지 않았습니다.'}</span></div>
           </Panel>
         </aside>

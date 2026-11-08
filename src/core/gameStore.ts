@@ -14,6 +14,8 @@ interface GameStore {
   markSaved: (at: string) => void;
   /** Applies an immutable update to the game state. */
   mutate: (fn: (s: GameState) => GameState) => void;
+  setSpeed: (speed: number) => void;
+  setPaused: (paused: boolean) => void;
 }
 
 /** Holds the single serializable GameState. Systems mutate it through actions only. */
@@ -27,4 +29,6 @@ export const useGame = create<GameStore>((set) => ({
   setInBattle: (v) => set({ inBattle: v }),
   markSaved: (at) => set({ lastSavedAt: at }),
   mutate: (fn) => set((g) => (g.state ? { state: fn(g.state) } : g)),
+  setSpeed: (speed) => set((g) => (g.state ? { state: { ...g.state, clock: { ...g.state.clock, speed, paused: false } } } : g)),
+  setPaused: (paused) => set((g) => (g.state ? { state: { ...g.state, clock: { ...g.state.clock, paused } } } : g)),
 }));

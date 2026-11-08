@@ -27,13 +27,14 @@ export function BaseView({ facilities, selected, onSelect }: { facilities: Facil
           return (
             <button
               key={f.uid}
-              className={`base-bld ${selected === f.uid ? 'sel' : ''}`}
+              className={`base-bld ${selected === f.uid ? 'sel' : ''} ${f.job ? 'building' : ''}`}
               style={{ left: p.x, top: p.y + TH * 0.28, width: def.spriteWidth, zIndex: 10 + f.grid[0] + f.grid[1] }}
               onClick={(e) => { e.stopPropagation(); onSelect(f.uid); }}
               aria-label={def.name}
               data-testid={`bld-${f.uid}`}
             >
               <img src={asset(`sprites/kenney/${def.sprite}.png`)} alt="" draggable={false} />
+              {f.job && <span className="bld-bar"><i style={{ width: `${(1 - f.job.remainingMinutes / f.job.totalMinutes) * 100}%` }} /></span>}
             </button>
           );
         })}

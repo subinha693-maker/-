@@ -1,32 +1,640 @@
 {
-  "_doc": "PLACEHOLDER facility definitions for layout only. Names, numbers and the facility list are not confirmed.",
-  "_placeholder": true,
-  "facilities": [
-    { "id": "fac_farm",      "name": "식량 생산 시설 (임시)", "category": "production", "sprite": "ind-building-j", "spriteWidth": 230,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_power",     "name": "발전 시설 (임시)",      "category": "production", "sprite": "ind-solar-panel-landscape-group", "spriteWidth": 230,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_plant",     "name": "산업 시설 (임시)",      "category": "industry",   "sprite": "ind-building-m", "spriteWidth": 250,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_depot",     "name": "자재 시설 (임시)",      "category": "industry",   "sprite": "ind-detail-tank-large", "spriteWidth": 170,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_lab",       "name": "연구 시설 (임시)",      "category": "research",   "sprite": "com-building-n", "spriteWidth": 200,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_barracks",  "name": "군사 시설 (임시)",      "category": "military",   "sprite": "ind-building-o", "spriteWidth": 220,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_housing",   "name": "주거 시설 (임시)",      "category": "living",     "sprite": "com-building-k", "spriteWidth": 230,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] },
-    { "id": "fac_admin",     "name": "행정 시설 (임시)",      "category": "admin",      "sprite": "com-skyscraper-a", "spriteWidth": 140,
-      "levels": [{ "workers": 0, "produce": {}, "consume": {}, "power": 0, "upkeep": {} }] }
-  ],
-  "startingFacilities": [
-    { "defId": "fac_admin",    "grid": [3, 3] },
-    { "defId": "fac_housing",  "grid": [1, 3] },
-    { "defId": "fac_farm",     "grid": [3, 1] },
-    { "defId": "fac_power",    "grid": [5, 1] },
-    { "defId": "fac_plant",    "grid": [5, 3] },
-    { "defId": "fac_depot",    "grid": [5, 5] },
-    { "defId": "fac_lab",      "grid": [1, 5] },
-    { "defId": "fac_barracks", "grid": [3, 5] }
-  ]
+ "_doc": "PLACEHOLDER facility definitions. Names, the facility list and ALL numbers (workers, rates per game hour, power, costs, build hours, upkeep) are temporary and not decided by the user.",
+ "_placeholder": true,
+ "facilities": [
+  {
+   "id": "fac_farm",
+   "name": "식량 생산 시설 (임시)",
+   "category": "production",
+   "sprite": "ind-building-j",
+   "spriteWidth": 230,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 40000,
+     "produce": {
+      "food": 90
+     },
+     "consume": {},
+     "power": 4.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 60000,
+     "produce": {
+      "food": 144
+     },
+     "consume": {},
+     "power": 5.2,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 90000,
+     "produce": {
+      "food": 230
+     },
+     "consume": {},
+     "power": 6.8,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_power",
+   "name": "발전 시설 (임시)",
+   "category": "production",
+   "sprite": "ind-solar-panel-landscape-group",
+   "spriteWidth": 230,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 15000,
+     "produce": {
+      "power": 70
+     },
+     "consume": {},
+     "power": 0.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 22000,
+     "produce": {
+      "power": 112
+     },
+     "consume": {},
+     "power": 0.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 34000,
+     "produce": {
+      "power": 179
+     },
+     "consume": {},
+     "power": 0.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_depot",
+   "name": "자재 시설 (임시)",
+   "category": "industry",
+   "sprite": "ind-detail-tank-large",
+   "spriteWidth": 170,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 30000,
+     "produce": {
+      "material": 24
+     },
+     "consume": {},
+     "power": 6.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 45000,
+     "produce": {
+      "material": 38
+     },
+     "consume": {},
+     "power": 7.8,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 68000,
+     "produce": {
+      "material": 61
+     },
+     "consume": {},
+     "power": 10.1,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_plant",
+   "name": "산업 시설 (임시)",
+   "category": "industry",
+   "sprite": "ind-building-m",
+   "spriteWidth": 250,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 35000,
+     "produce": {
+      "parts": 8.0
+     },
+     "consume": {
+      "material": 10
+     },
+     "power": 10,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 52000,
+     "produce": {
+      "parts": 12.8
+     },
+     "consume": {
+      "material": 14
+     },
+     "power": 13,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 79000,
+     "produce": {
+      "parts": 20.5
+     },
+     "consume": {
+      "material": 20
+     },
+     "power": 17,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_lab",
+   "name": "연구 시설 (임시)",
+   "category": "research",
+   "sprite": "com-building-n",
+   "spriteWidth": 200,
+   "workerType": "research",
+   "levels": [
+    {
+     "workers": 20000,
+     "produce": {
+      "data": 3.0
+     },
+     "consume": {
+      "budget": 10
+     },
+     "power": 8.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12,
+     "research": 1.0
+    },
+    {
+     "workers": 30000,
+     "produce": {
+      "data": 4.8
+     },
+     "consume": {
+      "budget": 14
+     },
+     "power": 10.4,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24,
+     "research": 1.5
+    },
+    {
+     "workers": 45000,
+     "produce": {
+      "data": 7.7
+     },
+     "consume": {
+      "budget": 20
+     },
+     "power": 13.5,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36,
+     "research": 2.25
+    }
+   ]
+  },
+  {
+   "id": "fac_barracks",
+   "name": "군사 시설 (임시)",
+   "category": "military",
+   "sprite": "ind-building-o",
+   "spriteWidth": 220,
+   "workerType": "military",
+   "levels": [
+    {
+     "workers": 30000,
+     "produce": {},
+     "consume": {
+      "food": 10,
+      "budget": 15
+     },
+     "power": 5.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 45000,
+     "produce": {},
+     "consume": {
+      "food": 14,
+      "budget": 21
+     },
+     "power": 6.5,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 68000,
+     "produce": {},
+     "consume": {
+      "food": 20,
+      "budget": 29
+     },
+     "power": 8.5,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_housing",
+   "name": "주거 시설 (임시)",
+   "category": "living",
+   "sprite": "com-building-k",
+   "spriteWidth": 230,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 10000,
+     "produce": {},
+     "consume": {},
+     "power": 6.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 15000,
+     "produce": {},
+     "consume": {},
+     "power": 7.8,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 22000,
+     "produce": {},
+     "consume": {},
+     "power": 10.1,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_admin",
+   "name": "행정 시설 (임시)",
+   "category": "admin",
+   "sprite": "com-skyscraper-a",
+   "spriteWidth": 140,
+   "workerType": "admin",
+   "levels": [
+    {
+     "workers": 25000,
+     "produce": {
+      "budget": 120
+     },
+     "consume": {},
+     "power": 5.0,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 38000,
+     "produce": {
+      "budget": 192
+     },
+     "consume": {},
+     "power": 6.5,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 56000,
+     "produce": {
+      "budget": 307
+     },
+     "consume": {},
+     "power": 8.5,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ]
+  },
+  {
+   "id": "fac_workshop",
+   "name": "특수 가공 시설 (임시)",
+   "category": "industry",
+   "sprite": "ind-building-l",
+   "spriteWidth": 220,
+   "workerType": "labor",
+   "levels": [
+    {
+     "workers": 25000,
+     "produce": {
+      "alloy": 2.0
+     },
+     "consume": {
+      "parts": 4.0
+     },
+     "power": 12,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 120,
+      "parts": 30,
+      "budget": 400
+     },
+     "buildHours": 12
+    },
+    {
+     "workers": 38000,
+     "produce": {
+      "alloy": 3.2
+     },
+     "consume": {
+      "parts": 5.6
+     },
+     "power": 16,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 480,
+      "parts": 120,
+      "budget": 1600
+     },
+     "buildHours": 24
+    },
+    {
+     "workers": 56000,
+     "produce": {
+      "alloy": 5.1
+     },
+     "consume": {
+      "parts": 7.8
+     },
+     "power": 20,
+     "upkeep": {
+      "conditionPerDay": 2
+     },
+     "cost": {
+      "material": 1080,
+      "parts": 270,
+      "budget": 3600
+     },
+     "buildHours": 36
+    }
+   ],
+   "requires": "r_ind_1"
+  }
+ ],
+ "startingFacilities": [
+  {
+   "defId": "fac_admin",
+   "grid": [
+    3,
+    3
+   ],
+   "workers": 25000
+  },
+  {
+   "defId": "fac_housing",
+   "grid": [
+    1,
+    3
+   ],
+   "workers": 10000
+  },
+  {
+   "defId": "fac_farm",
+   "grid": [
+    3,
+    1
+   ],
+   "workers": 40000
+  },
+  {
+   "defId": "fac_power",
+   "grid": [
+    5,
+    1
+   ],
+   "workers": 15000
+  },
+  {
+   "defId": "fac_plant",
+   "grid": [
+    5,
+    3
+   ],
+   "workers": 35000
+  },
+  {
+   "defId": "fac_depot",
+   "grid": [
+    5,
+    5
+   ],
+   "workers": 30000
+  },
+  {
+   "defId": "fac_lab",
+   "grid": [
+    1,
+    5
+   ],
+   "workers": 20000
+  },
+  {
+   "defId": "fac_barracks",
+   "grid": [
+    3,
+    5
+   ],
+   "workers": 30000
+  }
+ ]
 }

@@ -33,12 +33,18 @@ export function validateGameState(s: unknown): string[] {
       if (typeof f.uid !== 'string' || uids.has(f.uid)) e.push('시설 식별자가 중복되었거나 없습니다.');
       else uids.add(f.uid);
       if (!isInt(f.workers) || (f.workers as number) < 0) e.push('시설 배치 인력 값이 올바르지 않습니다.');
+      if (!isNum(f.condition) || (f.condition as number) < 0 || (f.condition as number) > 100) e.push('시설 유지보수 상태 값이 올바르지 않습니다.');
+      if (f.job != null && (!isObj(f.job) || !isNum(f.job.remainingMinutes) || !isNum(f.job.totalMinutes))) e.push('시설 공사 정보가 손상되었습니다.');
     }
   }
 
   const research = s.research;
   if (!isObj(research) || !Array.isArray(research.completed)) e.push('연구 진행 정보가 손상되었습니다.');
-  else for (const id of research.completed) if (!DATA.researchNodes.some((n) => n.id === id)) e.push(`알 수 없는 연구: ${String(id)}`);
+  else {
+    for (const id of research.completed) if (!DATA.researchNodes.some((n) => n.id === id)) e.push(`알 수 없는 연구: ${String(id)}`);
+    if (research.active != null && !DATA.researchNodes.some((n) => n.id === research.active)) e.push(`알 수 없는 진행 중 연구: ${String(research.active)}`);
+    if (!isNum(research.progress) || (research.progress as number) < 0 || (research.progress as number) > 1) e.push('연구 진행도 값이 올바르지 않습니다.');
+  }
 
   const roster = s.roster;
   const rosterIds = new Set<string>();

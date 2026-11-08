@@ -51,7 +51,6 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
             <Button small disabled={tutorialActive || inBattle} onClick={() => { onClose(); startTutorial(); }} data-testid="replay-tutorial">시작</Button>
           </div>
         )}
-        <div className="row setting-row"><span className="grow">게임 속도 기본값</span><Button small pendingPhase={4}>조정</Button></div>
       </div>
     </Modal>
   );

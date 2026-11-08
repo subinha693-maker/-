@@ -60,10 +60,10 @@ export function Tabs<T extends string>({ items, value, onChange }: { items: { id
   );
 }
 
-export function Modal({ title, children, actions, warn }: { title: string; children: ReactNode; actions: ReactNode; warn?: boolean }) {
+export function Modal({ title, children, actions, warn, wide }: { title: string; children: ReactNode; actions: ReactNode; warn?: boolean; wide?: boolean }) {
   return (
     <div className="modal-veil" role="dialog" aria-modal="true" aria-label={title}>
-      <div className={`modal ${warn ? 'warn' : ''}`}>
+      <div className={`modal ${warn ? 'warn' : ''} ${wide ? 'wide' : ''}`}>
         <header className="panel-head">{title}</header>
         <div className="panel-body" style={{ fontSize: 'var(--fs-m)' }}>{children}</div>
         <div className="modal-actions">{actions}</div>

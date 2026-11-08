@@ -11,6 +11,7 @@ import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
 import { endExpedition, startExpedition } from '../systems/expedition';
 import { offerTutorial, resumeTutorial } from '../tutorial/controller';
+import { clearLog } from './log';
 
 let storage: StorageAdapter;
 export let saves: SaveManager;
@@ -46,6 +47,7 @@ export function isFirstRun() {
 
 export function newGameSession() {
   const first = isFirstRun();
+  clearLog();
   useGame.getState().newGame();
   useProfile.getState().update((p) => ({ ...p, firstRun: false }));
   autosave.resetInterval(0);
@@ -61,6 +63,7 @@ function resumeScreen() {
 export function loadSlot(slot: SlotId, useBackup = false) {
   const r = useBackup ? saves.restoreBackup(slot) : saves.load(slot);
   if (!r.ok) return r;
+  clearLog();
   useGame.getState().loadState(r.state);
   useGame.getState().markSaved(r.meta.savedAt);
   autosave.resetInterval(r.state.clock.gameMinutes);

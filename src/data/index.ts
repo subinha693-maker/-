@@ -14,10 +14,10 @@ export const DATA = {
   resources: resources as ResourceDef[],
   population: population as NamedDef<PopulationId>[],
   facilityCategories: facilityCategories as NamedDef<FacilityCategoryId>[],
-  facilities: facilities.facilities as FacilityDef[],
-  startingFacilities: facilities.startingFacilities as unknown as { defId: string; grid: [number, number] }[],
+  facilities: facilities.facilities as unknown as FacilityDef[],
+  startingFacilities: facilities.startingFacilities as unknown as { defId: string; grid: [number, number]; workers: number }[],
   researchFields: research.fields as NamedDef[],
-  researchNodes: research.nodes as ResearchNodeDef[],
+  researchNodes: research.nodes as unknown as ResearchNodeDef[],
   characters: characters.characters as unknown as CharacterDef[],
   startingRoster: characters.startingRoster as string[],
   npcs: npcs.npcs as NpcDef[],
@@ -35,6 +35,8 @@ const nodeTypeIndex = byId(DATA.nodeTypes);
 export const getFacilityDef = (id: string) => facilityIndex.get(id);
 export const getCharacterDef = (id: string) => characterIndex.get(id);
 export const getNodeType = (id: string) => nodeTypeIndex.get(id);
+const researchIndex = byId(DATA.researchNodes);
+export const getResearch = (id: string) => researchIndex.get(id);
 export const getNpc = (id: string) => DATA.npcs.find((n) => n.id === id);
 
 /** Display name helper: undecided names are shown explicitly as undecided. */

@@ -61,7 +61,7 @@ async function run(name, ctxOpts) {
   });
   await step('damaged slot is detected, load blocked, backup restore works', async () => {
     await tap('slot-2'); await tap('btn-save'); await tap('slot-2'); await tap('btn-save'); await tap('confirm'); // second save creates a backup
-    await p.evaluate(() => { const k = 'uha.save.2'; localStorage.setItem(k, localStorage.getItem(k).replace('"food":1000', '"food":7')); });
+    await p.evaluate(() => { const k = 'uha.save.2'; localStorage.setItem(k, localStorage.getItem(k).replace(/"food":[0-9.]+/, '"food":7')); });
     await reload(); await tap('btn-load'); await tap('slot-2');
     assert((await text('slot-status-2')) === '손상됨', 'not detected');
     await see('slot-problem'); assert(await p.getByTestId('btn-load-slot').isDisabled(), 'load enabled for corrupt');

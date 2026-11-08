@@ -11,7 +11,7 @@ export function createNewGame(): GameState {
     resources: { ...(BALANCE.startingResources as Record<ResourceId, number>) },
     population: { ...(BALANCE.startingPopulation as Record<PopulationId, number>) },
     facilities: DATA.startingFacilities.map((f, i) => ({
-      uid: `f${i + 1}`, defId: f.defId, level: 1, workers: 0, condition: 100, status: 'active', grid: f.grid,
+      uid: `f${i + 1}`, defId: f.defId, level: 1, workers: f.workers, condition: 100, status: 'active', grid: f.grid, job: null,
     })),
     research: { active: null, progress: 0, completed: [] },
     unlocks: [],
