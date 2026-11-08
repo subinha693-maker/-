@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
-import { enterBattle, enterExpeditionNode } from '../../core/session';
+import { enterBattle, enterExpeditionNode, goDeeperExpedition } from '../../core/session';
+import { activeSynergies } from '../../systems/battle';
 import { DATA, charName, getCharacterDef, getNodeType, getOp, getRelic } from '../../data';
 import type { ExpeditionMap } from '../../core/types';
-import { columnOf, isCleared, isCombat, nodeOf, party, reachable } from '../../systems/expedition';
+import { columnOf, effectiveDifficulty, isCleared, isCombat, nodeOf, party, reachable } from '../../systems/expedition';
 import { Bar, Button, ConfirmDialog, Panel, PlaceholderTag, ScreenHeader } from '../components/Common';
 import { Icon } from '../components/Icon';
 import { CharacterArt } from '../components/CharacterArt';
@@ -51,7 +52,7 @@ export function ExpeditionMapScreen() {
 
   return (
     <div className="screen" data-testid="screen-expeditionMap">
-      <ScreenHeader title={op ? `전략 작전 · ${op.name}` : '외부 오염권 · 원정 지도'} code={`EXPEDITION MAP · 침식 난이도 ${difficulty}${ex ? ` · ${DATA.regions.find((r) => r.id === ex.regionId)?.name}${ex.kind === 'general' ? ` · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name}` : ''}` : ''}`} onBack={() => replace('main')}
+      <ScreenHeader title={op ? `전략 작전 · ${op.name}` : '외부 오염권 · 원정 지도'} code={`EXPEDITION MAP · 침식 난이도 ${difficulty}${ex && ex.depth > 0 ? ` · 심층 ${ex.depth}단계 (실효 난이도 ${effectiveDifficulty(ex)})` : ''}${ex ? ` · ${DATA.regions.find((r) => r.id === ex.regionId)?.name}${ex.kind === 'general' ? ` · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name}` : ''}` : ''}`} onBack={() => replace('main')}
         tail={training ? <span className="tag accent">훈련 · 튜토리얼</span> : <>
           <PlaceholderTag label="노드 구성·수치 임시" />
           <Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button>
@@ -82,10 +83,11 @@ export function ExpeditionMapScreen() {
           </div>
           {cleared && (
             <div className="map-clear" data-testid="map-cleared">
-              <b>모든 노드를 완료했습니다</b>
+              <b>모든 노드를 완료했습니다{ex!.depth > 0 ? ` · 심층 ${ex!.depth}단계` : ''}</b>
+              <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>심층 원정은 부대·유물·강화 상태·획득물을 유지한 채 더 위험한 지역으로 이어집니다. 실패하면 정산이 줄어듭니다.</span>
               <div className="row" style={{ gap: 12 }}>
                 <Button variant="primary" onClick={() => replace('result', { outcome: 'victory' })} data-testid="btn-clear-return">원정 종료 · 기지 귀환</Button>
-                <Button pendingPhase={9}>심층 원정 도전</Button>
+                <Button onClick={goDeeperExpedition} data-testid="btn-deeper">심층 원정 도전{ex!.depth > 0 ? ` (${ex!.depth + 1}단계)` : ''}</Button>
               </div>
             </div>
           )}
@@ -127,6 +129,7 @@ export function ExpeditionMapScreen() {
             {ex?.buffs.map((b) => <div key={b.id} className="buff-line">{b.text}</div>)}
           </Panel>
           <Panel title={`보유 유물 (${ex?.relics.length ?? 0})`} bodyClass="col" >
+            {ex && activeSynergies(ex.relics).map((syn) => <div key={syn.name + syn.count} className="buff-line syn" data-testid="synergy">시너지 · {syn.name} ({syn.tag} {syn.count}개)</div>)}
             {ex?.relics.length ? ex.relics.map((r) => <span key={r} className="relic-line" data-testid="relic-owned">{getRelic(r)?.name}<span className="dim" style={{ display: 'block', fontSize: 18 }}>{relicFx(r)}</span></span>) : <div className="empty" style={{ padding: 16 }}>획득한 유물 없음</div>}
           </Panel>
           {ex && <Panel title="원정 획득물" bodyClass="col"><span data-testid="loot">{costText(ex.loot, RES) || '없음'}</span><span className="dim" style={{ fontSize: 18 }}>원정 종료 시 결과에 따라 정부 자원으로 정산됩니다.</span></Panel>}

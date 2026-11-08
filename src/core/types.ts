@@ -120,6 +120,9 @@ export interface ExpeditionState {
   regionId: string;
   purpose: string;                 // general expedition purpose (자원 회수 / 생체시료 / 특수 조사 / 잔존 위협)
   opId: string | null;
+  depth: number;                   // 0 = first map; +1 per 심층 원정
+  pastNodes: number;               // nodes completed on previous (shallower) maps
+  bossClears: number;
   difficulty: number;
   members: string[];               // the 3 who departed
   reinforcements: string[];        // 후발대 joined during the expedition
@@ -137,7 +140,7 @@ export interface ExpeditionState {
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 6;
+  schema: 7;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;

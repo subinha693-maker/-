@@ -8,7 +8,7 @@ export const newAgent = (charId: string): CharacterInstance => ({ charId, level:
 /** Builds a fresh GameState for "새 게임" from config + data (no hard-coded values here). */
 export function createNewGame(): GameState {
   return {
-    schema: 6,
+    schema: 7,
     createdAt: new Date().toISOString(),
     clock: { gameMinutes: 0, speed: CONFIG.time.speeds[0], paused: false },
     resources: { ...(BALANCE.startingResources as Record<ResourceId, number>) },

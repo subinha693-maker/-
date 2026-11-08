@@ -3,7 +3,7 @@ import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
 import { leaveBattle, loseBattle, winBattle } from '../../core/session';
 import { DATA, charName, getCharacterDef } from '../../data';
-import { party as expeditionParty } from '../../systems/expedition';
+import { effectiveDifficulty, party as expeditionParty } from '../../systems/expedition';
 import { BCFG, castSkill, createBattle, isOver, results, skillReady, step, swapInto, type BattleState } from '../../systems/battle';
 import { Bar, Button, ConfirmDialog, PlaceholderTag } from '../components/Common';
 import { CharacterArt } from '../components/CharacterArt';
@@ -33,7 +33,7 @@ export function BattleScreen() {
     bRef.current = createBattle({
       party: ids.map((id) => roster.find((c) => c.charId === id)!).filter(Boolean),
       hp: ex?.hp ?? {}, relics: ex?.relics ?? [], supplied: (ex?.buffs ?? []).map((b) => b.source),
-      outpost: ex?.outpost ?? { hp: 100, maxHp: 100 }, nodeType, difficulty: ex?.difficulty ?? 1,
+      outpost: ex?.outpost ?? { hp: 100, maxHp: 100 }, nodeType, difficulty: ex ? effectiveDifficulty(ex) : 1,
       seed: ((ex?.seed ?? 1) ^ [...(node ?? 'x')].reduce((h, c) => h * 31 + c.charCodeAt(0), 7)) >>> 0,
     });
   }

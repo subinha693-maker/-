@@ -1,6 +1,6 @@
 // Save data versioning. When the saved structure changes, bump CURRENT_SAVE_VERSION and add a
 // migration from the previous version. Old saves are upgraded step by step on load.
-export const CURRENT_SAVE_VERSION = 6;
+export const CURRENT_SAVE_VERSION = 7;
 
 import { DATA } from '../data';
 import { initialRegions } from '../systems/regions';
@@ -53,6 +53,15 @@ export const migrations: Record<number, Migration> = {
   },
   // v5 -> v6 (region PHASE 5): development state starts empty; controlled regions get it on first use.
   5: (d) => ({ ...d, schema: 6, regionDev: d.regionDev ?? {} }),
+  // v6 -> v7 (PHASE 9 deep expedition): depth counters; a boss already beaten on the current map counts once.
+  6: (d) => {
+    const ex = d.expedition as Data | null;
+    if (!ex) return { ...d, schema: 7 };
+    const map = ex.map as { columns: { id: string; type: string }[][] };
+    const last = map.columns[map.columns.length - 1][0];
+    const bossClears = last.type === 'boss' && (ex.path as string[]).includes(last.id) ? 1 : 0;
+    return { ...d, schema: 7, expedition: { depth: 0, pastNodes: 0, bossClears, ...ex } };
+  },
 };
 
 export function migrate(data: Data, from: number): { data: Data } | { error: string } {

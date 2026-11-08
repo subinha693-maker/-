@@ -57,7 +57,8 @@ export function ResultScreen() {
         <Panel title="작전 기록" style={{ width: 680 }} bodyClass="col">
           <dl className="kv">
             <dt>작전 종류</dt><dd>{ex?.kind === 'general' ? `일반 원정 · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name}` : ex ? '전략 작전' : '—'}</dd>
-            <dt>탐사 노드</dt><dd className="num" data-testid="result-nodes">{ex ? `${ex.path.length} / ${ex.map.columns.flat().length}` : '—'}</dd>
+            <dt>탐사 노드</dt><dd className="num" data-testid="result-nodes">{ex ? `${ex.pastNodes + ex.path.length}` : '—'}</dd>
+            <dt>심층 원정</dt><dd className="num" data-testid="result-depth">{ex ? (ex.depth ? `${ex.depth}단계까지 진입 · 보스 ${ex.bossClears}회 처치` : '없음') : '—'}</dd>
             <dt>출전 부대</dt><dd>{ex ? ex.members.map((m) => charName(getCharacterDef(m))).join(', ') : '—'}</dd>
             <dt>합류 후발대</dt><dd>{ex?.reinforcements.length ? ex.reinforcements.map((m) => charName(getCharacterDef(m))).join(', ') : '없음'}</dd>
             <dt>유물 (소멸)</dt><dd>{ex?.relics.length ? ex.relics.map((r) => getRelic(r)?.name).join(', ') : '없음'}</dd>
@@ -76,7 +77,6 @@ export function ResultScreen() {
           {op && !opSuccess && <Notice>전략 작전은 주요 목표를 달성하고 귀환해야 성공합니다. 이번 작전으로는 아무것도 확보하지 않습니다.</Notice>}
           {ex?.kind === 'general' && <Notice>일반 원정은 반복해도 지역 통제권이나 영토가 늘지 않습니다. 통제권은 전략 작전으로만 확보합니다.</Notice>}
           <div className="grow" />
-          {outcome === 'victory' && <Button pendingPhase={9}>심층 원정 도전</Button>}
           <Button variant="primary" onClick={() => (ex ? finishExpedition(outcome) : reset('main'))} data-testid="btn-to-base">기지로 복귀 · 정산</Button>
         </Panel>
       </div>

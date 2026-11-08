@@ -395,5 +395,11 @@
    "special_biosample": 2,
    "relic_remnant": 2
   }
+ },
+ "deep": {
+  "_doc": "심층 원정 (master design 7.6, confirmed): continue after clearing every node, keeping party, relics and buffs. Scaling numbers are PLACEHOLDERS. No depth limit (territory is unaffected by design).",
+  "_placeholder": true,
+  "difficultyPerDepth": 1,
+  "lootMulPerDepth": 0.25
  }
 }

@@ -35,6 +35,7 @@ export function NodeEvent({ offer }: { offer: NodeOffer }) {
       return (
         <EventModal wide title="유물 획득" actions={<Button variant="ghost" onClick={() => resolveNodeEvent({ skip: true })} data-testid="ev-skip">가져가지 않는다</Button>}>
           <p className="muted" style={{ marginTop: 0 }}>부토스 잔재가 모인 무기물입니다. 오염구역 안에서만 발동하고 원정이 끝나면 사라집니다. 하나를 고르세요.</p>
+          {offer.choices.length === 0 && <div className="empty" data-testid="ev-relic-none">획득 가능한 유물이 더 없습니다.</div>}
           <div className="choice-grid">
             {offer.choices.map((id) => (
               <button key={id} className="choice" onClick={() => resolveNodeEvent({ pick: id })} data-testid={`ev-relic-${id}`}>

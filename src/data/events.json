@@ -1,21 +1,178 @@
 {
-  "_doc": "사건 및 선택지 nodes. The event SYSTEM (text + choices + outcomes) is per the design; every event below is a PLACEHOLDER awaiting real story content.",
-  "_placeholder": true,
-  "events": [
-    { "id": "ev_temp_a", "title": "임시 사건 A", "text": "[임시 사건] 무너진 구조물 아래에서 보급 상자를 발견했습니다. 주변에 침식 흔적이 있습니다.",
-      "choices": [
-        { "label": "상자를 회수한다", "outcomes": [{ "type": "loot", "loot": { "material": 60, "parts": 15 } }, { "type": "hp", "value": -0.1 }] },
-        { "label": "위험을 피해 지나간다", "outcomes": [] }
-      ] },
-    { "id": "ev_temp_b", "title": "임시 사건 B", "text": "[임시 사건] 정체 모를 신호가 반복 수신됩니다.",
-      "choices": [
-        { "label": "신호를 추적해 자료를 확보한다", "outcomes": [{ "type": "loot", "loot": { "data": 20 } }, { "type": "outpost", "value": -10 }] },
-        { "label": "기록만 남기고 이동한다", "outcomes": [{ "type": "loot", "loot": { "data": 5 } }] }
-      ] },
-    { "id": "ev_temp_c", "title": "임시 사건 C", "text": "[임시 사건] 버려진 의료 거점입니다. 일부 장비가 아직 작동합니다.",
-      "choices": [
-        { "label": "부대원을 치료한다", "outcomes": [{ "type": "hp", "value": 0.3 }] },
-        { "label": "생체시료를 채취한다", "outcomes": [{ "type": "loot", "loot": { "biosample": 3 } }] }
-      ] }
-  ]
+ "_doc": "사건 및 선택지 nodes. The event SYSTEM (text + choices + outcomes) is per the design; every event below is a PLACEHOLDER awaiting real story content.",
+ "_placeholder": true,
+ "events": [
+  {
+   "id": "ev_temp_a",
+   "title": "임시 사건 A",
+   "text": "[임시 사건] 무너진 구조물 아래에서 보급 상자를 발견했습니다. 주변에 침식 흔적이 있습니다.",
+   "choices": [
+    {
+     "label": "상자를 회수한다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "material": 60,
+        "parts": 15
+       }
+      },
+      {
+       "type": "hp",
+       "value": -0.1
+      }
+     ]
+    },
+    {
+     "label": "위험을 피해 지나간다",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "ev_temp_b",
+   "title": "임시 사건 B",
+   "text": "[임시 사건] 정체 모를 신호가 반복 수신됩니다.",
+   "choices": [
+    {
+     "label": "신호를 추적해 자료를 확보한다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "data": 20
+       }
+      },
+      {
+       "type": "outpost",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "label": "기록만 남기고 이동한다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "data": 5
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ev_temp_c",
+   "title": "임시 사건 C",
+   "text": "[임시 사건] 버려진 의료 거점입니다. 일부 장비가 아직 작동합니다.",
+   "choices": [
+    {
+     "label": "부대원을 치료한다",
+     "outcomes": [
+      {
+       "type": "hp",
+       "value": 0.3
+      }
+     ]
+    },
+    {
+     "label": "생체시료를 채취한다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "biosample": 3
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ev_temp_d",
+   "title": "임시 사건 D",
+   "text": "[임시 사건] 무너진 교량 아래 부토스 잔해가 쌓여 있습니다.",
+   "choices": [
+    {
+     "label": "잔해를 채취한다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "biosample": 4
+       }
+      },
+      {
+       "type": "hp",
+       "value": -0.15
+      }
+     ]
+    },
+    {
+     "label": "우회한다",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "ev_temp_e",
+   "title": "임시 사건 E",
+   "text": "[임시 사건] 버려진 보급 창고에 잠긴 컨테이너가 있습니다.",
+   "choices": [
+    {
+     "label": "강제로 연다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "parts": 30,
+        "alloy": 2
+       }
+      },
+      {
+       "type": "outpost",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "label": "표시만 해 둔다",
+     "outcomes": [
+      {
+       "type": "loot",
+       "loot": {
+        "data": 5
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ev_temp_f",
+   "title": "임시 사건 F",
+   "text": "[임시 사건] 오염도가 낮은 안전 지대를 발견했습니다.",
+   "choices": [
+    {
+     "label": "휴식한다",
+     "outcomes": [
+      {
+       "type": "hp",
+       "value": 0.2
+      }
+     ]
+    },
+    {
+     "label": "거점을 보강한다",
+     "outcomes": [
+      {
+       "type": "outpost",
+       "value": 15
+      }
+     ]
+    }
+   ]
+  }
+ ]
 }

@@ -9,7 +9,7 @@ import { LocalStorageAdapter, type StorageAdapter } from '../save/storage';
 import { useProfile } from '../save/profile';
 import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
-import { endExpedition, enterNode, resolveOffer, startExpedition, winCombat, type ExpeditionTarget, type OfferChoice } from '../systems/expedition';
+import { endExpedition, goDeeper, enterNode, resolveOffer, startExpedition, winCombat, type ExpeditionTarget, type OfferChoice } from '../systems/expedition';
 import { act } from './actions';
 import { startOp } from '../systems/regions';
 import { getOp } from '../data';
@@ -104,6 +104,10 @@ export function launchStrategicOp(opId: string, difficulty: number, members: str
   useGame.getState().mutate((s) => startExpedition(s, difficulty, members, undefined, { regionId: op.regionId, purpose: 'op', kind: 'strategic', opId }));
   events.emit('expedition:start', { difficulty });
   useRouter.getState().reset('expeditionMap');
+}
+/** 심층 원정: continue on a deeper map (autosaved like an expedition start). */
+export function goDeeperExpedition() {
+  if (act((s) => goDeeper(s), '심층 원정에 진입했습니다.')) events.emit('expedition:start', { difficulty: useGame.getState().state!.expedition!.difficulty });
 }
 export function finishExpedition(outcome: string) {
   useGame.getState().mutate((s) => endExpedition(s, outcome));

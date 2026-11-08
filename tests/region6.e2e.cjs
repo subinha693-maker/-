@@ -130,13 +130,21 @@ async function run(name, ctxOpts) {
     assert((await txt('op-status-op_residential_forward')) === '조건 미충족', 'op should be blocked');
     assert(!(await p.getByTestId('btn-general-sortie').isDisabled()), 'general run blocked');
   });
-  await step('8. deep expedition is not available yet (planned), expeditions still end normally', async () => {
+  await step('8. 심층 원정 from the region run: keeps the party, goes deeper, then returns and settles once', async () => {
     await tap('purpose-resource'); await tap('btn-general-sortie'); await pick3();
     await play();
-    const deep = p.locator('.map-clear button', { hasText: '심층 원정' });
-    assert(await deep.isDisabled(), 'deep expedition clickable');
-    await tap('btn-clear-return'); await tap('btn-to-base'); await see('screen-main');
-    assert((await region('rg_residential')).state === 2, 'residential not 정보 확보');
+    const before = await st();
+    await tap('btn-deeper'); await see('screen-expeditionMap');
+    const ex = (await st()).expedition;
+    assert(ex.depth === 1 && ex.path.length === 0, 'not deeper');
+    assert(JSON.stringify(ex.relics) === JSON.stringify(before.expedition.relics), 'relics lost');
+    assert((await p.locator('.screen-head .code').innerText()).includes('심층 1단계'), 'depth not shown');
+    await play(); await tap('btn-clear-return'); await see('screen-result');
+    assert((await txt('result-depth')).includes('1단계'), await txt('result-depth'));
+    await tap('btn-to-base'); await see('screen-main');
+    const after = await st();
+    assert(after.expedition === null, 'not ended');
+    assert(after.regions.rg_residential.state === 2 && after.regions.rg_residential.generalRuns === 1, 'deep run counted wrong');
   });
   console.log(`== ${name}\n` + steps.join('\n') + `\nerrors: ${errors.length ? errors.join(' | ') : 'none'}`);
   await b.close();

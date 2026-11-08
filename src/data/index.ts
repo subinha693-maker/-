@@ -36,6 +36,8 @@ export const DATA = {
   tutorial,
   items: items.items as ItemDef[],
   relics: relics.relics as RelicDef[],
+  synergies: relics.synergies.rules as { tag: string; count: number; name: string; effects: RelicDef['effects'] }[],
+  deep: expedition.deep as { difficultyPerDepth: number; lootMulPerDepth: number },
   events: events.events as EventDef[],
   generation: expedition.generation,
   enemies: enemies.enemies as EnemyDef[],

@@ -34,9 +34,16 @@ export interface BattleState {
 }
 
 // ---------- stats ----------
+/** Synergies active for a set of relics (tag counts reaching a rule's threshold). */
+export function activeSynergies(relics: string[]) {
+  const count: Record<string, number> = {};
+  for (const r of relics) for (const t of getRelic(r)?.tags ?? []) count[t] = (count[t] ?? 0) + 1;
+  return DATA.synergies.filter((x) => (count[x.tag] ?? 0) >= x.count);
+}
 export function relicMods(relics: string[]): Record<string, number> {
   const m: Record<string, number> = {};
   for (const r of relics) for (const e of getRelic(r)?.effects ?? []) m[e.stat] = (m[e.stat] ?? 0) + e.value;
+  for (const syn of activeSynergies(relics)) for (const e of syn.effects) m[e.stat] = (m[e.stat] ?? 0) + e.value;
   return m;
 }
 export function allyStats(c: CharacterInstance, mods: Record<string, number> = {}, supply = false): AllyStats {

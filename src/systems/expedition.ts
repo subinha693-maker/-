@@ -82,6 +82,7 @@ export function startExpedition(s: GameState, difficulty: number, members: strin
     expedition: {
       seed, difficulty, members: [...members], reinforcements: [],
       kind: target.kind ?? 'general', regionId: target.regionId, purpose: target.purpose, opId: target.opId ?? null,
+      depth: 0, pastNodes: 0, bossClears: 0,
       hp: Object.fromEntries(members.map((m) => [m, 1])),
       map: generateMap(seed, difficulty, target.purpose, target.kind === 'strategic'), currentNode: null, path: [], pending: null,
       relics: [], buffs: [], loot: {}, outpost: { hp: GEN.outpostHp + outpostBonus(s), maxHp: GEN.outpostHp + outpostBonus(s) }, log: [],
@@ -95,10 +96,12 @@ export function settlementFor(ex: ExpeditionState, outcome: string): Settlement 
   const st = DATA.settlement;
   const ratio = st.ratio[outcome] ?? 0;
   const resources = Object.fromEntries(Object.entries(ex.loot).map(([k, v]) => [k, Math.floor((v ?? 0) * ratio)]).filter(([, v]) => (v as number) > 0));
-  const boss = ex.map.columns[ex.map.columns.length - 1][0].id;
-  const bossCleared = outcome === 'victory' && ex.path.includes(boss);
+  // boss materials for every boss beaten (deep expeditions can beat several); lost on defeat
+  const bosses = outcome === 'defeat' ? 0 : ex.bossClears;
+  const bossCleared = bosses > 0;
   const items: Record<string, number> = { ...(st.items[outcome] ?? {}) };
-  if (bossCleared) for (const [k, v] of Object.entries(st.bossItems)) items[k] = (items[k] ?? 0) + v;
+  if (outcome === 'victory' && ex.depth > 0) for (const [k, v] of Object.entries(items)) items[k] = v * (ex.depth + 1); // deeper runs: more 경력서/훈장
+  for (const [k, v] of Object.entries(st.bossItems)) if (bosses) items[k] = (items[k] ?? 0) + v * bosses;
   return { ratio, resources, items, bossCleared };
 }
 
@@ -132,10 +135,29 @@ export function endExpedition(s: GameState, outcome = 'return'): GameState {
   return next;
 }
 
+/** Battle/map difficulty including 심층 원정 depth. */
+export const effectiveDifficulty = (ex: ExpeditionState) => ex.difficulty + ex.depth * DATA.deep.difficultyPerDepth;
+/** Deeper maps yield more (placeholder multiplier). */
+export const depthLootMul = (ex: ExpeditionState) => 1 + ex.depth * DATA.deep.lootMulPerDepth;
+
+/**
+ * 심층 원정 (master design 7.6): after every node is cleared, continue on a new, harder map while
+ * keeping members, reinforcements, HP, relics, buffs, loot and the outpost. Settlement still happens
+ * once, on return. A strategic operation's objective record carries over unchanged.
+ */
+export function goDeeper(s: GameState): ActionResult {
+  const ex = s.expedition; if (!ex) return fail('진행 중인 원정이 없습니다.');
+  if (!isCleared(ex)) return fail('모든 노드를 완료해야 심층 원정에 도전할 수 있습니다.');
+  const depth = ex.depth + 1;
+  const seed = (Math.imul(ex.seed ^ 0x5bd1e995, depth + 1) ^ hash(`deep${depth}`)) >>> 0;
+  const map = generateMap(seed, Math.min(5, effectiveDifficulty({ ...ex, depth })), ex.kind === 'general' ? ex.purpose : undefined);
+  return { ok: true, state: withEx(s, (e) => ({ ...e, seed, depth, map, pastNodes: e.pastNodes + e.path.length, currentNode: null, path: [], pending: null, log: [...e.log, `심층 원정 ${depth}단계 진입`] })) };
+}
+
 /** Loot scaled by the general expedition's purpose (placeholder multipliers in regions.json). */
-export function purposeLoot(purpose: string, loot: ResourceMap): ResourceMap {
+export function purposeLoot(purpose: string, loot: ResourceMap, extra = 1): ResourceMap {
   const m = DATA.generalPurposes.find((g) => g.id === purpose)?.lootMul ?? {};
-  return Object.fromEntries(Object.entries(loot).map(([k, v]) => [k, Math.round((v ?? 0) * (m[k] ?? 1))]));
+  return Object.fromEntries(Object.entries(loot).map(([k, v]) => [k, Math.round((v ?? 0) * (m[k] ?? 1) * extra)]));
 }
 const withEx = (s: GameState, fn: (ex: ExpeditionState) => ExpeditionState): GameState => ({ ...s, expedition: fn(s.expedition!) });
 const addLoot = (a: ResourceMap, b: ResourceMap): ResourceMap => {
@@ -151,8 +173,8 @@ function rollOffer(ex: ExpeditionState, node: MapNode): NodeOffer {
   switch (node.type) {
     case 'relic': return { kind: 'relic', node: node.id, choices: sample(r, DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id), GEN.relicChoices) };
     case 'reinforce': return { kind: 'reinforce', node: node.id, candidates: [] }; // filled by caller (needs roster)
-    case 'resource': return { kind: 'resource', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.resource) };
-    case 'intel': return { kind: 'intel', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.intel) };
+    case 'resource': return { kind: 'resource', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.resource, depthLootMul(ex)) };
+    case 'intel': return { kind: 'intel', node: node.id, loot: purposeLoot(ex.purpose, GEN.loot.intel, depthLootMul(ex)) };
     case 'event': return { kind: 'event', node: node.id, eventId: pick(r, DATA.events).id };
     case 'rest': return { kind: 'rest', node: node.id };
     case 'shop': return { kind: 'shop', node: node.id, stock: sample(r, DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id), GEN.shopStock).map((relic) => ({ relic, price: GEN.shopPrice })) };
@@ -182,7 +204,7 @@ function rollBattleReward(ex: ExpeditionState, node: MapNode): NodeOffer {
   const choices: RewardChoice[] = [];
   const free = DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id);
   if (free.length && r() < t.relicChance) choices.push({ type: 'relic', relic: pick(r, free) });
-  for (const l of sample(r, t.loot, t.count)) if (choices.length < t.count - 1) choices.push({ type: 'loot', loot: purposeLoot(ex.purpose, l) });
+  for (const l of sample(r, t.loot, t.count)) if (choices.length < t.count - 1) choices.push({ type: 'loot', loot: purposeLoot(ex.purpose, l, depthLootMul(ex)) });
   choices.push({ type: 'heal', amount: t.heal });
   return { kind: 'battleReward', node: node.id, choices };
 }
@@ -196,7 +218,7 @@ export function winCombat(s: GameState, nodeId: string): ActionResult {
   if (!reachable(ex).includes(nodeId)) return fail('현재 위치에서 갈 수 없는 노드입니다.');
   const node = nodeOf(ex.map, nodeId)!;
   if (!isCombat(node.type)) return fail('전투 노드가 아닙니다.');
-  let next = withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: rollBattleReward(e, node), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] }));
+  let next = withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: rollBattleReward(e, node), bossClears: e.bossClears + (node.type === 'boss' ? 1 : 0), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] }));
   // completing the objective node records the objective only; territory needs return + settlement
   if (node.type === 'objective' && ex.opId) next = markObjective(next, ex.opId);
   return { ok: true, state: next };

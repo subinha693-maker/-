@@ -431,3 +431,4 @@ button.purpose.on { border-color: var(--accent); background: var(--accent-bg); }
 .rm-detail > * { flex: none; }
 .rm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .rm-site .panel-head { font-size: var(--fs-m); color: var(--text); }
+.buff-line.syn { color: var(--accent); border-left-color: var(--accent); background: var(--accent-bg); }

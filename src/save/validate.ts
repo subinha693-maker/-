@@ -9,7 +9,7 @@ const isInt = (v: unknown) => Number.isInteger(v);
 export function validateGameState(s: unknown): string[] {
   const e: string[] = [];
   if (!isObj(s)) return ['게임 데이터가 객체가 아닙니다.'];
-  if (s.schema !== 6) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
+  if (s.schema !== 7) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
 
   const clock = s.clock;
   if (!isObj(clock) || !isNum(clock.gameMinutes) || (clock.gameMinutes as number) < 0) e.push('게임 시간 정보가 손상되었습니다.');
@@ -110,6 +110,7 @@ export function validateGameState(s: unknown): string[] {
       if (!isObj(ex.outpost) || !isNum(ex.outpost.hp)) e.push('임시 거점 정보가 손상되었습니다.');
       if (!DATA.regions.some((r) => r.id === ex.regionId)) e.push(`원정 지역이 올바르지 않습니다: ${String(ex.regionId)}`);
       if (ex.kind !== 'general' && ex.kind !== 'strategic') e.push('원정 종류가 올바르지 않습니다.');
+      if (!isInt(ex.depth) || (ex.depth as number) < 0 || !isInt(ex.pastNodes) || !isInt(ex.bossClears)) e.push('심층 원정 정보가 손상되었습니다.');
       if (ex.kind === 'general' && !DATA.generalPurposes.some((g) => g.id === ex.purpose)) e.push(`원정 목적이 올바르지 않습니다: ${String(ex.purpose)}`);
       if (ex.kind === 'strategic') {
         const op = DATA.strategicOps.find((o) => o.id === ex.opId);
