@@ -300,6 +300,58 @@
    "_doc": "보급품 도착 effect is undecided; placeholder = full heal of that agent + a buff text scaled by base growth",
    "heal": 1.0
   },
-  "outpostHp": 100
+  "outpostHp": 100,
+  "battleRewards": {
+   "_doc": "Reward choice after a won battle node (confirmed: choose a reward, then return to the map). Options and amounts are placeholders.",
+   "combat": {
+    "count": 3,
+    "loot": [
+     {
+      "material": 40,
+      "parts": 10
+     },
+     {
+      "food": 60,
+      "budget": 150
+     },
+     {
+      "data": 10,
+      "biosample": 2
+     }
+    ],
+    "relicChance": 0.25,
+    "heal": 0.25
+   },
+   "elite": {
+    "count": 3,
+    "loot": [
+     {
+      "parts": 30,
+      "biosample": 4
+     },
+     {
+      "data": 25,
+      "alloy": 2
+     }
+    ],
+    "relicChance": 1.0,
+    "heal": 0.4
+   },
+   "boss": {
+    "count": 3,
+    "loot": [
+     {
+      "biosample": 8,
+      "alloy": 5
+     },
+     {
+      "data": 40,
+      "parts": 40
+     }
+    ],
+    "relicChance": 1.0,
+    "heal": 0.5
+   }
+  }
  }
 }

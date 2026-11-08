@@ -35,7 +35,33 @@ describe('ally stats from confirmed tendencies', () => {
   });
 });
 
-describe('battle flow', () => {
+describe('battle flow (A advance -> B appear -> C fight -> D cleared -> E/F)', () => {
+  it('phases follow the confirmed order; scroll moves only while advancing', () => {
+    const b = setup();
+    const seen: string[] = []; let scrollAtAppear = -1;
+    for (let i = 0; i < 6000 && !isOver(b); i++) {
+      if (seen[seen.length - 1] !== b.phase) seen.push(b.phase);
+      if (b.phase === 'appear' && scrollAtAppear < 0) scrollAtAppear = b.scroll;
+      if (b.phase !== 'advance' && scrollAtAppear >= 0 && b.wave === 0) expect(b.scroll).toBe(scrollAtAppear);
+      step(b, BCFG.tick);
+    }
+    expect(seen.slice(0, 5)).toEqual(['advance', 'appear', 'fight', 'cleared', 'advance']);
+    expect(b.phase).toBe('victory');
+  });
+  it('a wave ends only when all its enemies are dead, not on a timer', () => {
+    const b = setup();
+    while (b.phase !== 'fight') step(b, BCFG.tick);
+    for (const a of b.allies) { a.lane = null; a.slot = null; } // nobody fights
+    for (let i = 0; i < 200; i++) step(b, BCFG.tick);
+    expect(b.phase).toBe('fight');
+  });
+  it('melee agents attack only enemies right in front; ranged attack at range', () => {
+    const b = setup('combat', 1, ['aion', 'miley_sneaker']);
+    const aion = b.allies.find((a) => a.charId === 'aion')!; const miley = b.allies.find((a) => a.charId === 'miley_sneaker')!;
+    expect(aion.stats.range).toBeLessThan(15);
+    expect(miley.stats.range).toBeGreaterThan(50);
+  });
+
   it('intro -> waves -> victory with auto attacks on a basic node', () => {
     const b = run(setup());
     expect(b.phase).toBe('victory');
@@ -56,9 +82,8 @@ describe('battle flow', () => {
   });
   it('skills need a full gauge and apply their effects', () => {
     const b = setup('combat', 1, ['james_harold']);
-    run(b, { max: 40 }); // past intro
-    expect(castSkill(b, 'james_harold')).toBe(false);
-    while (b.enemies.length === 0) step(b, BCFG.tick);
+    expect(castSkill(b, 'james_harold')).toBe(false);          // advancing, gauge empty
+    while (b.phase !== 'fight') step(b, BCFG.tick);
     b.allies[0].sp = 1;
     expect(castSkill(b, 'james_harold')).toBe(true);
     expect(b.enemies.every((e) => e.dead || e.st.slow > 0)).toBe(true); // 서프레시브 파이어: slow all

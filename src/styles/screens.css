@@ -339,3 +339,13 @@ button.res:hover, button.res.on { background: var(--accent-bg); }
 .battle-field.advancing .lane { background-image: repeating-linear-gradient(90deg, transparent 0 158px, rgba(255,255,255,.035) 158px 160px); animation: scroll-bg .5s linear infinite; }
 @keyframes scroll-bg { from { background-position: 0 0; } to { background-position: -160px 0; } }
 @media (prefers-reduced-motion: reduce) { .battle-field.advancing .lane { animation: none; } }
+
+/* battle environment (flooded city + scrolling obstacle layers) */
+.battle-field { background: #0b1117; }
+.bf-bg, .bf-mid { position: absolute; inset: 0; pointer-events: none; }
+.bf-bg { background-position: left center; background-size: auto 100%; background-repeat: repeat-x; filter: brightness(.62) saturate(.85); }
+.bf-mid { background-position: left bottom; background-size: auto 62%; background-repeat: repeat-x; opacity: .9; }
+.lane { background: linear-gradient(180deg, rgba(10,16,22,.05), rgba(10,16,22,.35)); border-color: rgba(52,68,79,.5); }
+.lane-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; background-position: left bottom; background-size: auto 100%; background-repeat: repeat-x; pointer-events: none; z-index: 2; opacity: .95; }
+.outpost { z-index: 5; background: rgba(17,24,32,.82); }
+.battle-field.advancing .lane { animation: none; background-image: none; }

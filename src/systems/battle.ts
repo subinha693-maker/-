@@ -25,7 +25,8 @@ export interface Enemy { uid: number; def: EnemyDef; lane: number; x: number; hp
 export interface Spawn { at: number; enemy: string; lane: number }
 export interface FloatText { id: number; lane: number; x: number; text: string; kind: 'dmg' | 'crit' | 'miss' | 'heal' | 'skill' | 'outpost'; t: number }
 export interface BattleState {
-  t: number; phase: 'intro' | 'fight' | 'advance' | 'victory' | 'defeat';
+  t: number; phase: 'advance' | 'appear' | 'fight' | 'cleared' | 'victory' | 'defeat';
+  scroll: number;  // background scroll distance (px), advanced only while the party runs
   phaseT: number; wave: number; waves: Spawn[][]; pending: Spawn[];
   allies: Ally[]; enemies: Enemy[];
   outpost: { hp: number; max: number }; nodeType: string; difficulty: number;
@@ -103,11 +104,11 @@ export function createBattle(p: BattleSetup): BattleState {
     const frac = p.hp[c.charId] ?? 1;
     const deployed = i < 8 && frac > 0;
     const lane = deployed ? i % 2 : null, slot = deployed ? Math.floor(i / 2) : null;
-    return { charId: c.charId, stats, hp: Math.round(stats.hp * frac), lane, slot, x: -10, atkCd: 0.3 * i, sp: 0, down: frac <= 0, evaBuff: 0, evaBuffT: 0, anim: 'move', animT: 0 };
+    return { charId: c.charId, stats, hp: Math.round(stats.hp * frac), lane, slot, x: slot === null ? -10 : cfg.slotX[slot], atkCd: 0.3 * i, sp: 0, down: frac <= 0, evaBuff: 0, evaBuffT: 0, anim: 'move', animT: 0 };
   });
   const omul = 1 + (mods.outpostHp ?? 0);
   return {
-    t: 0, phase: 'intro', phaseT: 0, wave: 0, waves: buildWaves(p.nodeType, p.difficulty, p.seed), pending: [],
+    t: 0, phase: 'advance', scroll: 0, phaseT: 0, wave: 0, waves: buildWaves(p.nodeType, p.difficulty, p.seed), pending: [],
     allies, enemies: [], outpost: { hp: p.outpost.hp * omul, max: p.outpost.maxHp * omul },
     nodeType: p.nodeType, difficulty: p.difficulty, relicMods: mods, floats: [], seq: 0, rand: rng(p.seed ^ 0x9e3779b9),
   };
@@ -198,28 +199,36 @@ export function step(b: BattleState, dt: number) {
   for (const a of b.allies) a.animT += dt;
   for (const e of b.enemies) { e.animT += dt; if (e.dead) e.deadT += dt; }
   b.enemies = b.enemies.filter((e) => !e.dead || e.deadT < 0.9);
+  if (b.phase === 'appear' || b.phase === 'fight') b.pending = b.pending.filter((s) => { if (s.at <= b.phaseT) { spawn(b, s); return false; } return true; });
 
   // queue regeneration (deployed units do not regenerate)
   for (const a of b.allies) if (a.lane === null && !a.down) a.hp = Math.min(a.stats.hp, a.hp + a.stats.hp * cfg.queueRegenPerSec * dt);
 
-  if (b.phase === 'intro' || b.phase === 'advance') {
-    const dur = b.phase === 'intro' ? cfg.introSeconds : cfg.advanceSeconds;
-    const k = Math.min(1, b.phaseT / dur);
-    // intro: run in from the outpost side; advance: hold position and play the running animation
-    for (const a of b.allies) if (a.lane !== null) { a.anim = 'move'; a.x = b.phase === 'intro' ? -10 + (slotX(a.slot!) + 10) * k : slotX(a.slot!); }
-    if (b.phaseT >= dur) {
-      for (const a of b.allies) if (a.lane !== null) { a.x = slotX(a.slot!); a.anim = 'idle'; }
-      b.phase = 'fight'; b.phaseT = 0; b.pending = [...b.waves[b.wave]];
+  // A. advance: the party runs (scroll moves), no enemies yet
+  if (b.phase === 'advance') {
+    b.scroll += cfg.runSpeed * dt;
+    for (const a of b.allies) if (a.lane !== null) { a.anim = 'move'; a.x = slotX(a.slot!); }
+    if (b.phaseT >= cfg.advanceSeconds) {
+      for (const a of b.allies) if (a.lane !== null) a.anim = 'idle';
+      b.phase = 'appear'; b.phaseT = 0; b.pending = [...b.waves[b.wave]];
     }
     return;
   }
+  // D. wave cleared: short hold, then E (advance again) or F (node complete)
+  if (b.phase === 'cleared') {
+    if (b.phaseT >= cfg.clearSeconds) {
+      if (b.wave >= b.waves.length - 1) { b.phase = 'victory'; return; }
+      b.wave++; b.phase = 'advance'; b.phaseT = 0;
+    }
+    return;
+  }
+  // B. enemies appear (allies hold position) -> C. auto battle
+  if (b.phase === 'appear' && b.phaseT >= cfg.appearSeconds) b.phase = 'fight'; // phaseT keeps running for the spawn schedule
 
-  // spawns
-  b.pending = b.pending.filter((s) => { if (s.at <= b.phaseT) { spawn(b, s); return false; } return true; });
 
-  // allies
+  // allies (no attacks while enemies are still appearing)
   for (const a of b.allies) {
-    if (a.lane === null || a.down) continue;
+    if (a.lane === null || a.down || b.phase !== 'fight') continue;
     a.sp = Math.min(1, a.sp + dt / a.stats.skillCharge);
     a.atkCd -= dt;
     if (a.anim === 'attack' && a.animT > 0.6) a.anim = 'idle';
@@ -262,10 +271,8 @@ export function step(b: BattleState, dt: number) {
   }
 
   if (b.outpost.hp <= 0) { b.phase = 'defeat'; return; }
-  if (!b.pending.length && !living(b).length) {
-    if (b.wave >= b.waves.length - 1) { b.phase = 'victory'; return; }
-    b.wave++; b.phase = 'advance'; b.phaseT = 0;
-  }
+  // the wave ends only when every enemy of the wave is defeated (never on an animation timer)
+  if (b.phase === 'fight' && !b.pending.length && !living(b).length) { b.phase = 'cleared'; b.phaseT = 0; }
 }
 
 /** HP fractions to write back to the expedition after the battle. */

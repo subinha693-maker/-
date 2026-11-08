@@ -79,7 +79,9 @@ export type NodeOffer =
   | { kind: 'event'; node: string; eventId: string }
   | { kind: 'rest'; node: string }
   | { kind: 'shop'; node: string; stock: { relic: string; price: ResourceMap }[] }
-  | { kind: 'intel'; node: string; loot: ResourceMap };
+  | { kind: 'intel'; node: string; loot: ResourceMap }
+  | { kind: 'battleReward'; node: string; choices: RewardChoice[] };
+export type RewardChoice = { type: 'loot'; loot: ResourceMap } | { type: 'relic'; relic: string } | { type: 'heal'; amount: number };
 export interface ExpeditionBuff { id: string; source: string; text: string }
 export interface ExpeditionState {
   seed: number;

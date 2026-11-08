@@ -12,7 +12,7 @@ function step(s: GameState): GameState {
   const ex = s.expedition!;
   const next = reachable(ex)[0];
   const node = nodeOf(ex.map, next)!;
-  if (isCombat(node.type)) return ok(winCombat(s, next));
+  if (isCombat(node.type)) { s = ok(winCombat(s, next)); return ok(resolveOffer(s, { index: 0 })); }
   s = ok(enterNode(s, next));
   const o = s.expedition!.pending!;
   const choice = o.kind === 'relic' ? { pick: o.choices[0] } : o.kind === 'reinforce' ? { pick: o.candidates[0] } : o.kind === 'event' ? { index: 0 } : { skip: true };
@@ -36,6 +36,21 @@ describe('map generation', () => {
   it('harder difficulty means a longer map', () => expect(generateMap(5, 3).columns.length).toBeGreaterThan(generateMap(5, 1).columns.length));
 });
 
+describe('battle reward (node complete -> choose a reward)', () => {
+  it('is stored before display and can only be taken once', () => {
+    let s = start(21);
+    s = ok(winCombat(s, reachable(s.expedition!)[0]));
+    const offer = s.expedition!.pending as { kind: string; choices: { type: string }[] };
+    expect(offer.kind).toBe('battleReward');
+    expect(offer.choices.some((c) => c.type === 'heal')).toBe(true);
+    const copy: GameState = JSON.parse(JSON.stringify(s));
+    expect(copy.expedition!.pending).toEqual(offer);
+    const after = ok(resolveOffer(copy, { index: 0 }));
+    expect(after.expedition!.pending).toBeNull();
+    expect(resolveOffer(after, { index: 0 }).ok).toBe(false);
+  });
+});
+
 describe('exploration', () => {
   it('only connected nodes can be entered; the path is recorded', () => {
     let s = start();
@@ -44,6 +59,9 @@ describe('exploration', () => {
     expect(winCombat(s, far).ok).toBe(false);
     s = ok(winCombat(s, first));
     expect(s.expedition!.path).toEqual([first]);
+    expect(s.expedition!.pending?.kind).toBe('battleReward');   // F: reward choice before moving on
+    expect(reachable(s.expedition!)).toEqual([]);
+    s = ok(resolveOffer(s, { index: 0 }));
     for (const id of reachable(s.expedition!)) expect(s.expedition!.map.edges).toContainEqual([first, id]);
   });
 

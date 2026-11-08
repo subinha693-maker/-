@@ -14,6 +14,7 @@ const LANES = ['1열', '2열'];
 const SLOTS = BCFG.slotX.length;
 const pct = (x: number) => `${(x / (BCFG.spawnX + 2)) * 100}%`;
 const ALLY_H = 175;
+const PHASE_TEXT: Record<string, string> = { advance: '전진', appear: '적 출현', cleared: '웨이브 종료' };
 
 export function BattleScreen() {
   const { params, back } = useRouter();
@@ -94,13 +95,17 @@ export function BattleScreen() {
         <Button small variant="danger" onClick={() => (training ? finish() : setRetreat(true))} data-testid="btn-retreat">후퇴</Button>
       </header>
 
-      <div className={`battle-field ${b.phase === 'advance' || b.phase === 'intro' ? 'advancing' : ''}`} data-tut="battle-lanes">
+      <div className="battle-field" data-tut="battle-lanes">
+        {/* parallax: background drifts slowly, obstacle layers pass by while the party runs */}
+        <div className="bf-bg" style={{ backgroundImage: `url(${asset('battle/bg_flooded_city.webp')})`, backgroundPositionX: `${-b.scroll * 0.08}px` }} />
+        <div className="bf-mid" style={{ backgroundImage: `url(${asset('battle/layer_mid.svg')})`, backgroundPositionX: `${-b.scroll * 0.45}px` }} />
         <div className="outpost" data-tut="battle-outpost">
           <img src={asset('sprites/kenney/sp-gate-door.png')} alt="" />
           <span>임시 거점</span>
         </div>
         {LANES.map((label, li) => (
           <div key={label} className="lane" data-testid={`lane-${li + 1}`}>
+            <div className="lane-ground" style={{ backgroundImage: `url(${asset('battle/layer_ground.svg')})`, backgroundPositionX: `${-b.scroll * (1 + li * 0.08)}px` }} />
             <span className="lane-label">{label}</span>
             {Array.from({ length: SLOTS }).map((_, si) => {
               const occ = b.allies.find((a) => a.lane === li && a.slot === si);
@@ -130,12 +135,12 @@ export function BattleScreen() {
             ))}
           </div>
         ))}
-        {(b.phase === 'intro' || b.phase === 'advance') && <div className="phase-banner">{b.phase === 'intro' ? '전투 진입' : `다음 웨이브로 이동 · WAVE ${b.wave + 1}`}</div>}
+        {b.phase !== 'fight' && !isOver(b) && <div className="phase-banner" data-testid="phase-banner">{PHASE_TEXT[b.phase]}{b.phase === 'advance' || b.phase === 'appear' ? ` · WAVE ${b.wave + 1}` : ''}</div>}
         {isOver(b) && (
           <div className="battle-end" data-testid="battle-end">
-            <h2 className={b.phase === 'victory' ? 'pos' : 'neg'}>{b.phase === 'victory' ? '전투 승리' : '임시 거점 함락'}</h2>
-            <span className="muted">{b.phase === 'victory' ? '모든 웨이브를 막아냈습니다.' : '거점 HP가 0이 되어 원정이 실패합니다.'}</span>
-            <Button variant="primary" onClick={finish} data-testid="btn-battle-continue">{training ? '돌아가기' : b.phase === 'victory' ? '원정 지도로' : '결과 확인'}</Button>
+            <h2 className={b.phase === 'victory' ? 'pos' : 'neg'}>{b.phase === 'victory' ? '노드 완료' : '임시 거점 함락'}</h2>
+            <span className="muted">{b.phase === 'victory' ? '모든 웨이브를 처치했습니다.' : '거점 HP가 0이 되어 원정이 실패합니다.'}</span>
+            <Button variant="primary" onClick={finish} data-testid="btn-battle-continue">{training ? '돌아가기' : b.phase === 'victory' ? '보상 선택' : '결과 확인'}</Button>
           </div>
         )}
       </div>

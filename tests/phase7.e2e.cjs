@@ -24,8 +24,8 @@ async function run(name, ctxOpts) {
     await tap('nav-expeditionPrep'); for (const id of party) await tap(`pick-${id}`); await tap('btn-launch');
     await tap('node-c0r0'); await tap('btn-enter'); await see('screen-battle');
   });
-  await step('run-in, then enemies spawn and walk in two lanes', async () => {
-    await p.waitForTimeout(1200); await shot('01-intro');
+  await step('A advance (running) -> B enemies appear in two lanes', async () => {
+    await see('phase-banner'); assert((await p.getByTestId('phase-banner').innerText()).startsWith('전진'), 'no advance phase'); await shot('01-advance');
     await p.waitForFunction(() => document.querySelectorAll('[data-testid="enemy"]').length > 0, null, { timeout: 8000 });
     assert((await p.locator('[data-testid^="unit-"]').count()) === 3, 'allies not deployed');
   });
@@ -41,10 +41,15 @@ async function run(name, ctxOpts) {
     assert(u.y > box.y && u.y < box.y + box.height, 'aion not in lane 2');
   });
   await step('a skill becomes ready and is cast by the player', async () => {
-    await p.waitForFunction(() => [...document.querySelectorAll('[data-testid^="skill-"]')].some((b) => !b.disabled), null, { timeout: 30000 });
-    const btn = p.locator('[data-testid^="skill-"]:not([disabled])').first();
-    await btn.click(); await p.waitForTimeout(100); await shot('03-skill');
-    assert((await p.locator('.float.skill').count()) > 0, 'no skill text');
+    let cast = false;
+    for (let i = 0; i < 6 && !cast; i++) {  // a wave can end between enabling and clicking; retry
+      await p.waitForFunction(() => [...document.querySelectorAll('[data-testid^="skill-"]')].some((b) => !b.disabled), null, { timeout: 30000 });
+      await p.locator('[data-testid^="skill-"]:not([disabled])').first().click().catch(() => {});
+      await p.waitForTimeout(80);
+      cast = (await p.locator('.float.skill').count()) > 0;
+    }
+    await shot('03-skill');
+    assert(cast, 'no skill text');
   });
   await step('victory: all waves cleared (casting skills as they charge)', async () => {
     await tap('b-speed-4');
@@ -54,11 +59,11 @@ async function run(name, ctxOpts) {
       await p.waitForTimeout(500);
     }
     await see('battle-end');
-    assert((await p.getByTestId('battle-end').innerText()).includes('전투 승리'), await p.getByTestId('battle-end').innerText());
+    assert((await p.getByTestId('battle-end').innerText()).includes('노드 완료'), await p.getByTestId('battle-end').innerText());
     await shot('04-victory');
   });
-  await step('continue -> map: node completed, next branches reachable', async () => {
-    await tap('btn-battle-continue'); await see('screen-expeditionMap');
+  await step('F: reward choice, then map: node completed, next branches reachable', async () => {
+    await tap('btn-battle-continue'); await see('screen-expeditionMap'); await see('ev-reward-0'); await shot('05-reward'); await tap('ev-reward-0');
     assert(await p.locator('.map-node.done').count() === 1, 'node not completed');
     assert(await p.locator('.map-node.reach').count() >= 1, 'no next nodes');
   });
@@ -71,6 +76,7 @@ async function run(name, ctxOpts) {
       if (found) { await found.click(); await tap('btn-enter'); break; }
       await reach.first().click(); await tap('btn-enter'); await p.waitForTimeout(150);
       for (const t of ['ev-skip', 'ev-ok', 'ev-choice-0']) if (await p.getByTestId(t).isVisible().catch(() => false)) { await tap(t); break; }
+      if (await p.locator('[data-testid^="ev-reward-"]').first().isVisible().catch(() => false)) await p.locator('[data-testid^="ev-reward-"]').first().click();
       if (await p.locator('[data-testid^="ev-relic-"]').first().isVisible().catch(() => false)) await p.locator('[data-testid^="ev-relic-"]').first().click();
       if (await p.locator('[data-testid^="ev-agent-"]').first().isVisible().catch(() => false)) await p.locator('[data-testid^="ev-agent-"]').first().click();
       if (await p.getByTestId('ev-ok').isVisible().catch(() => false)) await tap('ev-ok');

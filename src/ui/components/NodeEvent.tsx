@@ -62,6 +62,20 @@ export function NodeEvent({ offer }: { offer: NodeOffer }) {
           </div>
         </EventModal>
       );
+    case 'battleReward':
+      return (
+        <EventModal wide title="전투 보상 선택" actions={<span className="dim">하나를 선택하면 원정 지도로 돌아갑니다.</span>}>
+          <div className="choice-grid">
+            {offer.choices.map((c, i) => (
+              <button key={i} className="choice" onClick={() => resolveNodeEvent({ index: i })} data-testid={`ev-reward-${i}`}>
+                {c.type === 'loot' && <><b>물자 회수</b><span className="muted">{lootText(c.loot)}</span><span className="tag">원정 획득물</span></>}
+                {c.type === 'relic' && <><b>{getRelic(c.relic)?.name}</b><span className="dim">{fx(c.relic)}</span><span className="tag warn">유물</span></>}
+                {c.type === 'heal' && <><b>부대 정비</b><span className="muted">부대원 HP +{Math.round(c.amount * 100)}%</span><span className="tag accent">회복</span></>}
+              </button>
+            ))}
+          </div>
+        </EventModal>
+      );
     case 'supply':
       return (
         <EventModal title="보급품 도착" actions={<Button variant="primary" onClick={() => resolveNodeEvent({})} data-testid="ev-ok">수령</Button>}>

@@ -2,7 +2,7 @@
 // Node events are rolled ONCE when entered and stored in `pending`, so a save/load never re-rolls
 // or grants a reward twice. All amounts/weights are placeholders from data/expedition.json.
 import { DATA, getEvent, getRelic, getCharacterDef } from '../data';
-import type { ExpeditionMap, ExpeditionState, GameState, MapNode, NodeOffer, ResourceMap } from '../core/types';
+import type { ExpeditionMap, ExpeditionState, GameState, MapNode, NodeOffer, ResourceMap, RewardChoice } from '../core/types';
 import type { ActionResult } from './government';
 
 const GEN = DATA.generation;
@@ -135,17 +135,28 @@ export function enterNode(s: GameState, nodeId: string): ActionResult {
   return { ok: true, state: withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: offer, log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 진입`] })) };
 }
 
+type RewardTable = { count: number; loot: ResourceMap[]; relicChance: number; heal: number };
+function rollBattleReward(ex: ExpeditionState, node: MapNode): NodeOffer {
+  const t = (GEN.battleRewards as unknown as Record<string, RewardTable>)[node.type] ?? (GEN.battleRewards as unknown as Record<string, RewardTable>).combat;
+  const r = rngFor(ex.seed, node.id + ':reward');
+  const choices: RewardChoice[] = [];
+  const free = DATA.relics.filter((x) => !ex.relics.includes(x.id)).map((x) => x.id);
+  if (free.length && r() < t.relicChance) choices.push({ type: 'relic', relic: pick(r, free) });
+  for (const l of sample(r, t.loot, t.count)) if (choices.length < t.count - 1) choices.push({ type: 'loot', loot: l });
+  choices.push({ type: 'heal', amount: t.heal });
+  return { kind: 'battleReward', node: node.id, choices };
+}
+
 /**
- * Records a won combat node. PHASE 7 calls this from the real battle; until then the battle
- * screen offers a temporary "victory" button.
+ * Records a won combat node (all waves cleared) and rolls its reward choice, which is stored in
+ * `pending` before it is shown so a save/load cannot re-roll or repeat it.
  */
 export function winCombat(s: GameState, nodeId: string): ActionResult {
   const ex = s.expedition; if (!ex) return fail('진행 중인 원정이 없습니다.');
   if (!reachable(ex).includes(nodeId)) return fail('현재 위치에서 갈 수 없는 노드입니다.');
   const node = nodeOf(ex.map, nodeId)!;
   if (!isCombat(node.type)) return fail('전투 노드가 아닙니다.');
-  const loot = (GEN.loot as Record<string, ResourceMap>)[node.type] ?? {};
-  return { ok: true, state: withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], loot: addLoot(e.loot, loot), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] })) };
+  return { ok: true, state: withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: rollBattleReward(e, node), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] })) };
 }
 
 export type OfferChoice = { pick?: string; index?: number; skip?: boolean };
@@ -189,6 +200,13 @@ export function resolveOffer(s: GameState, choice: OfferChoice): ActionResult {
       for (const [k, v] of Object.entries(item.price)) if ((ex.loot[k as keyof ResourceMap] ?? 0) < (v ?? 0)) return fail('교환할 원정 획득물이 부족합니다.');
       const neg = Object.fromEntries(Object.entries(item.price).map(([k, v]) => [k, -(v ?? 0)]));
       return done((e) => ({ ...e, loot: addLoot(e.loot, neg), relics: [...e.relics, item.relic], log: [...e.log, `교환: ${getRelic(item.relic)?.name}`] }));
+    }
+    case 'battleReward': {
+      const c = o.choices[choice.index ?? -1]; if (!c) return fail('보상을 선택하세요.');
+      if (c.type === 'relic' && ex.relics.includes(c.relic)) return fail('이미 보유한 유물입니다.');
+      return done((e) => (c.type === 'loot' ? { ...e, loot: addLoot(e.loot, c.loot) }
+        : c.type === 'relic' ? { ...e, relics: [...e.relics, c.relic], log: [...e.log, `유물 획득: ${getRelic(c.relic)?.name}`] }
+        : { ...e, hp: Object.fromEntries(Object.entries(e.hp).map(([k, v]) => [k, v > 0 ? clamp(v + c.amount) : v])) }));
     }
     case 'event': {
       const ev = getEvent(o.eventId)!; const ch = ev.choices[choice.index ?? -1];
