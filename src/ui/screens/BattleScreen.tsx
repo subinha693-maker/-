@@ -106,6 +106,8 @@ export function BattleScreen() {
         {LANES.map((label, li) => (
           <div key={label} className="lane" data-testid={`lane-${li + 1}`}>
             <div className="lane-ground" style={{ backgroundImage: `url(${asset('battle/layer_ground.svg')})`, backgroundPositionX: `${-b.scroll * (1 + li * 0.08)}px` }} />
+            {/* footing (발판) the lane's units stand on; scrolls with the ground while advancing */}
+            <div className="lane-platform" data-testid={`platform-${li + 1}`} style={{ backgroundImage: `url(${asset('battle/platform.svg')})`, backgroundPositionX: `${-b.scroll * (1 + li * 0.08)}px` }} />
             <span className="lane-label">{label}</span>
             {Array.from({ length: SLOTS }).map((_, si) => {
               const occ = b.allies.find((a) => a.lane === li && a.slot === si);
@@ -116,6 +118,7 @@ export function BattleScreen() {
               return (
                 <div key={a.charId} className={`unit ally ${picked === a.charId ? 'picked' : ''}`} style={{ left: pct(a.x) }} onClick={() => clickSlot(li, a.slot!)} data-testid={`unit-${a.charId}`}>
                   {meta ? <Sprite url={`sprites/units/${a.charId}.webp`} meta={meta} anim={a.anim} t={a.animT} height={ALLY_H} /> : null}
+                  <span className="foot-shadow" />
                   <div className="unit-hp"><i style={{ width: `${(a.hp / a.stats.hp) * 100}%` }} /></div>
                 </div>
               );

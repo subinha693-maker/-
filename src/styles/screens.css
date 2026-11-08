@@ -349,3 +349,11 @@ button.res:hover, button.res.on { background: var(--accent-bg); }
 .lane-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; background-position: left bottom; background-size: auto 100%; background-repeat: repeat-x; pointer-events: none; z-index: 2; opacity: .95; }
 .outpost { z-index: 5; background: rgba(17,24,32,.82); }
 .battle-field.advancing .lane { animation: none; background-image: none; }
+
+/* lane footing (발판) */
+.lane-platform { position: absolute; left: 0; right: 0; bottom: 0; height: 12%; min-height: 34px; background-repeat: repeat-x; background-size: auto 100%; background-position-y: top; z-index: 2; pointer-events: none; box-shadow: 0 -6px 14px rgba(0,0,0,.35); }
+.lane-ground { bottom: 11%; height: 30%; }
+.unit { bottom: 9.5%; }
+.slot-pad { bottom: 9.5%; height: 66%; }
+.unit-hp { position: absolute; bottom: -16px; }
+.foot-shadow { position: absolute; bottom: -4px; width: 70%; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); z-index: -1; }
