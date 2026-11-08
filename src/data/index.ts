@@ -8,7 +8,8 @@ import characters from './characters.json';
 import npcs from './npcs.json';
 import expedition from './expedition.json';
 import tutorial from './tutorial.json';
-import type { CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
+import items from './items.json';
+import type { ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
 
 export const DATA = {
   resources: resources as ResourceDef[],
@@ -25,6 +26,7 @@ export const DATA = {
   difficulties: expedition.difficulties as DifficultyDef[],
   sampleMap: expedition.sampleMap as unknown as { columns: { id: string; type: string }[][]; edges: [string, string][] },
   tutorial,
+  items: items.items as ItemDef[],
 };
 
 const byId = <T extends { id: string }>(arr: T[]) => new Map(arr.map((x) => [x.id, x]));
@@ -37,6 +39,8 @@ export const getCharacterDef = (id: string) => characterIndex.get(id);
 export const getNodeType = (id: string) => nodeTypeIndex.get(id);
 const researchIndex = byId(DATA.researchNodes);
 export const getResearch = (id: string) => researchIndex.get(id);
+const itemIndex = byId(DATA.items);
+export const getItem = (id: string) => itemIndex.get(id);
 export const getNpc = (id: string) => DATA.npcs.find((n) => n.id === id);
 
 /** Display name helper: undecided names are shown explicitly as undecided. */

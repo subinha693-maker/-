@@ -9,7 +9,7 @@ const isInt = (v: unknown) => Number.isInteger(v);
 export function validateGameState(s: unknown): string[] {
   const e: string[] = [];
   if (!isObj(s)) return ['게임 데이터가 객체가 아닙니다.'];
-  if (s.schema !== 1) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
+  if (s.schema !== 2) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
 
   const clock = s.clock;
   if (!isObj(clock) || !isNum(clock.gameMinutes) || (clock.gameMinutes as number) < 0) e.push('게임 시간 정보가 손상되었습니다.');
@@ -55,6 +55,17 @@ export function validateGameState(s: unknown): string[] {
     if (rosterIds.has(c.charId)) e.push(`부대원이 중복 저장되었습니다: ${c.charId}`);
     rosterIds.add(c.charId);
     if (!isInt(c.level) || (c.level as number) < 1) e.push(`부대원 ${c.charId}의 레벨이 올바르지 않습니다.`);
+    if (![1, 2, 3].includes(c.phase as number)) e.push(`부대원 ${c.charId}의 승급 단계가 올바르지 않습니다.`);
+    if (!isInt(c.skillLevel) || (c.skillLevel as number) < 1) e.push(`부대원 ${c.charId}의 스킬 레벨이 올바르지 않습니다.`);
+    if (!isInt(c.merit) || (c.merit as number) < 0 || !isInt(c.capBonus) || (c.capBonus as number) < 0) e.push(`부대원 ${c.charId}의 육성 정보가 손상되었습니다.`);
+    if (!Array.isArray(c.traits)) e.push(`부대원 ${c.charId}의 특성 정보가 손상되었습니다.`);
+  }
+
+  const inv = s.inventory;
+  if (!isObj(inv)) e.push('보유 재화 정보가 없습니다.');
+  else for (const [k, v] of Object.entries(inv)) {
+    if (!DATA.items.some((i) => i.id === k)) e.push(`알 수 없는 재화: ${k}`);
+    if (!isInt(v) || (v as number) < 0) e.push(`재화 '${k}' 수량이 올바르지 않습니다.`);
   }
 
   const ex = s.expedition;
@@ -74,6 +85,7 @@ export function validateGameState(s: unknown): string[] {
 
   const pr = s.progress;
   if (!isObj(pr) || !Array.isArray(pr.unlockedDifficulties) || !pr.unlockedDifficulties.length) e.push('해금 정보가 손상되었습니다.');
+  else if (!isInt(pr.highestCleared) || !isObj(pr.recruit)) e.push('진행 기록이 손상되었습니다.');
   return e;
 }
 

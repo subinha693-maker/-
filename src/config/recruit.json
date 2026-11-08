@@ -1,0 +1,9 @@
+{
+  "_doc": "이력서 확인 (recruitment). The user has NOT decided the pool, rates, cost or ceiling. Everything here is a TEMPORARY test setting so the review/duplicate flow can be exercised.",
+  "_placeholder": true,
+  "banners": [
+    { "id": "normal",  "name": "일반 모집", "cost": { "budget": 300 }, "pool": "all", "ceiling": null },
+    { "id": "special", "name": "특별 모집", "cost": { "budget": 900 }, "pool": "all", "ceiling": null }
+  ],
+  "multiCount": 10
+}

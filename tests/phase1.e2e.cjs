@@ -28,7 +28,7 @@ async function run(name, ctxOpts) {
     await step(`main -> ${m} -> back`, async () => { await tap(`nav-${m}`); await expect(`screen-${m}`); await shot(`03-${m}`); if (m !== 'expeditionPrep') { await tap('back'); await expect('screen-main'); } });
   }
   await step('select party of 3 and launch', async () => {
-    await tap('pick-aion'); await tap('pick-ling'); await tap('pick-zerag'); await shot('04-prep-picked');
+    await tap('pick-aion'); await tap('pick-ring'); await tap('pick-jerag'); await shot('04-prep-picked');
     await tap('btn-launch'); await expect('screen-expeditionMap');
   }); await shot('05-map');
   await step('enter combat node -> battle', async () => { await tap('node-n0'); await tap('btn-enter'); await expect('screen-battle'); }); await shot('06-battle');

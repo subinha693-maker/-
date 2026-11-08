@@ -77,7 +77,7 @@ async function run(name, ctxOpts) {
   await step('STEP 6: squad, select a member', async () => {
     await nextUntilWait(); assert((await stepLabel()).startsWith('STEP 6'), await stepLabel());
     await tap('back'); await nextUntilWait(); await tap('nav-squad'); await see('screen-squad');
-    await nextUntilWait(); await tap('card-ling'); await nextUntilWait(1);
+    await nextUntilWait(); await tap('card-ring'); await nextUntilWait(1);
     await shot('06-char-detail');
   });
   await step('STEP 7: expedition prep, choose 3 members (signal)', async () => {

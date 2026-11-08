@@ -1,13 +1,248 @@
 {
-  "_doc": "Character definitions. Only 'name' and art are confirmed by the user; null = undecided.",
-  "characters": [
-    { "id": "shion_shirayuko", "name": "시온 시라유코", "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/shion_shirayuko.webp", "focus": [50, 20] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "james_harold",    "name": "제임스 해럴드", "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/james_harold.webp", "focus": [50, 12] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "aion",            "name": "아이온",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/aion.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "ling",            "name": "링",            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/ling.webp", "focus": [50, 10] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "zerag",           "name": "제라그",        "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/zerag.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null },
-    { "id": "miley_sneaker",   "name": "마일리 스니커",            "grade": null, "origin": null, "specialty": null, "art": { "full": "characters/miley_sneaker.webp", "focus": [50, 8] }, "stats": null, "traits": [], "basicAttack": null, "skill": null, "story": null }
-  ],
-  "_placeholder_startingRoster": true,
-  "startingRoster": ["shion_shirayuko", "james_harold", "aion", "ling", "zerag", "miley_sneaker"]
+ "_doc": "Character definitions. Confirmed by the user: name, weapon, specialty, origin, stat tendencies (letter grades), unique skill. Undecided (null): grade, numeric combat stats, traits' contents, basic attack, story. Skill effects/numbers are decided in PHASE 7.",
+ "characters": [
+  {
+   "id": "shion_shirayuko",
+   "name": "시온 시라유코",
+   "nameEn": "Shion Shirayuko",
+   "grade": null,
+   "origin": "심층오염구역 정화부대 출신",
+   "specialty": "광역 참격 및 출혈 부여",
+   "weapon": "카타나",
+   "tendencies": [
+    {
+     "stat": "대오염특효",
+     "grade": "S"
+    },
+    {
+     "stat": "공격속도",
+     "grade": "S"
+    },
+    {
+     "stat": "체력",
+     "grade": "A"
+    }
+   ],
+   "art": {
+    "full": "characters/shion_shirayuko.webp",
+    "focus": [
+     50,
+     20
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_shion",
+    "name": "앵화란무(櫻花亂舞)",
+    "desc": "카타나로 전방 적들을 난타하며 출혈을 유발한다."
+   },
+   "story": null
+  },
+  {
+   "id": "james_harold",
+   "name": "제임스 해럴드",
+   "nameEn": "James Harold",
+   "grade": null,
+   "origin": "돌격공병대 출신",
+   "specialty": "제압 사격 및 적 진형 붕괴",
+   "weapon": "중기관총 / 개틀링 슈트",
+   "tendencies": [
+    {
+     "stat": "파괴력",
+     "grade": "S"
+    },
+    {
+     "stat": "체력",
+     "grade": "A"
+    },
+    {
+     "stat": "화력",
+     "grade": "A"
+    }
+   ],
+   "art": {
+    "full": "characters/james_harold.webp",
+    "focus": [
+     50,
+     12
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_james",
+    "name": "서프레시브 파이어",
+    "desc": "적 전체의 이동 속도와 명중률을 낮추는 강력한 제압 사격을 가한다."
+   },
+   "story": null
+  },
+  {
+   "id": "aion",
+   "name": "아이온",
+   "nameEn": "Aion",
+   "grade": null,
+   "origin": "고속기동타격대 출신",
+   "specialty": "고기동 회피 및 검술 연계",
+   "weapon": "전술 검",
+   "tendencies": [
+    {
+     "stat": "기동력",
+     "grade": "S+"
+    },
+    {
+     "stat": "회피율",
+     "grade": "S"
+    },
+    {
+     "stat": "공격력",
+     "grade": "B"
+    }
+   ],
+   "art": {
+    "full": "characters/aion.webp",
+    "focus": [
+     50,
+     10
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_aion",
+    "name": "섬광 회전참",
+    "desc": "회피 기동 직후 검으로 적의 허를 찌르는 반격을 가한다."
+   },
+   "story": null
+  },
+  {
+   "id": "ring",
+   "name": "링",
+   "nameEn": "Ring",
+   "grade": null,
+   "origin": "전술정찰대 출신",
+   "specialty": "노드 정찰 및 매복 감지",
+   "weapon": "다목적 전술 단검",
+   "tendencies": [
+    {
+     "stat": "정찰력",
+     "grade": "S"
+    },
+    {
+     "stat": "기동력",
+     "grade": "S"
+    },
+    {
+     "stat": "단검 회피",
+     "grade": "A"
+    }
+   ],
+   "art": {
+    "full": "characters/ring.webp",
+    "focus": [
+     50,
+     10
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_ring",
+    "name": "정찰 플래시",
+    "desc": "섬광 후 단검으로 적의 시야와 명중률을 차단한다."
+   },
+   "story": null
+  },
+  {
+   "id": "jerag",
+   "name": "제라그",
+   "nameEn": "Jerag",
+   "grade": null,
+   "origin": "심리작전사령부 특임참모 출신",
+   "specialty": "적 사기 저하 및 혼란 유도 투척",
+   "weapon": "투척용 나이프",
+   "tendencies": [
+    {
+     "stat": "지능",
+     "grade": "S"
+    },
+    {
+     "stat": "기동력",
+     "grade": "B"
+    },
+    {
+     "stat": "투척적중",
+     "grade": "S"
+    }
+   ],
+   "art": {
+    "full": "characters/jerag.webp",
+    "focus": [
+     50,
+     8
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_jerag",
+    "name": "혼란의 투척 나이프",
+    "desc": "적의 신경계를 교란하는 특수 나이프를 연속 투척한다."
+   },
+   "story": null
+  },
+  {
+   "id": "miley_sneaker",
+   "name": "마일리 스니커",
+   "nameEn": "Miley Sneaker",
+   "grade": null,
+   "origin": "야전사령부 전술교관 출신",
+   "specialty": "화력 지원 및 제압 사격",
+   "weapon": "총",
+   "tendencies": [
+    {
+     "stat": "화력",
+     "grade": "S"
+    },
+    {
+     "stat": "기동력",
+     "grade": "A"
+    },
+    {
+     "stat": "통솔",
+     "grade": "A"
+    }
+   ],
+   "art": {
+    "full": "characters/miley_sneaker.webp",
+    "focus": [
+     50,
+     8
+    ]
+   },
+   "stats": null,
+   "traits": [],
+   "basicAttack": null,
+   "skill": {
+    "id": "sk_miley",
+    "name": "제압 사격망",
+    "desc": "소총 연사로 적의 이동 속도와 명중률을 떨어뜨린다."
+   },
+   "story": null
+  }
+ ],
+ "_distribution": "The initial 6 are distribution characters given to every new game (user decision).",
+ "startingRoster": [
+  "shion_shirayuko",
+  "james_harold",
+  "aion",
+  "ring",
+  "jerag",
+  "miley_sneaker"
+ ]
 }

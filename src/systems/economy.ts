@@ -120,8 +120,11 @@ export function tickEconomy(s: GameState, minutes: number): { state: GameState; 
     }
   }
   let unlocks = s.unlocks;
+  let inventory = s.inventory;
   for (const e of events) if (e.type === 'research:complete') {
-    for (const u of getResearch(e.id)?.unlocks ?? []) if (!unlocks.includes(`${u.type}:${u.id}`)) unlocks = [...unlocks, `${u.type}:${u.id}`];
+    const node = getResearch(e.id);
+    for (const u of node?.unlocks ?? []) if (!unlocks.includes(`${u.type}:${u.id}`)) unlocks = [...unlocks, `${u.type}:${u.id}`];
+    for (const [item, n] of Object.entries(node?.rewards ?? {})) inventory = { ...inventory, [item]: (inventory[item] ?? 0) + n };
   }
-  return { state: { ...s, resources, facilities, research, unlocks, clock: { ...s.clock, gameMinutes: s.clock.gameMinutes + minutes } }, events };
+  return { state: { ...s, resources, facilities, research, unlocks, inventory, clock: { ...s.clock, gameMinutes: s.clock.gameMinutes + minutes } }, events };
 }

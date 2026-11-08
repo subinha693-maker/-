@@ -1,5 +1,5 @@
 {
- "_doc": "Research FIELDS are confirmed. Research NODES, costs (cost), durations (hours at research rate 1) and unlocks are placeholders.",
+ "_doc": "Research FIELDS are confirmed. Research NODES, costs (cost), durations (hours at research rate 1) and unlocks are placeholders. Certificate rewards on 행정/무장/방호 nodes are placeholders for '행정·군사 기술 연구 완료' (no '군사 기술' field exists; 무장·방호 used).",
  "fields": [
   {
    "id": "buthos_bio",
@@ -98,7 +98,10 @@
     "data": 15,
     "budget": 300
    },
-   "hours": 24
+   "hours": 24,
+   "rewards": {
+    "certificate": 1
+   }
   },
   {
    "id": "r_wpn_2",
@@ -113,7 +116,10 @@
     "data": 30,
     "budget": 600
    },
-   "hours": 48
+   "hours": 48,
+   "rewards": {
+    "certificate": 1
+   }
   },
   {
    "id": "r_wpn_3",
@@ -128,7 +134,10 @@
     "data": 45,
     "budget": 900
    },
-   "hours": 72
+   "hours": 72,
+   "rewards": {
+    "certificate": 1
+   }
   },
   {
    "id": "r_pro_1",
@@ -141,7 +150,10 @@
     "data": 15,
     "budget": 300
    },
-   "hours": 24
+   "hours": 24,
+   "rewards": {
+    "certificate": 1
+   }
   },
   {
    "id": "r_pro_2",
@@ -156,7 +168,10 @@
     "data": 30,
     "budget": 600
    },
-   "hours": 48
+   "hours": 48,
+   "rewards": {
+    "certificate": 1
+   }
   },
   {
    "id": "r_ind_1",
@@ -230,7 +245,10 @@
     "data": 15,
     "budget": 300
    },
-   "hours": 24
+   "hours": 24,
+   "rewards": {
+    "certificate": 1
+   }
   }
  ]
 }

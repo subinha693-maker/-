@@ -7,7 +7,7 @@ import { startTutorial } from '../../tutorial/controller';
 const LIST: [ScreenId, string, Record<string, unknown>?][] = [
   ['title', '1. 타이틀 화면'], ['saveLoad', '2·3. 새 게임/이어하기 · 세이브/로드'], ['main', '4. 메인 정부 운영'],
   ['facilities', '5. 시설 관리'], ['population', '6. 인구 관리'], ['research', '7. 연구 개발'], ['squad', '8. 개척부대'],
-  ['recruit', '9. 이력서 확인'], ['expeditionPrep', '10. 개척 작전 준비'], ['expeditionMap', '11. 원정 지도', { party: ['aion', 'ling', 'zerag'], difficulty: 1 }],
+  ['recruit', '9. 이력서 확인'], ['expeditionPrep', '10. 개척 작전 준비'], ['expeditionMap', '11. 원정 지도', { party: ['aion', 'ring', 'jerag'], difficulty: 1 }],
   ['battle', '12. 실시간 전투', { party: ['shion_shirayuko', 'james_harold', 'aion'] }], ['result', '13. 원정 결과 및 정산', { outcome: 'return' }],
 ];
 

@@ -15,7 +15,7 @@ const KEY = (slot: string | number, s = '') => `test.save.${slot}${s}`;
 /** A state that differs from a fresh game in every saved area. */
 function progressedState(): GameState {
   let s = createNewGame();
-  s = startExpedition(s, 1, ['aion', 'ling', 'zerag']);
+  s = startExpedition(s, 1, ['aion', 'ring', 'jerag']);
   s = {
     ...s,
     clock: { ...s.clock, gameMinutes: 12345 },
@@ -24,10 +24,11 @@ function progressedState(): GameState {
     facilities: s.facilities.map((f, i) => (i === 0 ? { ...f, workers: 12, condition: 73, status: 'idle' } : f)),
     research: { active: 'r_bio_2', progress: 0.4, completed: ['r_bio_1'] },
     unlocks: ['tech_a'],
-    roster: s.roster.map((c) => (c.charId === 'aion' ? { ...c, level: 3, growth: { atk: 2 }, equipment: ['eq1'] } : c)),
+    roster: s.roster.map((c) => (c.charId === 'aion' ? { ...c, level: 3, phase: 2 as const, merit: 3, skillLevel: 2, traits: ['unique'], growth: { atk: 2 }, equipment: ['eq1'] } : c)),
     expedition: { ...s.expedition!, currentNode: 'n1b', path: ['n0', 'n1b'], relics: ['relic_x'], reinforcements: ['shion_shirayuko'], outpost: { hp: 62, maxHp: 100 } },
     tutorial: { active: true, step: 4, completedHints: ['res'], skipped: false },
-    progress: { unlockedDifficulties: [1, 2], codex: { enemy_a: true }, stats: { battles: 3 } },
+    progress: { unlockedDifficulties: [1, 2], highestCleared: 1, recruit: { reviews: 4 }, codex: { enemy_a: true }, stats: { battles: 3 } },
+    inventory: { certificate: 2 },
   };
   return s;
 }
@@ -120,9 +121,32 @@ describe('SaveManager', () => {
     } finally { delete migrations[0]; }
   });
 
+  it('upgrades a real v1 save (PHASE 2-4 format): renamed ids, new growth fields, inventory', () => {
+    const v2 = progressedState();
+    // Build what PHASE 4 wrote: schema 1, old ids, agents without growth fields, no inventory/recruit.
+    const data: Record<string, unknown> = JSON.parse(JSON.stringify(v2));
+    data.schema = 1;
+    data.roster = v2.roster.map((c) => ({ charId: c.charId === 'ring' ? 'ling' : c.charId === 'jerag' ? 'zerag' : c.charId, level: c.level, growth: c.growth, equipment: c.equipment }));
+    data.expedition = { ...v2.expedition!, members: ['aion', 'ling', 'zerag'] };
+    delete data.inventory;
+    data.progress = { unlockedDifficulties: [1], codex: {}, stats: {} };
+    const meta = { slot: 1, kind: 'manual', reason: 't', savedAt: new Date().toISOString(), summary: { gameDate: '', gameTime: '', facilities: 9, roster: 6, inExpedition: true, difficulty: 1 } };
+    store.set(KEY(1), JSON.stringify({ format: 'UHA_SAVE', saveVersion: 1, gameVersion: '0.1.0', meta, checksum: checksum(JSON.stringify({ meta, data })), data }));
+    const r = sm.load(1);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.migratedFrom).toBe(1);
+    expect(r.state.roster.map((c) => c.charId)).toContain('ring');
+    expect(r.state.roster.map((c) => c.charId)).toContain('jerag');
+    expect(r.state.expedition!.members).toEqual(['aion', 'ring', 'jerag']);
+    expect(r.state.roster.find((c) => c.charId === 'aion')).toMatchObject({ level: 3, phase: 1, merit: 0, skillLevel: 1 });
+    expect(r.state.inventory).toEqual({});
+    expect(r.state.progress.highestCleared).toBe(0);
+  });
+
   it('rejects structurally invalid states (unknown character, duplicated relic)', () => {
     const s = progressedState();
-    const bad = { ...s, roster: [...s.roster, { charId: 'nobody', level: 1, growth: {}, equipment: [] }] };
+    const bad = { ...s, roster: [...s.roster, { ...s.roster[0], charId: 'nobody' }] };
     expect(sm.save(1, bad, 'manual', 't').ok).toBe(false);
     const dup = { ...s, expedition: { ...s.expedition!, relics: ['r1', 'r1'] } };
     expect(sm.save(1, dup, 'manual', 't').ok).toBe(false);

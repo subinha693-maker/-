@@ -1,0 +1,24 @@
+{
+  "_doc": "Agent growth (전문가 등급 승급). Structure, phase names, effects and required materials are confirmed by the user. ALL numbers are placeholders.",
+  "_placeholder_numbers": true,
+  "phases": [
+    { "phase": 1, "name": "현장 실무 요원", "levelCap": 30, "skillMax": 3, "equipSlots": 1,
+      "unlocks": ["기본 고유 스킬"] },
+    { "phase": 2, "name": "수석 전문가 인증", "levelCap": 50, "skillMax": 6, "equipSlots": 2,
+      "requires": { "level": 30, "items": { "certificate": 1 } },
+      "unlocks": ["능력치 상한 확장", "신규 패시브 특성"] },
+    { "phase": 3, "name": "최고 권위자 / 특임 국장급", "levelCap": 70, "skillMax": 10, "equipSlots": 4,
+      "requires": { "level": 50, "clearedDifficulty": 3, "items": { "special_biosample": 5, "relic_remnant": 5 } },
+      "unlocks": ["최고 스펙", "궁극 전술 특성", "장비 슬롯 극대화"] }
+  ],
+  "traitSlots": [
+    { "id": "unique", "name": "고유 특성", "unlock": { "merit": 2 } },
+    { "id": "passive", "name": "패시브 특성", "unlock": { "phase": 2 } },
+    { "id": "ultimate", "name": "궁극 전술 특성", "unlock": { "phase": 3 } }
+  ],
+  "skillLevelMeritCost": 1,
+  "capExtension": { "items": ["career_record", "service_medal"], "levelsPerItem": 2, "maxBonusPerPhase": 10 },
+  "_training_note": "How proficiency levels are gained is NOT decided. 'training' is a temporary stand-in so growth can be tested.",
+  "training": { "budgetPerLevel": 60, "levelsPerUse": 1 },
+  "duplicateMerit": 1
+}

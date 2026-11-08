@@ -27,7 +27,7 @@ async function run(name, ctxOpts) {
     await tap('nav-settings'); await p.getByTestId('vol-bgm').fill('35'); await tap('settings-close');
   });
   await step('launch expedition -> autosave toast, map shows party', async () => {
-    await tap('nav-expeditionPrep'); await tap('pick-aion'); await tap('pick-ling'); await tap('pick-zerag'); await tap('btn-launch');
+    await tap('nav-expeditionPrep'); await tap('pick-aion'); await tap('pick-ring'); await tap('pick-jerag'); await tap('btn-launch');
     await see('screen-expeditionMap'); await p.getByTestId('toast').last().waitFor();
     assert((await p.getByTestId('toast').last().innerText()).includes('자동 저장'), 'no autosave toast');
   });

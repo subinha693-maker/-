@@ -26,14 +26,17 @@ export interface FacilityDef {
   requires?: string;            // research id that unlocks building it
 }
 
-export interface ResearchNodeDef { id: string; field: string; tier: number; name: string; prereq: string[]; unlocks: { type: string; id: string }[]; cost: ResourceMap; hours: number }
+export interface ResearchNodeDef { id: string; field: string; tier: number; name: string; prereq: string[]; unlocks: { type: string; id: string }[]; cost: ResourceMap; hours: number; rewards?: Record<string, number> }
 
 export interface CharacterDef {
-  id: string; name: string | null; grade: string | null; origin: string | null; specialty: string | null;
+  id: string; name: string | null; nameEn?: string; grade: string | null; origin: string | null; specialty: string | null;
+  weapon?: string;
+  tendencies?: { stat: string; grade: string }[];   // 능력치 경향성 (letter grades)
   art: { full: string; focus: [number, number] };
   stats: Record<string, number> | null; traits: string[];
-  basicAttack: unknown | null; skill: unknown | null; story: string | null;
+  basicAttack: unknown | null; skill: { id: string; name: string; desc: string } | null; story: string | null;
 }
+export interface ItemDef { id: string; name: string; icon: string; source: string; use: string; perCharacter?: boolean }
 export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }
 export interface DifficultyDef { level: number; name: string }
@@ -47,7 +50,15 @@ export interface FacilityInstance {
   job?: { kind: 'build' | 'upgrade'; remainingMinutes: number; totalMinutes: number } | null;
 }
 export interface CharacterInstance {
-  charId: string; level: number; growth: Record<string, number>; equipment: string[];
+  charId: string;
+  level: number;                 // 숙련도 레벨
+  phase: 1 | 2 | 3;              // 전문가 등급 (승급 단계)
+  capBonus: number;              // level-cap extension from 작전 경력서 / 실무 훈장 (current phase)
+  skillLevel: number;
+  traits: string[];              // unlocked trait slot ids
+  merit: number;                 // 인사 공적 held for this agent
+  growth: Record<string, number>;
+  equipment: string[];
 }
 export interface ExpeditionState {
   difficulty: number; members: string[]; reinforcements: string[];
@@ -57,7 +68,7 @@ export interface ExpeditionState {
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 1;
+  schema: 2;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;
@@ -66,7 +77,12 @@ export interface GameState {
   research: { active: string | null; progress: number; completed: string[] }; // progress 0..1
   unlocks: string[];
   roster: CharacterInstance[];
+  inventory: Record<string, number>;   // growth materials (except per-character 인사 공적)
   expedition: ExpeditionState | null;
   tutorial: TutorialState;
-  progress: { unlockedDifficulties: number[]; codex: Record<string, unknown>; stats: Record<string, number> };
+  progress: {
+    unlockedDifficulties: number[]; highestCleared: number;
+    recruit: { reviews: number };
+    codex: Record<string, unknown>; stats: Record<string, number>;
+  };
 }

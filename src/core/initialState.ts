@@ -1,11 +1,13 @@
 import { CONFIG, BALANCE } from './config';
 import { DATA } from '../data';
-import type { GameState, PopulationId, ResourceId } from './types';
+import type { CharacterInstance, GameState, PopulationId, ResourceId } from './types';
+
+export const newAgent = (charId: string): CharacterInstance => ({ charId, level: 1, phase: 1, capBonus: 0, skillLevel: 1, traits: [], merit: 0, growth: {}, equipment: [] });
 
 /** Builds a fresh GameState for "새 게임" from config + data (no hard-coded values here). */
 export function createNewGame(): GameState {
   return {
-    schema: 1,
+    schema: 2,
     createdAt: new Date().toISOString(),
     clock: { gameMinutes: 0, speed: CONFIG.time.speeds[0], paused: false },
     resources: { ...(BALANCE.startingResources as Record<ResourceId, number>) },
@@ -15,9 +17,10 @@ export function createNewGame(): GameState {
     })),
     research: { active: null, progress: 0, completed: [] },
     unlocks: [],
-    roster: DATA.startingRoster.map((charId) => ({ charId, level: 1, growth: {}, equipment: [] })),
+    roster: DATA.startingRoster.map(newAgent),
+    inventory: {},
     expedition: null,
     tutorial: { active: false, step: 0, completedHints: [], skipped: false },
-    progress: { unlockedDifficulties: [...CONFIG.progress.initialUnlockedDifficulties], codex: {}, stats: {} },
+    progress: { unlockedDifficulties: [...CONFIG.progress.initialUnlockedDifficulties], highestCleared: 0, recruit: { reviews: 0 }, codex: {}, stats: {} },
   };
 }
