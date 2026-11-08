@@ -74,10 +74,10 @@ export function RegionMapScreen() {
 }
 
 function RegionDetail({ s, r }: { s: GameState; r: RegionDef }) {
+  const go = useRouter((x) => x.go);
   const p = s.regions[r.id];
   const type = DATA.regionTypes.find((t) => t.id === r.type)!;
   const generalWhy = canRunGeneral(s, r.id);
-  const go = useRouter((x) => x.go);
   const [purpose, setPurpose] = useState(r.general.purposes[0]);
   const follow = followUpRegions(r.id);
   return (
@@ -94,6 +94,7 @@ function RegionDetail({ s, r }: { s: GameState; r: RegionDef }) {
           <dt>연결 지역</dt><dd>{r.connections.map((c) => getRegion(c)?.name).join(', ')}</dd>
           <dt>후속 지역</dt><dd>{follow.length ? follow.map((c) => getRegion(c)?.name).join(', ') : '없음'}</dd>
         </dl>
+        {p.state >= 4 && <Button variant="primary" onClick={() => go('regionManage', { regionId: r.id })} data-testid="btn-region-manage">지역 관리 · 개발</Button>}
         {!p.unlocked && (
           <div className="col" style={{ gap: 6 }} data-testid="unlock-conditions">
             <b>해금 조건</b>

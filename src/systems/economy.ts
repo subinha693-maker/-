@@ -2,6 +2,8 @@
 // All numbers come from data/facilities.json and config/balance.json (placeholders until decided).
 import { BALANCE } from '../core/config';
 import { DATA, getFacilityDef, getResearch } from '../data';
+import { regionEconomy, tickRegionDev, type RegionEco } from './regionDev';
+import { refreshRegions } from './regions';
 import type { FacilityInstance, GameState, ResourceId, ResourceMap } from '../core/types';
 
 const ECON = BALANCE.economy;
@@ -21,6 +23,7 @@ export interface EconomyReport {
   gross: { produce: Record<ResourceId, number>; consume: Record<ResourceId, number> };
   researchRate: number;
   populationFood: number;
+  regions: Map<string, RegionEco>;
 }
 
 const zero = () => Object.fromEntries(RES.map((r) => [r, 0])) as Record<ResourceId, number>;
@@ -75,14 +78,24 @@ export function computeEconomy(s: GameState, hours = 1): EconomyReport {
     researchRate += rep.research;
     facilities.set(f.uid, rep);
   }
+  // controlled regions: production, facility inputs, upkeep and erosion management
+  const regions = new Map<string, RegionEco>();
+  for (const rid of Object.keys(s.regionDev ?? {})) {
+    const re = regionEconomy(s, rid);
+    regions.set(rid, re);
+    for (const [r, v] of Object.entries(re.produce) as [ResourceId, number][]) produce[r] += v;
+    for (const [r, v] of Object.entries(re.consume) as [ResourceId, number][]) consume[r] += v;
+    researchRate += re.research;
+  }
   const perHour = zero();
   for (const r of RES) perHour[r] = produce[r] - consume[r];
-  return { facilities, perHour, gross: { produce, consume }, researchRate, populationFood };
+  return { facilities, perHour, gross: { produce, consume }, researchRate, populationFood, regions };
 }
 
 export type EconomyEvent =
   | { type: 'facility:complete'; uid: string; kind: 'build' | 'upgrade' }
-  | { type: 'research:complete'; id: string };
+  | { type: 'research:complete'; id: string }
+  | { type: 'regionSite:complete'; regionId: string; siteId: string };
 
 /** Advances the government simulation by `minutes` of game time. */
 export function tickEconomy(s: GameState, minutes: number): { state: GameState; events: EconomyEvent[] } {
@@ -126,5 +139,9 @@ export function tickEconomy(s: GameState, minutes: number): { state: GameState; 
     for (const u of node?.unlocks ?? []) if (!unlocks.includes(`${u.type}:${u.id}`)) unlocks = [...unlocks, `${u.type}:${u.id}`];
     for (const [item, n] of Object.entries(node?.rewards ?? {})) inventory = { ...inventory, [item]: (inventory[item] ?? 0) + n };
   }
-  return { state: { ...s, resources, facilities, research, unlocks, inventory, clock: { ...s.clock, gameMinutes: s.clock.gameMinutes + minutes } }, events };
+  const rd = tickRegionDev({ ...s, resources, facilities, research, unlocks, inventory }, minutes);
+  for (const c of rd.completed) events.push({ type: 'regionSite:complete', ...c });
+  const before = s.regions;
+  const refreshed = refreshRegions(rd.state);
+  return { state: { ...refreshed, regions: refreshed.regions === before ? before : refreshed.regions, clock: { ...s.clock, gameMinutes: s.clock.gameMinutes + minutes } }, events };
 }

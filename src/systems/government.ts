@@ -1,6 +1,7 @@
 // Player actions on the government (pure: return a new state or an error message).
 import { BALANCE } from '../core/config';
 import { DATA, getFacilityDef, getResearch } from '../data';
+import { regionLabor } from './regionDev';
 import type { FacilityDef, GameState, ResourceMap, WorkerType } from '../core/types';
 
 const ECON = BALANCE.economy;
@@ -22,7 +23,8 @@ function updateFacility(s: GameState, uid: string, fn: (f: GameState['facilities
 
 // ---------- Labor ----------
 export function assignedWorkers(s: GameState, type: WorkerType, exceptUid?: string) {
-  return s.facilities.reduce((sum, f) => (f.uid !== exceptUid && getFacilityDef(f.defId)?.workerType === type ? sum + f.workers : sum), 0);
+  const fac = s.facilities.reduce((sum, f) => (f.uid !== exceptUid && getFacilityDef(f.defId)?.workerType === type ? sum + f.workers : sum), 0);
+  return type === 'labor' ? fac + regionLabor(s) : fac;   // region sites and cleanup crews use labor
 }
 export function availableWorkers(s: GameState, type: WorkerType) {
   return s.population[type] - assignedWorkers(s, type);

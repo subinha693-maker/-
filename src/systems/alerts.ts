@@ -23,6 +23,12 @@ export function computeWarnings(s: GameState, eco: EconomyReport): Warning[] {
     if (rep.issues.includes('unstaffed') && f.status === 'active' && !f.job) w.push({ key: `staff-${f.uid}`, tone: 'warn', title: '인력 미배치', body: `${def.name}에 배치된 인력이 없습니다.` });
     if (rep.issues.includes('worn')) w.push({ key: `worn-${f.uid}`, tone: f.condition < 25 ? 'danger' : 'warn', title: '유지보수 필요', body: `${def.name} 상태 ${Math.round(f.condition)}%` });
   }
+  for (const [rid, d] of Object.entries(s.regionDev ?? {})) {
+    if ((s.regions[rid]?.state ?? 0) < 4) continue;
+    const re = eco.regions.get(rid); const name = DATA.regions.find((r) => r.id === rid)?.name ?? rid;
+    if (re) for (const [sid, st] of Object.entries(d.sites)) if (st.status === 'active' && (re.sites[sid] ?? 0) === 0) w.push({ key: `rsite-${rid}-${sid}`, tone: 'warn', title: '지역 시설 인력 미배치', body: `${name}: 복구된 시설에 인력이 없습니다.` });
+    if (d.erosion > 40) w.push({ key: `eros-${rid}`, tone: 'warn', title: '잔존 침식 위험', body: `${name} 잔존 침식 ${Math.round(d.erosion)} · 효율 저하와 관리비 발생` });
+  }
   if (s.research.active && eco.researchRate <= 0) w.push({ key: 'research-stall', tone: 'warn', title: '연구 정지', body: '가동 중인 연구 시설이 없어 연구가 진행되지 않습니다.' });
   return w;
 }

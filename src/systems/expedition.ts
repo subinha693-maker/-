@@ -5,6 +5,7 @@ import { DATA, getEvent, getRelic, getCharacterDef } from '../data';
 import type { ExpeditionMap, ExpeditionState, GameState, MapNode, NodeOffer, ResourceMap, RewardChoice } from '../core/types';
 import type { ActionResult } from './government';
 import { markObjective, recordGeneralExpedition, settleOp } from './regions';
+import { outpostBonus } from './regionDev';
 
 const GEN = DATA.generation;
 const fail = (message: string): ActionResult => ({ ok: false, message });
@@ -83,7 +84,7 @@ export function startExpedition(s: GameState, difficulty: number, members: strin
       kind: target.kind ?? 'general', regionId: target.regionId, purpose: target.purpose, opId: target.opId ?? null,
       hp: Object.fromEntries(members.map((m) => [m, 1])),
       map: generateMap(seed, difficulty, target.purpose, target.kind === 'strategic'), currentNode: null, path: [], pending: null,
-      relics: [], buffs: [], loot: {}, outpost: { hp: GEN.outpostHp, maxHp: GEN.outpostHp }, log: [],
+      relics: [], buffs: [], loot: {}, outpost: { hp: GEN.outpostHp + outpostBonus(s), maxHp: GEN.outpostHp + outpostBonus(s) }, log: [],
     },
   };
 }

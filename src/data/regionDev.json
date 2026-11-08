@@ -1,0 +1,29 @@
+{
+  "_doc": "Region development (지역 개발). Structure follows the user's spec (repair facilities, staff them, invest resources, production, upkeep, residual erosion, government integration). Site lists per region type and ALL numbers are PLACEHOLDERS. Rates are per game hour.",
+  "_placeholder": true,
+  "upkeep": { "base": { "budget": 30, "food": 8 }, "perActiveSite": { "budget": 10 }, "erosionBudgetPerPoint": 0.4 },
+  "erosion": { "initial": 60, "efficiencyLossPerPoint": 0.005, "minEfficiency": 0.5, "cleanupPerDayPer1000": 2, "cleanupMaxWorkers": 10000, "developedMax": 20 },
+  "workerStep": 1000,
+  "sitesByType": {
+    "industrial": [
+      { "id": "ind_plant", "name": "공장 설비 (임시)", "repairCost": { "material": 300, "parts": 80, "budget": 600 }, "repairHours": 6, "workers": 20000, "produce": { "parts": 12 }, "consume": { "power": 6 } },
+      { "id": "ind_yard", "name": "자재 야적장 (임시)", "repairCost": { "material": 200, "budget": 400 }, "repairHours": 4, "workers": 15000, "produce": { "material": 20 }, "consume": {} }
+    ],
+    "research": [
+      { "id": "res_lab", "name": "지하 실험동 (임시)", "repairCost": { "material": 250, "parts": 60, "data": 30 }, "repairHours": 8, "workers": 12000, "requires": "r_bio_1", "produce": { "data": 4 }, "consume": { "power": 8 }, "research": 1.0 },
+      { "id": "res_archive", "name": "관측 기록실 (임시)", "repairCost": { "material": 150, "budget": 300 }, "repairHours": 4, "workers": 8000, "produce": { "data": 2 }, "consume": {} }
+    ],
+    "residential": [
+      { "id": "rsd_shelter", "name": "생존자 구호소 (임시)", "repairCost": { "material": 250, "food": 200 }, "repairHours": 6, "workers": 15000, "produce": {}, "consume": { "food": 15 }, "survivorsPerDay": 300 },
+      { "id": "rsd_blocks", "name": "주거동 정비 (임시)", "repairCost": { "material": 300, "budget": 500 }, "repairHours": 6, "workers": 12000, "produce": { "budget": 40 }, "consume": { "power": 4 } }
+    ],
+    "energy": [
+      { "id": "eng_plant", "name": "해안 발전소 (임시)", "repairCost": { "material": 350, "parts": 100 }, "repairHours": 8, "workers": 18000, "produce": { "power": 90 }, "consume": {} },
+      { "id": "eng_grid", "name": "송전망 (임시)", "repairCost": { "material": 150, "parts": 40 }, "repairHours": 4, "workers": 8000, "produce": { "power": 30 }, "consume": {} }
+    ],
+    "military": [
+      { "id": "mil_base", "name": "구 군사 기지 (임시)", "repairCost": { "material": 300, "parts": 80, "budget": 500 }, "repairHours": 8, "workers": 15000, "produce": {}, "consume": { "budget": 20 }, "outpostBonus": 15 },
+      { "id": "mil_armory", "name": "무기고 (임시)", "repairCost": { "material": 200, "parts": 60 }, "repairHours": 6, "workers": 10000, "produce": { "parts": 6, "alloy": 1 }, "consume": { "power": 4 } }
+    ]
+  }
+}

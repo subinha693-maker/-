@@ -7,6 +7,7 @@
 import { DATA, getOp, getRegion } from '../data';
 import type { Condition, GameState, OpRecord, RegionProgress, RegionStateId } from '../core/types';
 import type { ActionResult } from './government';
+import { isDeveloped } from './regionDev';
 
 const fail = (message: string): ActionResult => ({ ok: false, message });
 export const MAX_STATE_FROM_GENERAL = 2;
@@ -26,6 +27,7 @@ export function conditionMet(s: GameState, c: Condition, regionId?: string): boo
     case 'research': return s.research.completed.includes(c.id);
     case 'generalClears': return (s.regions[regionId ?? '']?.generalClears ?? 0) >= c.count;
     case 'item': return (s.inventory[c.id] ?? 0) >= c.count;
+    case 'developed': return isDeveloped(s, regionId ?? '');
   }
 }
 export function describeCondition(c: Condition): string {
@@ -35,6 +37,7 @@ export function describeCondition(c: Condition): string {
     case 'research': return `연구 완료: ${DATA.researchNodes.find((n) => n.id === c.id)?.name ?? c.id}`;
     case 'generalClears': return `이 지역 일반 원정 완수 ${c.count}회`;
     case 'item': return `${c.id} ${c.count}개 보유`;
+    case 'developed': return '모든 지역 시설 운영 + 잔존 침식 기준 이하';
   }
 }
 
@@ -52,8 +55,8 @@ export function refreshRegions(s: GameState): GameState {
       let next = { ...cur };
       if (!cur.unlocked && def.unlock.every((c) => conditionMet(view, c, def.id))) { next.unlocked = true; }
       if (next.unlocked) {
-        for (const lv of [2, 3, 4] as const) {
-          const conds = def.progression[String(lv) as '2' | '3' | '4'] ?? [];
+        for (const lv of [2, 3, 4, 5] as const) {
+          const conds = def.progression[String(lv) as '2' | '3' | '4' | '5'] ?? [];
           if (next.state >= lv) continue;                       // already there
           if (!conds.length || !conds.every((c) => conditionMet(view, c, def.id))) break;
           if (lv === 4 && !def.strategicOps.some((op) => view.strategicOps[op]?.controlGranted)) break;

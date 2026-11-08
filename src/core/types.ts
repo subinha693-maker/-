@@ -51,11 +51,12 @@ export type Condition =
   | { type: 'opCompleted'; op: string }
   | { type: 'research'; id: string }
   | { type: 'generalClears'; count: number }
-  | { type: 'item'; id: string; count: number };
+  | { type: 'item'; id: string; count: number }
+  | { type: 'developed' };
 export interface RegionDef {
   id: string; name: string; type: string; description: string; pos: [number, number];
   connections: string[]; initiallyUnlocked: boolean; unlock: Condition[];
-  progression: Partial<Record<'2' | '3' | '4', Condition[]>>;
+  progression: Partial<Record<'2' | '3' | '4' | '5', Condition[]>>;
   general: { fromState: number; purposes: string[] }; difficulty: number; strategicOps: string[];
 }
 export interface StrategicOpDef {
@@ -68,6 +69,12 @@ export interface StrategicOpDef {
 export interface RegionProgress { unlocked: boolean; state: RegionStateId; generalRuns: number; generalClears: number }
 /** Permanent operation record. Each flag is tracked separately so settlement can never pay twice. */
 export interface OpRecord { attempts: number; objectiveAchieved: boolean; returned: boolean; rewardGranted: boolean; controlGranted: boolean; completedAt: number | null }
+export interface RegionSiteDef {
+  id: string; name: string; repairCost: ResourceMap; repairHours: number; workers: number; requires?: string;
+  produce: ResourceMap; consume: ResourceMap; research?: number; survivorsPerDay?: number; outpostBonus?: number;
+}
+export interface RegionSiteState { status: 'damaged' | 'repairing' | 'active' | 'idle'; remainingMinutes: number; totalMinutes: number; workers: number }
+export interface RegionDevState { sites: Record<string, RegionSiteState>; erosion: number; cleanupWorkers: number }
 export interface ItemDef { id: string; name: string; icon: string; source: string; use: string; perCharacter?: boolean }
 export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }
@@ -130,7 +137,7 @@ export interface ExpeditionState {
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 5;
+  schema: 6;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;
@@ -142,6 +149,7 @@ export interface GameState {
   inventory: Record<string, number>;   // growth materials (except per-character 인사 공적)
   regions: Record<string, RegionProgress>;
   strategicOps: Record<string, OpRecord>;
+  regionDev: Record<string, RegionDevState>;   // created when a region comes under control
   expedition: ExpeditionState | null;
   tutorial: TutorialState;
   progress: {

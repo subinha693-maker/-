@@ -89,6 +89,11 @@
       "type": "opCompleted",
       "op": "op_industrial_control"
      }
+    ],
+    "5": [
+     {
+      "type": "developed"
+     }
     ]
    },
    "general": {
@@ -145,6 +150,11 @@
       "type": "opCompleted",
       "op": "op_residential_control"
      }
+    ],
+    "5": [
+     {
+      "type": "developed"
+     }
     ]
    },
    "general": {
@@ -200,6 +210,11 @@
      {
       "type": "opCompleted",
       "op": "op_energy_control"
+     }
+    ],
+    "5": [
+     {
+      "type": "developed"
      }
     ]
    },
@@ -260,6 +275,11 @@
       "type": "opCompleted",
       "op": "op_research_control"
      }
+    ],
+    "5": [
+     {
+      "type": "developed"
+     }
     ]
    },
    "general": {
@@ -314,6 +334,11 @@
      {
       "type": "opCompleted",
       "op": "op_military_control"
+     }
+    ],
+    "5": [
+     {
+      "type": "developed"
      }
     ]
    },

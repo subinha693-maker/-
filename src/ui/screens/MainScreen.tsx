@@ -20,6 +20,7 @@ const MENU: { id: ScreenId; label: string; icon: string; code: string }[] = [
   { id: 'squad',          label: '개척부대',    icon: 'squad',      code: 'SQD' },
   { id: 'recruit',        label: '이력서 확인', icon: 'recruit',    code: 'REC' },
   { id: 'regionMap',      label: '외부 오염권', icon: 'node-intel', code: 'MAP' },
+  { id: 'regionManage',   label: '지역 관리',   icon: 'alert',      code: 'DEV' },
   { id: 'expeditionPrep', label: '개척 작전',   icon: 'expedition', code: 'OPS' },
 ];
 

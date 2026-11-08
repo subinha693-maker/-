@@ -9,7 +9,7 @@ const isInt = (v: unknown) => Number.isInteger(v);
 export function validateGameState(s: unknown): string[] {
   const e: string[] = [];
   if (!isObj(s)) return ['게임 데이터가 객체가 아닙니다.'];
-  if (s.schema !== 5) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
+  if (s.schema !== 6) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
 
   const clock = s.clock;
   if (!isObj(clock) || !isNum(clock.gameMinutes) || (clock.gameMinutes as number) < 0) e.push('게임 시간 정보가 손상되었습니다.');
@@ -77,6 +77,20 @@ export function validateGameState(s: unknown): string[] {
     }
     for (const k of Object.keys(regs)) if (!DATA.regions.some((r) => r.id === k)) e.push(`알 수 없는 지역: ${k}`);
   }
+  const dev = s.regionDev;
+  if (!isObj(dev)) e.push('지역 개발 정보가 없습니다.');
+  else for (const [rid, v] of Object.entries(dev)) {
+    const r = DATA.regions.find((x) => x.id === rid);
+    if (!r) { e.push(`알 수 없는 개발 지역: ${rid}`); continue; }
+    if (!isObj(v) || !isObj(v.sites) || !isNum(v.erosion) || !isInt(v.cleanupWorkers)) { e.push(`지역 개발 정보 손상: ${r.name}`); continue; }
+    const defs = DATA.regionDev.sitesByType[r.type] ?? [];
+    for (const [sid, st] of Object.entries(v.sites as Record<string, unknown>)) {
+      if (!defs.some((d) => d.id === sid)) e.push(`알 수 없는 지역 시설: ${sid}`);
+      if (!isObj(st) || !['damaged', 'repairing', 'active', 'idle'].includes(st.status as string) || !isInt(st.workers) || (st.workers as number) < 0) e.push(`지역 시설 정보 손상: ${sid}`);
+    }
+    if (isObj(regs) && ((regs[rid] as Record<string, unknown>)?.state as number) < 4) e.push(`통제권이 없는 지역에 개발 기록이 있습니다: ${r.name}`);
+  }
+
   const ops = s.strategicOps;
   if (!isObj(ops)) e.push('전략 작전 기록이 없습니다.');
   else for (const [k, v] of Object.entries(ops)) {

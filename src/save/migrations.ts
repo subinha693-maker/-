@@ -1,6 +1,6 @@
 // Save data versioning. When the saved structure changes, bump CURRENT_SAVE_VERSION and add a
 // migration from the previous version. Old saves are upgraded step by step on load.
-export const CURRENT_SAVE_VERSION = 5;
+export const CURRENT_SAVE_VERSION = 6;
 
 import { DATA } from '../data';
 import { initialRegions } from '../systems/regions';
@@ -51,6 +51,8 @@ export const migrations: Record<number, Migration> = {
     const ex = d.expedition as Data | null;
     return { ...d, schema: 5, expedition: ex ? { kind: 'general', regionId: 'rg_industrial', purpose: 'resource', opId: null, ...ex } : null };
   },
+  // v5 -> v6 (region PHASE 5): development state starts empty; controlled regions get it on first use.
+  5: (d) => ({ ...d, schema: 6, regionDev: d.regionDev ?? {} }),
 };
 
 export function migrate(data: Data, from: number): { data: Data } | { error: string } {

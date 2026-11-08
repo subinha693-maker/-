@@ -14,9 +14,10 @@ import events from './events.json';
 import enemies from './enemies.json';
 import regions from './regions.json';
 import strategicOps from './strategicOps.json';
+import regionDev from './regionDev.json';
 import unitSprites from './unitSprites.json';
 import enemySprites from './enemySprites.json';
-import type { RegionDef, StrategicOpDef, EnemyDef, SpriteMeta, RelicDef, EventDef, ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
+import type { ResourceMap, RegionSiteDef, RegionDef, StrategicOpDef, EnemyDef, SpriteMeta, RelicDef, EventDef, ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
 
 export const DATA = {
   resources: resources as ResourceDef[],
@@ -46,6 +47,7 @@ export const DATA = {
   generalPurposes: regions.generalPurposes as unknown as { id: string; name: string; focus: string; weightMul: Record<string, number>; lootMul: Record<string, number> }[],
   settlement: expedition.settlement as { ratio: Record<string, number>; items: Record<string, Record<string, number>>; bossItems: Record<string, number> },
   strategicOps: strategicOps.ops as unknown as StrategicOpDef[],
+  regionDev: regionDev as unknown as { upkeep: { base: ResourceMap; perActiveSite: ResourceMap; erosionBudgetPerPoint: number }; erosion: { initial: number; efficiencyLossPerPoint: number; minEfficiency: number; cleanupPerDayPer1000: number; cleanupMaxWorkers: number; developedMax: number }; workerStep: number; sitesByType: Record<string, RegionSiteDef[]> },
 };
 
 const byId = <T extends { id: string }>(arr: T[]) => new Map(arr.map((x) => [x.id, x]));

@@ -423,3 +423,11 @@ button.purpose.on { border-color: var(--accent); background: var(--accent-bg); }
 .map-node.t-objective { width: 124px; height: 124px; border-color: var(--warn); color: var(--warn); background: #2a2016; box-shadow: 0 0 0 6px rgba(209,138,75,.15); }
 .map-node.t-objective.reach { box-shadow: 0 0 0 8px rgba(209,138,75,.3); }
 .map-side > * { flex: none; }
+/* ---------- region development ---------- */
+.nav-item { min-height: 80px; }
+.rm-item { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--panel-2); border: 1px solid var(--line-soft); border-left: 4px solid var(--line); color: var(--text); text-align: left; cursor: pointer; font-size: var(--fs-s); }
+.rm-item.sel { border-left-color: var(--accent); background: var(--accent-bg); }
+.rm-detail { gap: var(--gap); }
+.rm-detail > * { flex: none; }
+.rm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rm-site .panel-head { font-size: var(--fs-m); color: var(--text); }

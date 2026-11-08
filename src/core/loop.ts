@@ -5,7 +5,8 @@ import { events } from './events';
 import { useGame } from './gameStore';
 import { useRouter } from './router';
 import { tickEconomy } from '../systems/economy';
-import { getFacilityDef, getResearch } from '../data';
+import { getFacilityDef, getRegion, getResearch } from '../data';
+import { siteDefs } from '../systems/regionDev';
 import { pushLog } from './log';
 
 const ECON = BALANCE.economy;
@@ -38,9 +39,13 @@ export function advance(minutes: number) {
       const f = s.facilities.find((x) => x.uid === e.uid);
       pushLog('info', e.kind === 'build' ? '건설 완료' : '업그레이드 완료', `${getFacilityDef(f!.defId)?.name}${e.kind === 'upgrade' ? ` Lv.${f!.level}` : ''}`);
       events.emit('facility:complete', { uid: e.uid });
-    } else {
+    } else if (e.type === 'research:complete') {
       pushLog('info', '연구 완료', getResearch(e.id)?.name ?? e.id);
       events.emit('research:complete', { id: e.id });
+    } else {
+      const def = siteDefs(e.regionId).find((x) => x.id === e.siteId);
+      pushLog('info', '지역 시설 복구 완료', `${getRegion(e.regionId)?.name} · ${def?.name ?? e.siteId}`);
+      events.emit('facility:complete', { uid: `${e.regionId}:${e.siteId}` });
     }
   }
   events.emit('clock:advance', { gameMinutes: s.clock.gameMinutes });
