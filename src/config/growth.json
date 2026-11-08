@@ -1,24 +1,94 @@
 {
-  "_doc": "Agent growth (전문가 등급 승급). Structure, phase names, effects and required materials are confirmed by the user. ALL numbers are placeholders.",
+  "_doc": "Agent growth (전문가 등급 승급). Structure, phase names, effects and required materials are confirmed by the user. ALL numbers are placeholders. Proficiency = 전투 숙련도 only (행정 숙련도 removed by user).",
   "_placeholder_numbers": true,
   "phases": [
-    { "phase": 1, "name": "현장 실무 요원", "levelCap": 30, "skillMax": 3, "equipSlots": 1,
-      "unlocks": ["기본 고유 스킬"] },
-    { "phase": 2, "name": "수석 전문가 인증", "levelCap": 50, "skillMax": 6, "equipSlots": 2,
-      "requires": { "level": 30, "items": { "certificate": 1 } },
-      "unlocks": ["능력치 상한 확장", "신규 패시브 특성"] },
-    { "phase": 3, "name": "최고 권위자 / 특임 국장급", "levelCap": 70, "skillMax": 10, "equipSlots": 4,
-      "requires": { "level": 50, "clearedDifficulty": 3, "items": { "special_biosample": 5, "relic_remnant": 5 } },
-      "unlocks": ["최고 스펙", "궁극 전술 특성", "장비 슬롯 극대화"] }
+    {
+      "phase": 1,
+      "name": "현장 실무 요원",
+      "levelCap": 30,
+      "skillMax": 3,
+      "equipSlots": 1,
+      "unlocks": [
+        "기본 고유 스킬"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "수석 전문가 인증",
+      "levelCap": 50,
+      "skillMax": 6,
+      "equipSlots": 2,
+      "requires": {
+        "level": 30,
+        "items": {
+          "certificate": 1
+        }
+      },
+      "unlocks": [
+        "능력치 상한 확장",
+        "신규 패시브 특성"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "최고 권위자 / 특임 국장급",
+      "levelCap": 70,
+      "skillMax": 10,
+      "equipSlots": 4,
+      "requires": {
+        "level": 50,
+        "clearedDifficulty": 3,
+        "items": {
+          "special_biosample": 5,
+          "relic_remnant": 5
+        }
+      },
+      "unlocks": [
+        "최고 스펙",
+        "궁극 전술 특성",
+        "장비 슬롯 극대화"
+      ]
+    }
   ],
   "traitSlots": [
-    { "id": "unique", "name": "고유 특성", "unlock": { "merit": 2 } },
-    { "id": "passive", "name": "패시브 특성", "unlock": { "phase": 2 } },
-    { "id": "ultimate", "name": "궁극 전술 특성", "unlock": { "phase": 3 } }
+    {
+      "id": "unique",
+      "name": "고유 특성",
+      "unlock": {
+        "merit": 2
+      }
+    },
+    {
+      "id": "passive",
+      "name": "패시브 특성",
+      "unlock": {
+        "phase": 2
+      }
+    },
+    {
+      "id": "ultimate",
+      "name": "궁극 전술 특성",
+      "unlock": {
+        "phase": 3
+      }
+    }
   ],
   "skillLevelMeritCost": 1,
-  "capExtension": { "items": ["career_record", "service_medal"], "levelsPerItem": 2, "maxBonusPerPhase": 10 },
-  "_training_note": "How proficiency levels are gained is NOT decided. 'training' is a temporary stand-in so growth can be tested.",
-  "training": { "budgetPerLevel": 60, "levelsPerUse": 1 },
-  "duplicateMerit": 1
+  "_training_note": "How agents earn EXP outside items is NOT decided. 'training' is a temporary stand-in until expedition rewards deliver 작전 경력서/실무 훈장 (PHASE 8).",
+  "training": {
+    "budgetPerUse": 80,
+    "exp": 40
+  },
+  "duplicateMerit": 1,
+  "exp": {
+    "_doc": "작전 경력서 / 실무 훈장 each give a different amount of level EXP (confirmed). Amounts and curve are placeholders.",
+    "items": {
+      "career_record": 100,
+      "service_medal": 400
+    },
+    "perLevel": {
+      "base": 50,
+      "growth": 1.12
+    }
+  }
 }

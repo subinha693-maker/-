@@ -1,0 +1,21 @@
+{
+  "_doc": "사건 및 선택지 nodes. The event SYSTEM (text + choices + outcomes) is per the design; every event below is a PLACEHOLDER awaiting real story content.",
+  "_placeholder": true,
+  "events": [
+    { "id": "ev_temp_a", "title": "임시 사건 A", "text": "[임시 사건] 무너진 구조물 아래에서 보급 상자를 발견했습니다. 주변에 침식 흔적이 있습니다.",
+      "choices": [
+        { "label": "상자를 회수한다", "outcomes": [{ "type": "loot", "loot": { "material": 60, "parts": 15 } }, { "type": "hp", "value": -0.1 }] },
+        { "label": "위험을 피해 지나간다", "outcomes": [] }
+      ] },
+    { "id": "ev_temp_b", "title": "임시 사건 B", "text": "[임시 사건] 정체 모를 신호가 반복 수신됩니다.",
+      "choices": [
+        { "label": "신호를 추적해 자료를 확보한다", "outcomes": [{ "type": "loot", "loot": { "data": 20 } }, { "type": "outpost", "value": -10 }] },
+        { "label": "기록만 남기고 이동한다", "outcomes": [{ "type": "loot", "loot": { "data": 5 } }] }
+      ] },
+    { "id": "ev_temp_c", "title": "임시 사건 C", "text": "[임시 사건] 버려진 의료 거점입니다. 일부 장비가 아직 작동합니다.",
+      "choices": [
+        { "label": "부대원을 치료한다", "outcomes": [{ "type": "hp", "value": 0.3 }] },
+        { "label": "생체시료를 채취한다", "outcomes": [{ "type": "loot", "loot": { "biosample": 3 } }] }
+      ] }
+  ]
+}

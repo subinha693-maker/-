@@ -9,7 +9,9 @@ import npcs from './npcs.json';
 import expedition from './expedition.json';
 import tutorial from './tutorial.json';
 import items from './items.json';
-import type { ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
+import relics from './relics.json';
+import events from './events.json';
+import type { RelicDef, EventDef, ItemDef, CharacterDef, DifficultyDef, FacilityCategoryId, FacilityDef, NamedDef, NodeTypeDef, NpcDef, PopulationId, ResearchNodeDef, ResourceDef } from '../core/types';
 
 export const DATA = {
   resources: resources as ResourceDef[],
@@ -27,6 +29,9 @@ export const DATA = {
   sampleMap: expedition.sampleMap as unknown as { columns: { id: string; type: string }[][]; edges: [string, string][] },
   tutorial,
   items: items.items as ItemDef[],
+  relics: relics.relics as RelicDef[],
+  events: events.events as EventDef[],
+  generation: expedition.generation,
 };
 
 const byId = <T extends { id: string }>(arr: T[]) => new Map(arr.map((x) => [x.id, x]));
@@ -41,6 +46,9 @@ const researchIndex = byId(DATA.researchNodes);
 export const getResearch = (id: string) => researchIndex.get(id);
 const itemIndex = byId(DATA.items);
 export const getItem = (id: string) => itemIndex.get(id);
+const relicIndex = byId(DATA.relics);
+export const getRelic = (id: string) => relicIndex.get(id);
+export const getEvent = (id: string) => DATA.events.find((e) => e.id === id);
 export const getNpc = (id: string) => DATA.npcs.find((n) => n.id === id);
 
 /** Display name helper: undecided names are shown explicitly as undecided. */

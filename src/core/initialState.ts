@@ -2,12 +2,12 @@ import { CONFIG, BALANCE } from './config';
 import { DATA } from '../data';
 import type { CharacterInstance, GameState, PopulationId, ResourceId } from './types';
 
-export const newAgent = (charId: string): CharacterInstance => ({ charId, level: 1, phase: 1, capBonus: 0, skillLevel: 1, traits: [], merit: 0, growth: {}, equipment: [] });
+export const newAgent = (charId: string): CharacterInstance => ({ charId, level: 1, exp: 0, phase: 1, skillLevel: 1, traits: [], merit: 0, growth: {}, equipment: [] });
 
 /** Builds a fresh GameState for "새 게임" from config + data (no hard-coded values here). */
 export function createNewGame(): GameState {
   return {
-    schema: 2,
+    schema: 3,
     createdAt: new Date().toISOString(),
     clock: { gameMinutes: 0, speed: CONFIG.time.speeds[0], paused: false },
     resources: { ...(BALANCE.startingResources as Record<ResourceId, number>) },

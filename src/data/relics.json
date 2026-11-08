@@ -1,0 +1,14 @@
+{
+  "_doc": "Relics: concept confirmed (부토스 잔재가 모인 무기물, 오염구역에서만 발동, 원정 종료 시 소멸, 조합·시너지). The effect categories come from the master design examples. Every relic below (name, value, tag) is a PLACEHOLDER. Effects are applied in battle in PHASE 7.",
+  "_placeholder": true,
+  "relics": [
+    { "id": "rl_atkspd_1", "name": "잔재 결정 (임시) · 공격속도", "effects": [{ "stat": "atkSpeed", "op": "mul", "value": 0.10 }], "tags": ["속도"] },
+    { "id": "rl_def_1",    "name": "잔재 결정 (임시) · 방어력",   "effects": [{ "stat": "def", "op": "mul", "value": 0.12 }], "tags": ["방호"] },
+    { "id": "rl_hp_1",     "name": "잔재 결정 (임시) · 체력",     "effects": [{ "stat": "hp", "op": "mul", "value": 0.15 }], "tags": ["방호"] },
+    { "id": "rl_skill_1",  "name": "잔재 결정 (임시) · 스킬 회복", "effects": [{ "stat": "skillCharge", "op": "mul", "value": 0.15 }], "tags": ["전술"] },
+    { "id": "rl_elem_1",   "name": "잔재 결정 (임시) · 속성 피해", "effects": [{ "stat": "elementalDmg", "op": "add", "value": 0.10 }], "tags": ["속성"] },
+    { "id": "rl_atkspd_2", "name": "잔재 결정 (임시) · 연속 공격", "effects": [{ "stat": "atkSpeed", "op": "mul", "value": 0.06 }, { "stat": "atk", "op": "mul", "value": 0.05 }], "tags": ["속도"] },
+    { "id": "rl_outpost",  "name": "잔재 결정 (임시) · 거점 보강", "effects": [{ "stat": "outpostHp", "op": "mul", "value": 0.20 }], "tags": ["방호"] },
+    { "id": "rl_elem_2",   "name": "잔재 결정 (임시) · 침식 공명", "effects": [{ "stat": "elementalDmg", "op": "add", "value": 0.06 }, { "stat": "skillCharge", "op": "mul", "value": 0.06 }], "tags": ["속성", "전술"] }
+  ]
+}

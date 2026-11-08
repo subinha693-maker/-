@@ -9,7 +9,8 @@ import { LocalStorageAdapter, type StorageAdapter } from '../save/storage';
 import { useProfile } from '../save/profile';
 import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
-import { endExpedition, startExpedition } from '../systems/expedition';
+import { endExpedition, enterNode, resolveOffer, startExpedition, winCombat, type OfferChoice } from '../systems/expedition';
+import { act } from './actions';
 import { offerTutorial, resumeTutorial } from '../tutorial/controller';
 import { clearLog } from './log';
 
@@ -94,7 +95,7 @@ export function launchExpedition(difficulty: number, members: string[]) {
   useRouter.getState().reset('expeditionMap');
 }
 export function finishExpedition(outcome: string) {
-  useGame.getState().mutate((s) => endExpedition(s));
+  useGame.getState().mutate((s) => endExpedition(s, outcome));
   events.emit('expedition:end', { outcome });
   useRouter.getState().reset('main');
 }
@@ -106,3 +107,17 @@ export async function enterBattle(node: string) {
   useRouter.getState().go('battle', { node });
 }
 export function leaveBattle() { useGame.getState().setInBattle(false); }
+
+export const enterExpeditionNode = (id: string) => act((s) => enterNode(s, id));
+export const resolveNodeEvent = (c: OfferChoice) => act((s) => resolveOffer(s, c));
+/** Temporary until PHASE 7: records a combat node as won and returns to the map. */
+export function winBattle(node: string) {
+  leaveBattle();
+  if (act((s) => winCombat(s, node))) useRouter.getState().reset('expeditionMap');
+}
+/** Battle defeat = expedition failure (master design 8.5). */
+export function loseBattle() {
+  leaveBattle();
+  useRouter.getState().reset('result');
+  useRouter.setState({ params: { outcome: 'defeat' } });
+}

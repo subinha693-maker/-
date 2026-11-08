@@ -14,7 +14,7 @@ const PHASES = growth.phases as Phase[];
 const fail = (message: string): ActionResult => ({ ok: false, message });
 
 export const phaseDef = (p: number): Phase => PHASES[p - 1];
-export const levelCap = (c: CharacterInstance) => phaseDef(c.phase).levelCap + c.capBonus;
+export const levelCap = (c: CharacterInstance) => phaseDef(c.phase).levelCap;
 export const skillMax = (c: CharacterInstance) => phaseDef(c.phase).skillMax;
 export const equipSlots = (c: CharacterInstance) => phaseDef(c.phase).equipSlots;
 export const itemName = (id: string) => getItem(id)?.name ?? id;
@@ -24,15 +24,35 @@ function updateAgent(s: GameState, charId: string, fn: (c: CharacterInstance) =>
 }
 const agent = (s: GameState, id: string) => s.roster.find((c) => c.charId === id);
 
-/** Temporary stand-in for the undecided level source (see config _training_note). */
-export const trainingCost = (c: CharacterInstance) => ({ budget: growth.training.budgetPerLevel * c.level });
+/** EXP needed to go from `level` to `level + 1` (placeholder curve). */
+export const expToNext = (level: number) => Math.round(growth.exp.perLevel.base * Math.pow(growth.exp.perLevel.growth, level - 1));
+export const expItems = growth.exp.items as Record<string, number>;
+
+/** Adds EXP, levelling up while below the current phase cap. Excess EXP at the cap is discarded. */
+export function addExp(c: CharacterInstance, amount: number): CharacterInstance {
+  let { level, exp } = c; exp += amount;
+  const cap = levelCap(c);
+  while (level < cap && exp >= expToNext(level)) { exp -= expToNext(level); level++; }
+  if (level >= cap) exp = 0;
+  return { ...c, level, exp };
+}
+
+export function useExpItem(s: GameState, charId: string, itemId: string): ActionResult {
+  const c = agent(s, charId); if (!c) return fail('보유하지 않은 요원입니다.');
+  const amount = expItems[itemId]; if (!amount) return fail('경험치 재화가 아닙니다.');
+  if ((s.inventory[itemId] ?? 0) < 1) return fail(`${itemName(itemId)}이(가) 없습니다.`);
+  if (c.level >= levelCap(c)) return fail('현재 등급의 레벨 상한입니다. 승급하면 상한이 늘어납니다.');
+  return { ok: true, state: updateAgent({ ...s, inventory: { ...s.inventory, [itemId]: s.inventory[itemId] - 1 } }, charId, (x) => addExp(x, amount)) };
+}
+
+/** Temporary stand-in for the undecided EXP source (see config _training_note). */
+export const trainingCost = () => ({ budget: growth.training.budgetPerUse });
 export function trainAgent(s: GameState, charId: string): ActionResult {
   const c = agent(s, charId); if (!c) return fail('보유하지 않은 요원입니다.');
-  if (c.level >= levelCap(c)) return fail('숙련도 레벨 상한에 도달했습니다. 상한 확장이나 승급이 필요합니다.');
-  const cost = trainingCost(c);
+  if (c.level >= levelCap(c)) return fail('현재 등급의 레벨 상한입니다. 승급하면 상한이 늘어납니다.');
+  const cost = trainingCost();
   if (s.resources.budget < cost.budget) return fail('자원이 부족합니다: 예산');
-  const lv = Math.min(levelCap(c), c.level + growth.training.levelsPerUse);
-  return { ok: true, state: updateAgent({ ...s, resources: { ...s.resources, budget: s.resources.budget - cost.budget } }, charId, (x) => ({ ...x, level: lv })) };
+  return { ok: true, state: updateAgent({ ...s, resources: { ...s.resources, budget: s.resources.budget - cost.budget } }, charId, (x) => addExp(x, growth.training.exp)) };
 }
 
 export interface Requirement { label: string; met: boolean }
@@ -42,7 +62,7 @@ export function promotionRequirements(s: GameState, c: CharacterInstance): Requi
   if (!next) return [];
   const r = next.requires ?? {};
   const out: Requirement[] = [];
-  if (r.level) out.push({ label: `숙련도 레벨 ${r.level} 이상 (현재 ${c.level})`, met: c.level >= r.level });
+  if (r.level) out.push({ label: `전투 숙련도 레벨 ${r.level} 이상 (현재 ${c.level})`, met: c.level >= r.level });
   if (r.clearedDifficulty) out.push({ label: `침식 난이도 ${r.clearedDifficulty} 이상 원정 완료 (현재 ${s.progress.highestCleared || '없음'})`, met: s.progress.highestCleared >= r.clearedDifficulty });
   for (const [id, n] of Object.entries(r.items ?? {})) out.push({ label: `${itemName(id)} ${n}개 (보유 ${s.inventory[id] ?? 0})`, met: (s.inventory[id] ?? 0) >= n });
   return out;
@@ -55,7 +75,7 @@ export function promoteAgent(s: GameState, charId: string): ActionResult {
   if (reqs.some((r) => !r.met)) return fail(`승급 조건 미충족: ${reqs.filter((r) => !r.met).map((r) => r.label).join(', ')}`);
   const inventory = { ...s.inventory };
   for (const [id, n] of Object.entries(next.requires?.items ?? {})) inventory[id] = (inventory[id] ?? 0) - n;
-  return { ok: true, state: updateAgent({ ...s, inventory }, charId, (x) => ({ ...x, phase: next.phase as 1 | 2 | 3, capBonus: 0 })) };
+  return { ok: true, state: updateAgent({ ...s, inventory }, charId, (x) => ({ ...x, phase: next.phase as 1 | 2 | 3 })) };
 }
 
 export function raiseSkill(s: GameState, charId: string): ActionResult {
@@ -83,16 +103,6 @@ export function unlockTrait(s: GameState, charId: string, slotId: string): Actio
   const cost = u.merit ?? 0;
   if (c.merit < cost) return fail(`인사 공적이 부족합니다 (필요 ${cost}).`);
   return { ok: true, state: updateAgent(s, charId, (x) => ({ ...x, traits: [...x.traits, slotId], merit: x.merit - cost })) };
-}
-
-export const capBonusMax = () => growth.capExtension.maxBonusPerPhase;
-export function extendCap(s: GameState, charId: string, itemId: string): ActionResult {
-  const c = agent(s, charId); if (!c) return fail('보유하지 않은 요원입니다.');
-  if (!growth.capExtension.items.includes(itemId)) return fail('상한 확장에 쓸 수 없는 재화입니다.');
-  if ((s.inventory[itemId] ?? 0) < 1) return fail(`${itemName(itemId)}이(가) 없습니다.`);
-  if (c.capBonus >= capBonusMax()) return fail('이번 등급에서 확장할 수 있는 상한을 모두 사용했습니다.');
-  const add = Math.min(growth.capExtension.levelsPerItem, capBonusMax() - c.capBonus);
-  return { ok: true, state: updateAgent({ ...s, inventory: { ...s.inventory, [itemId]: s.inventory[itemId] - 1 } }, charId, (x) => ({ ...x, capBonus: x.capBonus + add })) };
 }
 
 export const itemsHeld = (s: GameState) => DATA.items.filter((i) => !i.perCharacter).map((i) => ({ ...i, count: s.inventory[i.id] ?? 0 }));

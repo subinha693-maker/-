@@ -36,6 +36,9 @@ export interface CharacterDef {
   stats: Record<string, number> | null; traits: string[];
   basicAttack: unknown | null; skill: { id: string; name: string; desc: string } | null; story: string | null;
 }
+export interface RelicDef { id: string; name: string; effects: { stat: string; op: 'mul' | 'add'; value: number }[]; tags: string[] }
+export type EventOutcome = { type: 'loot'; loot: ResourceMap } | { type: 'hp'; value: number } | { type: 'outpost'; value: number };
+export interface EventDef { id: string; title: string; text: string; choices: { label: string; outcomes: EventOutcome[] }[] }
 export interface ItemDef { id: string; name: string; icon: string; source: string; use: string; perCharacter?: boolean }
 export interface NpcDef { id: string; name: string; role: string; personality: string | null; art: { full: string; portrait?: string } }
 export interface NodeTypeDef { id: string; name: string; icon: string }
@@ -51,24 +54,48 @@ export interface FacilityInstance {
 }
 export interface CharacterInstance {
   charId: string;
-  level: number;                 // 숙련도 레벨
+  level: number;                 // 전투 숙련도 레벨
+  exp: number;                   // EXP toward the next level
   phase: 1 | 2 | 3;              // 전문가 등급 (승급 단계)
-  capBonus: number;              // level-cap extension from 작전 경력서 / 실무 훈장 (current phase)
   skillLevel: number;
   traits: string[];              // unlocked trait slot ids
   merit: number;                 // 인사 공적 held for this agent
   growth: Record<string, number>;
   equipment: string[];
 }
+export interface MapNode { id: string; type: string }
+export interface ExpeditionMap { columns: MapNode[][]; edges: [string, string][] }
+/** A node event that has been rolled and saved, so loading never re-rolls or duplicates rewards. */
+export type NodeOffer =
+  | { kind: 'relic'; node: string; choices: string[] }
+  | { kind: 'reinforce'; node: string; candidates: string[] }
+  | { kind: 'supply'; node: string; charId: string }
+  | { kind: 'resource'; node: string; loot: ResourceMap }
+  | { kind: 'event'; node: string; eventId: string }
+  | { kind: 'rest'; node: string }
+  | { kind: 'shop'; node: string; stock: { relic: string; price: ResourceMap }[] }
+  | { kind: 'intel'; node: string; loot: ResourceMap };
+export interface ExpeditionBuff { id: string; source: string; text: string }
 export interface ExpeditionState {
-  difficulty: number; members: string[]; reinforcements: string[];
-  map: unknown; currentNode: string | null; path: string[];
-  relics: string[]; buffs: string[]; outpost: { hp: number; maxHp: number };
+  seed: number;
+  difficulty: number;
+  members: string[];               // the 3 who departed
+  reinforcements: string[];        // 후발대 joined during the expedition
+  hp: Record<string, number>;      // per agent, 0..1 (combat numbers come in PHASE 7)
+  map: ExpeditionMap;
+  currentNode: string | null;      // null = at the entry point
+  path: string[];                  // completed nodes in order
+  pending: NodeOffer | null;
+  relics: string[];
+  buffs: ExpeditionBuff[];
+  loot: ResourceMap;               // collected in the zone; settled at the base (PHASE 8)
+  outpost: { hp: number; maxHp: number };
+  log: string[];
 }
 export interface TutorialState { active: boolean; step: number; completedHints: string[]; skipped: boolean }
 
 export interface GameState {
-  schema: 2;
+  schema: 3;
   createdAt: string;
   clock: { gameMinutes: number; speed: number; paused: boolean };
   resources: Record<ResourceId, number>;

@@ -1,17 +1,48 @@
 {
   "_doc": "Growth materials confirmed by the user (names, sources and uses). Amounts are placeholders.",
   "items": [
-    { "id": "personnel_merit", "name": "인사 공적", "perCharacter": true, "icon": "medal",
-      "source": "이력서 확인에서 보유 요원이 중복 등장할 때", "use": "고유 특성 해금, 스킬 레벨 심화" },
-    { "id": "certificate", "name": "국가 공인 직무 인증서", "icon": "recruit",
-      "source": "행정·군사 기술 연구 완료, 고등급 행정 임무 보상", "use": "Phase 2(수석 전문가 인증) 승급 필수" },
-    { "id": "special_biosample", "name": "특수 부토스 생체시료", "icon": "biosample",
-      "source": "심층 원정 탐사, 보스 노드 클리어", "use": "Phase 3(최고 권위자) 승급" },
-    { "id": "relic_remnant", "name": "유물 잔재", "icon": "alloy",
-      "source": "심층 원정 탐사, 보스 노드 클리어", "use": "Phase 3(최고 권위자) 승급" },
-    { "id": "career_record", "name": "작전 경력서", "icon": "data",
-      "source": "개척 작전·심층 원정 완수", "use": "숙련도 레벨 상한 확장" },
-    { "id": "service_medal", "name": "실무 훈장", "icon": "star",
-      "source": "개척 작전·심층 원정 완수", "use": "숙련도 레벨 상한 확장" }
+    {
+      "id": "personnel_merit",
+      "name": "인사 공적",
+      "perCharacter": true,
+      "icon": "medal",
+      "source": "이력서 확인에서 보유 요원이 중복 등장할 때",
+      "use": "고유 특성 해금, 스킬 레벨 심화"
+    },
+    {
+      "id": "certificate",
+      "name": "국가 공인 직무 인증서",
+      "icon": "recruit",
+      "source": "행정·군사 기술 연구 완료, 고등급 행정 임무 보상",
+      "use": "Phase 2(수석 전문가 인증) 승급 필수"
+    },
+    {
+      "id": "special_biosample",
+      "name": "특수 부토스 생체시료",
+      "icon": "biosample",
+      "source": "심층 원정 탐사, 보스 노드 클리어",
+      "use": "Phase 3(최고 권위자) 승급"
+    },
+    {
+      "id": "relic_remnant",
+      "name": "유물 잔재",
+      "icon": "alloy",
+      "source": "심층 원정 탐사, 보스 노드 클리어",
+      "use": "Phase 3(최고 권위자) 승급"
+    },
+    {
+      "id": "career_record",
+      "name": "작전 경력서",
+      "icon": "data",
+      "source": "개척 작전·심층 원정 완수",
+      "use": "전투 숙련도 레벨 경험치 (재화마다 오르는 양이 다름)"
+    },
+    {
+      "id": "service_medal",
+      "name": "실무 훈장",
+      "icon": "star",
+      "source": "개척 작전·심층 원정 완수",
+      "use": "전투 숙련도 레벨 경험치 (재화마다 오르는 양이 다름)"
+    }
   ]
 }

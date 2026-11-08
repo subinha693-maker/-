@@ -38,10 +38,10 @@ async function run(name, ctxOpts) {
     await tap('back'); await see('screen-expeditionMap');
   });
   await step('enter battle (pre-battle autosave), saving blocked in battle', async () => {
-    await tap('node-n0'); await tap('btn-enter'); await see('screen-battle'); await see('battle-nosave');
+    await tap('node-c0r0'); await tap('btn-enter'); await see('screen-battle'); await see('battle-nosave');
   });
   await step('retreat -> result -> base (expedition ends, autosave)', async () => {
-    await tap('btn-retreat'); await see('screen-result'); await tap('btn-to-base'); await see('screen-main');
+    await tap('btn-retreat'); await tap('confirm'); await see('screen-result'); await tap('btn-to-base'); await see('screen-main');
   });
   await step('quit (reload) -> 이어하기 resumes latest autosave at base', async () => {
     await reload();

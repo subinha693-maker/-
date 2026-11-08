@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createNewGame } from '../core/initialState';
-import { GROWTH, extendCap, levelCap, promoteAgent, promotionRequirements, raiseSkill, skillMax, trainAgent, unlockTrait } from './growth';
+import { GROWTH, addExp, expToNext, levelCap, promoteAgent, promotionRequirements, raiseSkill, skillMax, trainAgent, unlockTrait, useExpItem } from './growth';
 import { reviewResumes } from './recruit';
 import { tickEconomy } from './economy';
 import { startResearch } from './government';
@@ -50,19 +50,30 @@ describe('이력서 확인', () => {
 });
 
 describe('육성', () => {
-  it('training raises level up to the phase cap', () => {
+  it('training gives EXP and levels up to the phase cap (excess discarded)', () => {
     let s = rich(createNewGame());
-    for (let i = 0; i < 100; i++) { const r = trainAgent(s, 'aion'); if (!r.ok) break; s = r.state; }
+    for (let i = 0; i < 2000; i++) { const r = trainAgent(s, 'aion'); if (!r.ok) break; s = r.state; }
     expect(aion(s).level).toBe(levelCap(aion(s)));
+    expect(aion(s).exp).toBe(0);
     expect(trainAgent(s, 'aion').ok).toBe(false);
   });
-  it('작전 경력서 / 실무 훈장 extend the level cap, limited per phase', () => {
-    let s: GameState = { ...rich(createNewGame()), inventory: { career_record: 10, service_medal: 10 } };
-    const base = levelCap(aion(s));
-    s = ok(extendCap(s, 'aion', 'career_record'));
-    expect(levelCap(aion(s))).toBe(base + GROWTH.capExtension.levelsPerItem);
-    for (let i = 0; i < 20; i++) { const r = extendCap(s, 'aion', 'service_medal'); if (!r.ok) break; s = r.state; }
-    expect(aion(s).capBonus).toBe(GROWTH.capExtension.maxBonusPerPhase);
+  it('작전 경력서 and 실무 훈장 give different EXP amounts', () => {
+    const items = GROWTH.exp.items as Record<string, number>;
+    expect(items.career_record).not.toBe(items.service_medal);
+    let s: GameState = { ...createNewGame(), inventory: { career_record: 1, service_medal: 1 } };
+    s = ok(useExpItem(s, 'aion', 'career_record'));
+    const afterRecord = aion(s);
+    s = ok(useExpItem(s, 'aion', 'service_medal'));
+    expect(s.inventory).toEqual({ career_record: 0, service_medal: 0 });
+    const expected = addExp(addExp(createNewGame().roster.find((c) => c.charId === 'aion')!, items.career_record), items.service_medal);
+    expect(aion(s)).toEqual(expected);
+    expect(afterRecord.level).toBeGreaterThan(1);
+    expect(useExpItem(s, 'aion', 'career_record').ok).toBe(false);
+  });
+  it('EXP curve: one level needs expToNext(level)', () => {
+    const c = createNewGame().roster[0];
+    expect(addExp(c, expToNext(1) - 1).level).toBe(1);
+    expect(addExp(c, expToNext(1)).level).toBe(2);
   });
   it('Phase 2 needs level + 국가 공인 직무 인증서; unlocks passive slot and raises caps', () => {
     let s: GameState = withAgent(rich(createNewGame()), { level: 30 });

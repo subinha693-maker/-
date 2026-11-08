@@ -45,7 +45,7 @@ export function TitleScreen() {
         {error && <div className="notice danger-notice" style={{ marginTop: 16, width: 480 }} data-testid="title-error">{error}</div>}
       </div>
       <footer className="title-foot">
-        <span className="dim">v{CONFIG.version} · PHASE 5 프로토타입</span>
+        <span className="dim">v{CONFIG.version} · PHASE 6 프로토타입</span>
         <button className="link-btn" onClick={() => go('screenIndex')} data-testid="btn-screen-index">화면 목록 (개발용)</button>
       </footer>
       {settings && <SettingsModal onClose={() => setSettings(false)} />}

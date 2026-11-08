@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
-import { leaveBattle } from '../../core/session';
+import { leaveBattle, loseBattle, winBattle } from '../../core/session';
+import { party as expeditionParty } from '../../systems/expedition';
+import { useState } from 'react';
+import { ConfirmDialog } from '../components/Common';
 import { CONFIG } from '../../core/config';
 import { DATA, charName, getCharacterDef } from '../../data';
 import { Bar, Button, PlaceholderTag } from '../components/Common';
@@ -13,10 +16,13 @@ const LANES = ['1열', '2열'];
 export function BattleScreen() {
   const { params, replace, back } = useRouter();
   const ex = useGame((g) => g.state?.expedition);
-  const party = ex?.members ?? ((params.party as string[] | undefined)?.length ? params.party as string[] : DATA.startingRoster.slice(0, 3));
+  const training = !!params.training || !ex;
+  const node = params.node as string | undefined;
+  const [retreat, setRetreat] = useState(false);
+  const party = !training ? expeditionParty(ex!) : ((params.party as string[] | undefined)?.length ? params.party as string[] : DATA.startingRoster.slice(0, 3));
   useEffect(() => { useGame.getState().setInBattle(true); return leaveBattle; }, []);
   const { slotsPerLane } = CONFIG.battle;
-  // Layout preview: members fill lane 1 then lane 2. Real placement & swapping come in PHASE 7.
+  // Layout preview: members fill lane 1 then lane 2 (max 8 deployed). Real placement & swapping come in PHASE 7.
   const slots = LANES.map((_, li) => Array.from({ length: slotsPerLane }, (_, si) => party[li * slotsPerLane + si] ?? null));
 
   return (
@@ -32,8 +38,9 @@ export function BattleScreen() {
         <div className="grow" />
         <Button small pendingPhase={7}>일시정지</Button>
         <Button small pendingPhase={7}>x2</Button>
-        <Button small variant="danger" onClick={() => replace('result', { outcome: 'defeat' })} data-testid="btn-retreat">후퇴</Button>
-        <Button small onClick={back} data-testid="btn-battle-back">지도로</Button>
+        {!training && node && <Button small variant="primary" onClick={() => winBattle(node)} data-testid="btn-temp-win">임시 승리 처리</Button>}
+        <Button small variant="danger" onClick={() => (training ? replace('result', { outcome: 'defeat' }) : setRetreat(true))} data-testid="btn-retreat">후퇴</Button>
+        <Button small onClick={() => { leaveBattle(); back(); }} data-testid="btn-battle-back">지도로</Button>
       </header>
       <div className="battle-field" data-tut="battle-lanes">
         <div className="outpost" data-tut="battle-outpost">
@@ -62,6 +69,8 @@ export function BattleScreen() {
           </div>
         ))}
       </div>
+      {retreat && <ConfirmDialog warn title="후퇴" confirmLabel="후퇴" onCancel={() => setRetreat(false)} onConfirm={loseBattle}
+        message="전투에서 후퇴하면 원정 실패로 처리됩니다. 원정에서 얻은 유물은 사라집니다." />}
       <footer className="battle-deck">
         <div className="deck-units" data-tut="battle-deck">
           {party.map((id) => {

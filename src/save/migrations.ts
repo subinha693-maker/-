@@ -1,8 +1,12 @@
 // Save data versioning. When the saved structure changes, bump CURRENT_SAVE_VERSION and add a
 // migration from the previous version. Old saves are upgraded step by step on load.
-export const CURRENT_SAVE_VERSION = 2;
+export const CURRENT_SAVE_VERSION = 3;
+
+import { DATA } from '../data';
 
 type Data = Record<string, unknown>;
+// PHASE 2-5 expeditions only had the fixed sample map.
+const SAMPLE_MAP = DATA.sampleMap;
 type Migration = (data: Data) => Data;
 
 // v1 -> v2 (PHASE 5): character ids renamed to match confirmed English names,
@@ -21,6 +25,23 @@ export const migrations: Record<number, Migration> = {
     const expedition = ex ? { ...ex, members: (ex.members as unknown[]).map(rename), reinforcements: ((ex.reinforcements as unknown[]) ?? []).map(rename) } : null;
     const progress = { highestCleared: 0, recruit: { reviews: 0 }, ...(d.progress as Data) };
     return { ...d, schema: 2, roster, expedition, inventory: (d.inventory as Data) ?? {}, progress };
+  },
+  // v2 -> v3 (PHASE 6): level-cap extension replaced by EXP; expeditions get a real map and progress fields.
+  2: (d) => {
+    const roster = (d.roster as Data[]).map(({ capBonus: _drop, ...c }) => ({ exp: 0, ...c }));
+    const ex = d.expedition as Data | null;
+    let expedition: Data | null = null;
+    if (ex) {
+      const members = ex.members as string[];
+      const all = [...members, ...((ex.reinforcements as string[]) ?? [])];
+      expedition = {
+        seed: 1, difficulty: ex.difficulty, members, reinforcements: ex.reinforcements ?? [],
+        hp: Object.fromEntries(all.map((m) => [m, 1])),
+        map: SAMPLE_MAP, currentNode: null, path: [], pending: null,
+        relics: ex.relics ?? [], buffs: [], loot: {}, outpost: ex.outpost ?? { hp: 100, maxHp: 100 }, log: [],
+      };
+    }
+    return { ...d, schema: 3, roster, expedition };
   },
 };
 

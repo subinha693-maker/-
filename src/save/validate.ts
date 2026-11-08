@@ -9,7 +9,7 @@ const isInt = (v: unknown) => Number.isInteger(v);
 export function validateGameState(s: unknown): string[] {
   const e: string[] = [];
   if (!isObj(s)) return ['게임 데이터가 객체가 아닙니다.'];
-  if (s.schema !== 2) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
+  if (s.schema !== 3) e.push('게임 데이터 구조 버전이 올바르지 않습니다.');
 
   const clock = s.clock;
   if (!isObj(clock) || !isNum(clock.gameMinutes) || (clock.gameMinutes as number) < 0) e.push('게임 시간 정보가 손상되었습니다.');
@@ -57,7 +57,7 @@ export function validateGameState(s: unknown): string[] {
     if (!isInt(c.level) || (c.level as number) < 1) e.push(`부대원 ${c.charId}의 레벨이 올바르지 않습니다.`);
     if (![1, 2, 3].includes(c.phase as number)) e.push(`부대원 ${c.charId}의 승급 단계가 올바르지 않습니다.`);
     if (!isInt(c.skillLevel) || (c.skillLevel as number) < 1) e.push(`부대원 ${c.charId}의 스킬 레벨이 올바르지 않습니다.`);
-    if (!isInt(c.merit) || (c.merit as number) < 0 || !isInt(c.capBonus) || (c.capBonus as number) < 0) e.push(`부대원 ${c.charId}의 육성 정보가 손상되었습니다.`);
+    if (!isInt(c.merit) || (c.merit as number) < 0 || !isNum(c.exp) || (c.exp as number) < 0) e.push(`부대원 ${c.charId}의 육성 정보가 손상되었습니다.`);
     if (!Array.isArray(c.traits)) e.push(`부대원 ${c.charId}의 특성 정보가 손상되었습니다.`);
   }
 
@@ -77,6 +77,19 @@ export function validateGameState(s: unknown): string[] {
       if (!Array.isArray(ex.relics)) e.push('원정 유물 정보가 손상되었습니다.');
       else if (new Set(ex.relics).size !== ex.relics.length) e.push('같은 유물이 중복 저장되었습니다.');
       if (!isObj(ex.outpost) || !isNum(ex.outpost.hp)) e.push('임시 거점 정보가 손상되었습니다.');
+      const map = ex.map as Record<string, unknown> | undefined;
+      const ids = new Set<string>();
+      if (!isObj(map) || !Array.isArray(map.columns) || !Array.isArray(map.edges)) e.push('원정 지도가 손상되었습니다.');
+      else {
+        for (const col of map.columns as unknown[]) for (const n of (col as { id: string; type: string }[])) {
+          ids.add(n.id);
+          if (!DATA.nodeTypes.some((t) => t.id === n.type)) e.push(`알 수 없는 노드 유형: ${n.type}`);
+        }
+        if (ex.currentNode != null && !ids.has(ex.currentNode as string)) e.push('현재 위치 노드가 지도에 없습니다.');
+        if (!Array.isArray(ex.path) || (ex.path as string[]).some((p) => !ids.has(p))) e.push('이동 경로가 손상되었습니다.');
+      }
+      if (Array.isArray(ex.relics)) for (const r of ex.relics as string[]) if (!DATA.relics.some((x) => x.id === r)) e.push(`알 수 없는 유물: ${r}`);
+      if (Array.isArray(ex.reinforcements)) for (const m of ex.reinforcements) if (!rosterIds.has(m as string)) e.push(`후발대가 보유 목록에 없습니다: ${String(m)}`);
     }
   }
 

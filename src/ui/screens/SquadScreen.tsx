@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGame } from '../../core/gameStore';
 import { act } from '../../core/actions';
 import { charName, getCharacterDef } from '../../data';
-import { GROWTH, capBonusMax, equipSlots, extendCap, itemName, itemsHeld, levelCap, phaseDef, promoteAgent, promotionRequirements, raiseSkill, skillMax, trainAgent, trainingCost, traitState, unlockTrait } from '../../systems/growth';
+import { GROWTH, equipSlots, expItems, expToNext, itemName, itemsHeld, levelCap, phaseDef, promoteAgent, promotionRequirements, raiseSkill, skillMax, trainAgent, trainingCost, traitState, unlockTrait, useExpItem } from '../../systems/growth';
 import { Bar, Button, Notice, Panel, ScreenHeader, Tabs } from '../components/Common';
 import { CharacterArt } from '../components/CharacterArt';
 import { Icon } from '../components/Icon';
@@ -55,7 +55,7 @@ export function SquadScreen() {
                 </div>
                 <div className="col" style={{ gap: 6, alignItems: 'flex-end' }}>
                   <span className="tag accent" data-testid="char-phase">Phase {c.phase} · {phaseDef(c.phase).name}</span>
-                  <span className="tag num" data-testid="char-level">숙련도 Lv.{c.level} / {levelCap(c)}</span>
+                  <span className="tag num" data-testid="char-level">전투 숙련도 Lv.{c.level} / {levelCap(c)}</span>
                 </div>
               </div>
               <Tabs items={[{ id: 'info' as const, name: '기본 정보' }, { id: 'growth' as const, name: '육성 · 승급' }, { id: 'story' as const, name: '개인 기록' }]} value={tab} onChange={setTab} />
@@ -100,19 +100,19 @@ function Growth({ charId }: { charId: string }) {
   return (
     <>
       <div className="grow-sec">
-        <div className="row"><b className="grow">숙련도 레벨</b><span className="num">Lv.{c.level} / {cap}</span></div>
-        <Bar value={c.level} max={cap} />
+        <div className="row"><b className="grow">전투 숙련도</b><span className="num">Lv.{c.level} / {cap}{c.level < cap ? ` · EXP ${c.exp} / ${expToNext(c.level)}` : ' · 상한'}</span></div>
+        <Bar value={c.level < cap ? c.exp : 1} max={c.level < cap ? expToNext(c.level) : 1} />
         <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
-          <Button small disabled={c.level >= cap} onClick={() => act((st) => trainAgent(st, charId))} data-testid="btn-train">
-            기본 훈련 (임시)<span className="btn-sub">예산 {fmtInt(trainingCost(c).budget)}</span>
-          </Button>
-          {GROWTH.capExtension.items.map((it) => (
-            <Button key={it} small disabled={(s.inventory[it] ?? 0) < 1 || c.capBonus >= capBonusMax()} onClick={() => act((st) => extendCap(st, charId, it), '숙련도 상한을 확장했습니다.')} data-testid={`btn-cap-${it}`}>
-              {itemName(it)} 사용<span className="btn-sub">상한 +{GROWTH.capExtension.levelsPerItem} · 보유 {s.inventory[it] ?? 0}</span>
+          {Object.entries(expItems).map(([it, amount]) => (
+            <Button key={it} small disabled={(s.inventory[it] ?? 0) < 1 || c.level >= cap} onClick={() => act((st) => useExpItem(st, charId, it))} data-testid={`btn-exp-${it}`}>
+              {itemName(it)} 사용<span className="btn-sub">EXP +{amount} · 보유 {s.inventory[it] ?? 0}</span>
             </Button>
           ))}
+          <Button small disabled={c.level >= cap} onClick={() => act((st) => trainAgent(st, charId))} data-testid="btn-train">
+            기본 훈련 (임시)<span className="btn-sub">예산 {fmtInt(trainingCost().budget)} · EXP +{GROWTH.training.exp}</span>
+          </Button>
         </div>
-        <span className="dim" style={{ fontSize: 18 }}>상한 확장 {c.capBonus} / {capBonusMax()} · 레벨을 얻는 방법은 미정이라 임시 훈련으로 대신합니다.</span>
+        <span className="dim" style={{ fontSize: 18 }}>작전 경력서·실무 훈장은 원정 보상입니다(PHASE 8). 그 전까지는 임시 훈련으로 경험치를 얻습니다.</span>
       </div>
 
       <div className="grow-sec">

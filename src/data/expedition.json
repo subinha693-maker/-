@@ -1,35 +1,305 @@
 {
-  "_doc": "Node types are confirmed. Difficulty values, weights and the sample map are placeholders.",
-  "nodeTypes": [
-    { "id": "combat",    "name": "일반 전투",       "icon": "node-combat" },
-    { "id": "elite",     "name": "강적 전투",       "icon": "node-elite" },
-    { "id": "boss",      "name": "보스 전투",       "icon": "node-boss" },
-    { "id": "relic",     "name": "유물 획득",       "icon": "node-relic" },
-    { "id": "reinforce", "name": "후발대 모집",     "icon": "node-reinforce" },
-    { "id": "resource",  "name": "자원 탐색",       "icon": "node-resource" },
-    { "id": "event",     "name": "사건 및 선택지",  "icon": "node-event" },
-    { "id": "rest",      "name": "회복 및 정비",    "icon": "node-rest" },
-    { "id": "shop",      "name": "상점 및 교환",    "icon": "node-shop" },
-    { "id": "intel",     "name": "정보 및 연구 자료","icon": "node-intel" }
-  ],
-  "_placeholder_difficulties": true,
-  "difficulties": [
-    { "level": 1, "name": "침식 난이도 1" },
-    { "level": 2, "name": "침식 난이도 2" },
-    { "level": 3, "name": "침식 난이도 3" },
-    { "level": 4, "name": "침식 난이도 4" },
-    { "level": 5, "name": "침식 난이도 5" }
-  ],
-  "_placeholder_sampleMap": true,
-  "sampleMap": {
-    "columns": [
-      [{ "id": "n0", "type": "combat" }],
-      [{ "id": "n1a", "type": "event" }, { "id": "n1b", "type": "combat" }, { "id": "n1c", "type": "resource" }],
-      [{ "id": "n2a", "type": "relic" }, { "id": "n2b", "type": "reinforce" }],
-      [{ "id": "n3a", "type": "elite" }, { "id": "n3b", "type": "rest" }, { "id": "n3c", "type": "shop" }],
-      [{ "id": "n4a", "type": "intel" }, { "id": "n4b", "type": "combat" }],
-      [{ "id": "n5", "type": "boss" }]
-    ],
-    "edges": [["n0","n1a"],["n0","n1b"],["n0","n1c"],["n1a","n2a"],["n1b","n2a"],["n1b","n2b"],["n1c","n2b"],["n2a","n3a"],["n2a","n3b"],["n2b","n3b"],["n2b","n3c"],["n3a","n4a"],["n3b","n4a"],["n3b","n4b"],["n3c","n4b"],["n4a","n5"],["n4b","n5"]]
+ "_doc": "Node types are confirmed. Difficulties' numbers, generation weights, loot amounts and the sample (tutorial) map are placeholders.",
+ "nodeTypes": [
+  {
+   "id": "combat",
+   "name": "일반 전투",
+   "icon": "node-combat"
+  },
+  {
+   "id": "elite",
+   "name": "강적 전투",
+   "icon": "node-elite"
+  },
+  {
+   "id": "boss",
+   "name": "보스 전투",
+   "icon": "node-boss"
+  },
+  {
+   "id": "relic",
+   "name": "유물 획득",
+   "icon": "node-relic"
+  },
+  {
+   "id": "reinforce",
+   "name": "후발대 모집",
+   "icon": "node-reinforce"
+  },
+  {
+   "id": "resource",
+   "name": "자원 탐색",
+   "icon": "node-resource"
+  },
+  {
+   "id": "event",
+   "name": "사건 및 선택지",
+   "icon": "node-event"
+  },
+  {
+   "id": "rest",
+   "name": "회복 및 정비",
+   "icon": "node-rest"
+  },
+  {
+   "id": "shop",
+   "name": "상점 및 교환",
+   "icon": "node-shop"
+  },
+  {
+   "id": "intel",
+   "name": "정보 및 연구 자료",
+   "icon": "node-intel"
   }
+ ],
+ "_placeholder_difficulties": true,
+ "difficulties": [
+  {
+   "level": 1,
+   "name": "침식 난이도 1"
+  },
+  {
+   "level": 2,
+   "name": "침식 난이도 2"
+  },
+  {
+   "level": 3,
+   "name": "침식 난이도 3"
+  },
+  {
+   "level": 4,
+   "name": "침식 난이도 4"
+  },
+  {
+   "level": 5,
+   "name": "침식 난이도 5"
+  }
+ ],
+ "_placeholder_sampleMap": true,
+ "sampleMap": {
+  "columns": [
+   [
+    {
+     "id": "n0",
+     "type": "combat"
+    }
+   ],
+   [
+    {
+     "id": "n1a",
+     "type": "event"
+    },
+    {
+     "id": "n1b",
+     "type": "combat"
+    },
+    {
+     "id": "n1c",
+     "type": "resource"
+    }
+   ],
+   [
+    {
+     "id": "n2a",
+     "type": "relic"
+    },
+    {
+     "id": "n2b",
+     "type": "reinforce"
+    }
+   ],
+   [
+    {
+     "id": "n3a",
+     "type": "elite"
+    },
+    {
+     "id": "n3b",
+     "type": "rest"
+    },
+    {
+     "id": "n3c",
+     "type": "shop"
+    }
+   ],
+   [
+    {
+     "id": "n4a",
+     "type": "intel"
+    },
+    {
+     "id": "n4b",
+     "type": "combat"
+    }
+   ],
+   [
+    {
+     "id": "n5",
+     "type": "boss"
+    }
+   ]
+  ],
+  "edges": [
+   [
+    "n0",
+    "n1a"
+   ],
+   [
+    "n0",
+    "n1b"
+   ],
+   [
+    "n0",
+    "n1c"
+   ],
+   [
+    "n1a",
+    "n2a"
+   ],
+   [
+    "n1b",
+    "n2a"
+   ],
+   [
+    "n1b",
+    "n2b"
+   ],
+   [
+    "n1c",
+    "n2b"
+   ],
+   [
+    "n2a",
+    "n3a"
+   ],
+   [
+    "n2a",
+    "n3b"
+   ],
+   [
+    "n2b",
+    "n3b"
+   ],
+   [
+    "n2b",
+    "n3c"
+   ],
+   [
+    "n3a",
+    "n4a"
+   ],
+   [
+    "n3b",
+    "n4a"
+   ],
+   [
+    "n3b",
+    "n4b"
+   ],
+   [
+    "n3c",
+    "n4b"
+   ],
+   [
+    "n4a",
+    "n5"
+   ],
+   [
+    "n4b",
+    "n5"
+   ]
+  ]
+ },
+ "generation": {
+  "_placeholder": true,
+  "columnsByDifficulty": {
+   "1": 6,
+   "2": 7,
+   "3": 8,
+   "4": 9,
+   "5": 10
+  },
+  "rows": {
+   "min": 2,
+   "max": 4
+  },
+  "firstType": "combat",
+  "lastType": "boss",
+  "weights": [
+   {
+    "type": "combat",
+    "w": 30
+   },
+   {
+    "type": "elite",
+    "w": 8,
+    "minCol": 2
+   },
+   {
+    "type": "relic",
+    "w": 10
+   },
+   {
+    "type": "reinforce",
+    "w": 8,
+    "minCol": 1
+   },
+   {
+    "type": "resource",
+    "w": 12
+   },
+   {
+    "type": "event",
+    "w": 14
+   },
+   {
+    "type": "rest",
+    "w": 7,
+    "minCol": 2
+   },
+   {
+    "type": "shop",
+    "w": 6,
+    "minCol": 2
+   },
+   {
+    "type": "intel",
+    "w": 7
+   }
+  ],
+  "relicChoices": 3,
+  "reinforceCandidates": 3,
+  "shopStock": 2,
+  "loot": {
+   "resource": {
+    "food": 40,
+    "material": 50,
+    "parts": 12
+   },
+   "intel": {
+    "data": 12
+   },
+   "combat": {
+    "material": 20
+   },
+   "elite": {
+    "parts": 20,
+    "biosample": 2
+   },
+   "boss": {
+    "biosample": 6,
+    "alloy": 4
+   }
+  },
+  "restHeal": 0.4,
+  "restOutpost": 15,
+  "shopPrice": {
+   "biosample": 4
+  },
+  "supply": {
+   "_doc": "보급품 도착 effect is undecided; placeholder = full heal of that agent + a buff text scaled by base growth",
+   "heal": 1.0
+  },
+  "outpostHp": 100
+ }
 }
