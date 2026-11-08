@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
 import { enterBattle, enterExpeditionNode } from '../../core/session';
-import { DATA, charName, getCharacterDef, getNodeType, getRelic } from '../../data';
+import { DATA, charName, getCharacterDef, getNodeType, getOp, getRelic } from '../../data';
 import type { ExpeditionMap } from '../../core/types';
 import { columnOf, isCleared, isCombat, nodeOf, party, reachable } from '../../systems/expedition';
 import { Bar, Button, ConfirmDialog, Panel, PlaceholderTag, ScreenHeader } from '../components/Common';
@@ -32,6 +32,8 @@ export function ExpeditionMapScreen() {
   const members = training ? ((params.party as string[] | undefined) ?? []) : party(ex!);
   const difficulty = ex?.difficulty ?? (params.difficulty as number | undefined) ?? 1;
   const [sel, setSel] = useState<string | null>(null);
+  const op = ex?.opId ? getOp(ex.opId) : undefined;
+  const opRec = useGame((g) => (ex?.opId ? g.state?.strategicOps[ex.opId] : undefined));
   const [quit, setQuit] = useState(false);
   const pos = layout(map);
   const reach = new Set(training ? [map.columns[0][0].id] : reachable(ex!));
@@ -49,7 +51,7 @@ export function ExpeditionMapScreen() {
 
   return (
     <div className="screen" data-testid="screen-expeditionMap">
-      <ScreenHeader title="외부 오염권 · 원정 지도" code={`EXPEDITION MAP · 침식 난이도 ${difficulty}${ex ? ` · ${DATA.regions.find((r) => r.id === ex.regionId)?.name} · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name ?? ''}` : ''}`} onBack={() => replace('main')}
+      <ScreenHeader title={op ? `전략 작전 · ${op.name}` : '외부 오염권 · 원정 지도'} code={`EXPEDITION MAP · 침식 난이도 ${difficulty}${ex ? ` · ${DATA.regions.find((r) => r.id === ex.regionId)?.name}${ex.kind === 'general' ? ` · ${DATA.generalPurposes.find((g) => g.id === ex.purpose)?.name}` : ''}` : ''}`} onBack={() => replace('main')}
         tail={training ? <span className="tag accent">훈련 · 튜토리얼</span> : <>
           <PlaceholderTag label="노드 구성·수치 임시" />
           <Button small onClick={() => go('saveLoad', { mode: 'save' })} data-testid="btn-map-save">저장</Button>
@@ -88,10 +90,21 @@ export function ExpeditionMapScreen() {
             </div>
           )}
         </section>
-        <aside className="col scroll" style={{ flex: 1, minWidth: 0 }}>
+        <aside className="col scroll map-side" style={{ flex: 1, minWidth: 0 }}>
+          {op && (
+            <section className="panel op-strategic" data-testid="op-objective-panel">
+              <header className="panel-head"><span className="op-diamond" />작전 목표<span className={`tag ${opRec?.objectiveAchieved ? 'accent' : 'warn'}`} style={{ marginLeft: 'auto' }} data-testid="op-objective-state">{opRec?.objectiveAchieved ? '목표 달성 · 귀환 필요' : '미달성'}</span></header>
+              <div className="panel-body col">
+                <b>{op.primary.label}</b>
+                {op.optional.map((o) => <span key={o.id} className="dim">부가 목표: {o.label} (판정 기준 미정)</span>)}
+                <span className="dim" style={{ fontSize: 'var(--fs-xs)' }}>목표 달성 후 귀환해야 {op.grantsControl ? '통제권을' : '전진 거점을'} 확보합니다.</span>
+              </div>
+            </section>
+          )}
           <Panel title="노드 정보" bodyClass="col">
             {nt && sel ? (<>
               <div className="row"><Icon name={nt.icon} size={44} color="var(--accent)" /><h2 className="h2 grow">{nt.name}</h2></div>
+              {node?.type === 'objective' && op && <span className="tag warn" style={{ height: 'auto', whiteSpace: 'normal', padding: 6 }}>{op.primary.label}</span>}
               <span className="dim">{done.has(sel) ? '완료한 노드입니다.' : reach.has(sel) ? '이동할 수 있는 노드입니다.' : '현재 위치에서 연결되지 않았습니다.'}</span>
               <Button variant="primary" disabled={!reach.has(sel)} onClick={enter} data-testid="btn-enter" data-tut="btn-enter">{isCombat(node!.type) ? '전투 진입' : '진입'}</Button>
             </>) : <div className="empty">{reach.size ? '이동할 노드를 선택하세요.' : '진행할 노드가 없습니다.'}</div>}

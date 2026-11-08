@@ -11,6 +11,8 @@ import type { SlotId } from '../save/types';
 import { useToast } from '../ui/components/Toast';
 import { endExpedition, enterNode, resolveOffer, startExpedition, winCombat, type ExpeditionTarget, type OfferChoice } from '../systems/expedition';
 import { act } from './actions';
+import { startOp } from '../systems/regions';
+import { getOp } from '../data';
 import { offerTutorial, resumeTutorial } from '../tutorial/controller';
 import { clearLog } from './log';
 
@@ -91,6 +93,15 @@ export function continueLatest() {
 // ---- Expedition lifecycle (state + autosave triggers) ----
 export function launchExpedition(difficulty: number, members: string[], target?: ExpeditionTarget) {
   useGame.getState().mutate((s) => startExpedition(s, difficulty, members, undefined, target));
+  events.emit('expedition:start', { difficulty });
+  useRouter.getState().reset('expeditionMap');
+}
+/** Starts a strategic operation: records the attempt, then launches its expedition with the objective map. */
+export function launchStrategicOp(opId: string, difficulty: number, members: string[]) {
+  const op = getOp(opId);
+  if (!op) return;
+  if (!act((s) => startOp(s, opId))) return;
+  useGame.getState().mutate((s) => startExpedition(s, difficulty, members, undefined, { regionId: op.regionId, purpose: 'op', kind: 'strategic', opId }));
   events.emit('expedition:start', { difficulty });
   useRouter.getState().reset('expeditionMap');
 }

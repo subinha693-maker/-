@@ -419,3 +419,7 @@ button.purpose.on { border-color: var(--accent); background: var(--accent-bg); }
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .sel-chip { min-height: 46px; padding: 0 12px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 18px; cursor: pointer; }
 .sel-chip.on { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.op-brief { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border: 1px solid rgba(209,138,75,.5); border-top: 3px solid var(--warn); background: var(--warn-bg); }
+.map-node.t-objective { width: 124px; height: 124px; border-color: var(--warn); color: var(--warn); background: #2a2016; box-shadow: 0 0 0 6px rgba(209,138,75,.15); }
+.map-node.t-objective.reach { box-shadow: 0 0 0 8px rgba(209,138,75,.3); }
+.map-side > * { flex: none; }

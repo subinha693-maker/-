@@ -50,6 +50,11 @@
    "id": "intel",
    "name": "정보 및 연구 자료",
    "icon": "node-intel"
+  },
+  {
+   "id": "objective",
+   "name": "작전 목표",
+   "icon": "star"
   }
  ],
  "_placeholder_difficulties": true,
@@ -338,6 +343,21 @@
     "heal": 0.4
    },
    "boss": {
+    "count": 3,
+    "loot": [
+     {
+      "biosample": 8,
+      "alloy": 5
+     },
+     {
+      "data": 40,
+      "parts": 40
+     }
+    ],
+    "relicChance": 1.0,
+    "heal": 0.5
+   },
+   "objective": {
     "count": 3,
     "loot": [
      {

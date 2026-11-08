@@ -97,6 +97,12 @@ export function validateGameState(s: unknown): string[] {
       if (!DATA.regions.some((r) => r.id === ex.regionId)) e.push(`원정 지역이 올바르지 않습니다: ${String(ex.regionId)}`);
       if (ex.kind !== 'general' && ex.kind !== 'strategic') e.push('원정 종류가 올바르지 않습니다.');
       if (ex.kind === 'general' && !DATA.generalPurposes.some((g) => g.id === ex.purpose)) e.push(`원정 목적이 올바르지 않습니다: ${String(ex.purpose)}`);
+      if (ex.kind === 'strategic') {
+        const op = DATA.strategicOps.find((o) => o.id === ex.opId);
+        if (!op) e.push(`전략 작전이 올바르지 않습니다: ${String(ex.opId)}`);
+        else if (op.regionId !== ex.regionId) e.push('전략 작전과 원정 지역이 일치하지 않습니다.');
+        else if (!isObj(s.strategicOps) || !(s.strategicOps as Record<string, unknown>)[op.id]) e.push('진행 중인 전략 작전 기록이 없습니다.');
+      }
       const map = ex.map as Record<string, unknown> | undefined;
       const ids = new Set<string>();
       if (!isObj(map) || !Array.isArray(map.columns) || !Array.isArray(map.edges)) e.push('원정 지도가 손상되었습니다.');

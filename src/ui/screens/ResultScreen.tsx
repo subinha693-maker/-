@@ -1,7 +1,8 @@
 import { useRouter } from '../../core/router';
 import { useGame } from '../../core/gameStore';
 import { finishExpedition } from '../../core/session';
-import { DATA, charName, getCharacterDef, getRelic, getRegion } from '../../data';
+import { DATA, charName, getCharacterDef, getOp, getRelic, getRegion } from '../../data';
+import { costText } from '../format';
 import { settlementFor } from '../../systems/expedition';
 import { Button, Notice, Panel } from '../components/Common';
 import { Icon } from '../components/Icon';
@@ -25,6 +26,10 @@ export function ResultScreen() {
   const region = ex ? getRegion(ex.regionId) : undefined;
   const rp = ex ? s!.regions[ex.regionId] : undefined;
   const willInfo = ex?.kind === 'general' && outcome === 'victory' && rp && rp.state < 2;
+  const op = ex?.opId ? getOp(ex.opId) : undefined;
+  const rec = op ? s!.strategicOps[op.id] : undefined;
+  const opSuccess = !!op && !!rec?.objectiveAchieved && outcome !== 'defeat';
+  const RES = Object.fromEntries(DATA.resources.map((r) => [r.id, r.name]));
   return (
     <div className="screen result" data-testid="screen-result">
       <div className="result-head">
@@ -57,9 +62,18 @@ export function ResultScreen() {
             <dt>합류 후발대</dt><dd>{ex?.reinforcements.length ? ex.reinforcements.map((m) => charName(getCharacterDef(m))).join(', ') : '없음'}</dd>
             <dt>유물 (소멸)</dt><dd>{ex?.relics.length ? ex.relics.map((r) => getRelic(r)?.name).join(', ') : '없음'}</dd>
             {outcome === 'victory' && <><dt>난이도</dt><dd className="pos">{nextDiff ? `${nextDiff.name} 해금` : '최고 난이도 완수'}</dd></>}
-            <dt>지역 기록</dt><dd data-testid="result-region">{ex?.kind === 'general' ? (willInfo ? '정보 확보 달성' : '탐사 기록 추가') : '—'}</dd>
-            <dt>지역 통제권</dt><dd className="dim" data-testid="result-control">변화 없음 (일반 원정)</dd>
+            {ex?.kind === 'general' ? <>
+              <dt>지역 기록</dt><dd data-testid="result-region">{willInfo ? '정보 확보 달성' : '탐사 기록 추가'}</dd>
+              <dt>지역 통제권</dt><dd className="dim" data-testid="result-control">변화 없음 (일반 원정)</dd>
+            </> : op ? <>
+              <dt>전략 작전</dt><dd>{op.name}</dd>
+              <dt>주요 목표</dt><dd data-testid="result-objective" className={rec?.objectiveAchieved ? 'pos' : 'neg'}>{rec?.objectiveAchieved ? '달성' : '미달성'}</dd>
+              <dt>귀환</dt><dd>{outcome === 'defeat' ? '실패' : '귀환'}</dd>
+              <dt>작전 판정</dt><dd data-testid="result-op" className={opSuccess ? 'pos' : 'neg'}>{opSuccess ? (op.grantsControl ? '성공 · 지역 통제권 확보' : '성공 · 전진 거점 확보') : '실패 · 확보 없음'}</dd>
+              {opSuccess && <><dt>작전 보상</dt><dd>{[costText(op.rewards.resources, RES), costText(op.rewards.items, ITEM)].filter(Boolean).join(' · ')}</dd></>}
+            </> : null}
           </dl>
+          {op && !opSuccess && <Notice>전략 작전은 주요 목표를 달성하고 귀환해야 성공합니다. 이번 작전으로는 아무것도 확보하지 않습니다.</Notice>}
           {ex?.kind === 'general' && <Notice>일반 원정은 반복해도 지역 통제권이나 영토가 늘지 않습니다. 통제권은 전략 작전으로만 확보합니다.</Notice>}
           <div className="grow" />
           {outcome === 'victory' && <Button pendingPhase={9}>심층 원정 도전</Button>}

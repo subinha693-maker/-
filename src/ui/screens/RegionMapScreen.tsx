@@ -141,7 +141,9 @@ function RegionDetail({ s, r }: { s: GameState; r: RegionDef }) {
                   {op.prereqOps.map((po) => { const met = s.strategicOps[po]?.rewardGranted; return <li key={po} className={met ? 'met' : ''}>{met ? '✓' : '·'} 선행 작전: {getOp(po)?.name}</li>; })}
                 </ul>
               )}
-              {st === 'completed' ? <span className="tag accent">완료 · 보상 지급됨 (중복 지급 없음)</span> : <Button variant="primary" pendingPhase={4}>작전 개시</Button>}
+              {st === 'completed'
+                ? <span className="tag accent">완료 · 보상 지급됨 (중복 지급 없음)</span>
+                : <Button variant="primary" className="op-launch" disabled={st !== 'available' || !!s.expedition} onClick={() => go('expeditionPrep', { opId: id })} data-testid={`btn-op-${id}`}>{s.expedition ? '진행 중인 원정이 있습니다' : '작전 개시'}</Button>}
             </div>
           </section>
         );

@@ -189,6 +189,18 @@
       "hp": 0.25,
       "atk": 0.15,
       "count": 0.5
+    },
+    "objective": {
+      "waves": 3,
+      "count": [
+        4,
+        4,
+        3
+      ],
+      "pool": [
+        "normal"
+      ],
+      "last": "boss"
     }
   },
   "appearSeconds": 1.0,

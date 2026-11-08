@@ -4,11 +4,11 @@
 import { DATA, getEvent, getRelic, getCharacterDef } from '../data';
 import type { ExpeditionMap, ExpeditionState, GameState, MapNode, NodeOffer, ResourceMap, RewardChoice } from '../core/types';
 import type { ActionResult } from './government';
-import { recordGeneralExpedition } from './regions';
+import { markObjective, recordGeneralExpedition, settleOp } from './regions';
 
 const GEN = DATA.generation;
 const fail = (message: string): ActionResult => ({ ok: false, message });
-export const COMBAT_TYPES = ['combat', 'elite', 'boss'];
+export const COMBAT_TYPES = ['combat', 'elite', 'boss', 'objective'];
 export const isCombat = (type: string) => COMBAT_TYPES.includes(type);
 
 // ---------- deterministic RNG ----------
@@ -26,14 +26,15 @@ function sample<T>(r: () => number, arr: T[], n: number): T[] {
 }
 
 // ---------- map ----------
-export function generateMap(seed: number, difficulty: number, purpose?: string): ExpeditionMap {
+/** `objective`: strategic operations replace the final boss with the operation's objective node. */
+export function generateMap(seed: number, difficulty: number, purpose?: string, objective = false): ExpeditionMap {
   const wm = DATA.generalPurposes.find((g) => g.id === purpose)?.weightMul ?? {};
   const r = rng(seed);
   const nCols = (GEN.columnsByDifficulty as Record<string, number>)[String(difficulty)] ?? 6;
   const columns: MapNode[][] = [];
   for (let c = 0; c < nCols; c++) {
     if (c === 0) { columns.push([{ id: 'c0r0', type: GEN.firstType }]); continue; }
-    if (c === nCols - 1) { columns.push([{ id: `c${c}r0`, type: GEN.lastType }]); continue; }
+    if (c === nCols - 1) { columns.push([{ id: `c${c}r0`, type: objective ? 'objective' : GEN.lastType }]); continue; }
     const rows = GEN.rows.min + Math.floor(r() * (GEN.rows.max - GEN.rows.min + 1));
     const pool = GEN.weights.filter((w) => !('minCol' in w) || c >= (w.minCol as number)).map((w) => ({ ...w, w: w.w * (wm[w.type] ?? 1) }));
     const total = pool.reduce((s, w) => s + w.w, 0);
@@ -81,7 +82,7 @@ export function startExpedition(s: GameState, difficulty: number, members: strin
       seed, difficulty, members: [...members], reinforcements: [],
       kind: target.kind ?? 'general', regionId: target.regionId, purpose: target.purpose, opId: target.opId ?? null,
       hp: Object.fromEntries(members.map((m) => [m, 1])),
-      map: generateMap(seed, difficulty, target.purpose), currentNode: null, path: [], pending: null,
+      map: generateMap(seed, difficulty, target.purpose, target.kind === 'strategic'), currentNode: null, path: [], pending: null,
       relics: [], buffs: [], loot: {}, outpost: { hp: GEN.outpostHp, maxHp: GEN.outpostHp }, log: [],
     },
   };
@@ -125,6 +126,8 @@ export function endExpedition(s: GameState, outcome = 'return'): GameState {
   for (const [k, v] of Object.entries(st.items)) inventory[k] = (inventory[k] ?? 0) + v;
   let next: GameState = { ...s, expedition: null, progress, resources, inventory };
   if (ex.kind === 'general') next = recordGeneralExpedition(next, ex.regionId, outcome);
+  // strategic operation: success needs the objective AND a return (withdrawal after the objective counts as a return)
+  if (ex.kind === 'strategic' && ex.opId) next = settleOp(next, ex.opId, outcome !== 'defeat').state;
   return next;
 }
 
@@ -192,7 +195,10 @@ export function winCombat(s: GameState, nodeId: string): ActionResult {
   if (!reachable(ex).includes(nodeId)) return fail('현재 위치에서 갈 수 없는 노드입니다.');
   const node = nodeOf(ex.map, nodeId)!;
   if (!isCombat(node.type)) return fail('전투 노드가 아닙니다.');
-  return { ok: true, state: withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: rollBattleReward(e, node), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] })) };
+  let next = withEx(s, (e) => ({ ...e, currentNode: nodeId, path: [...e.path, nodeId], pending: rollBattleReward(e, node), log: [...e.log, `${DATA.nodeTypes.find((t) => t.id === node.type)?.name} 승리`] }));
+  // completing the objective node records the objective only; territory needs return + settlement
+  if (node.type === 'objective' && ex.opId) next = markObjective(next, ex.opId);
+  return { ok: true, state: next };
 }
 
 export type OfferChoice = { pick?: string; index?: number; skip?: boolean };

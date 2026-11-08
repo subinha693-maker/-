@@ -86,7 +86,7 @@ export function BattleScreen() {
           <Bar value={b.outpost.hp} max={b.outpost.max} tone={b.outpost.hp / b.outpost.max < 0.35 ? 'danger' : undefined} />
         </div>
         <div className="wave"><span className="dim">WAVE</span><b className="num" data-testid="wave">{waveText}</b></div>
-        <span className="tag">{nodeType === 'boss' ? '보스 전투' : nodeType === 'elite' ? '강적 전투' : '일반 전투'}</span>
+        <span className={`tag ${nodeType === 'objective' ? 'warn' : ''}`}>{nodeType === 'objective' ? '작전 목표 전투' : nodeType === 'boss' ? '보스 전투' : nodeType === 'elite' ? '강적 전투' : '일반 전투'}</span>
         <span className="tag" data-testid="battle-nosave">전투 중 저장 불가</span>
         <PlaceholderTag label="전투 수치 임시" />
         <div className="grow" />
